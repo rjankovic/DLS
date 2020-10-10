@@ -1,0 +1,29 @@
+﻿@model CD.DLS.Clients.Web.Models.SourceTargetFlowTypes
+
+    <div class="st-tab-header">Source: @Model.SourceDescriptivePath >> Target: @Model.TargetDescriptivePath</div>
+    
+    <div class="st-type-selection">
+        <div class="st-type-selection-label">Source type</div>
+        <select name="radius" class="st-source-type-selection input-select">
+            <option value="none" disabled selected>Select...</option>
+            
+            @foreach (var sourceType in Model.SourceTypes)
+            {
+                <option value="@sourceType.ElementType">@sourceType.TypeDescription</option>
+            }
+
+        </select>
+    </div>
+
+    <div class="st-type-selection">
+        <div class="st-type-selection-label">Target type</div>
+        <select name="color" class="st-target-type-selection input-select">
+            <option value="none" disabled selected>Select...</option>
+            
+            @foreach (var targetType in Model.TargetTypes)
+            {
+                <option value="@targetType.ElementType">@targetType.TypeDescription</option>
+            }
+
+        </select>
+    </div>

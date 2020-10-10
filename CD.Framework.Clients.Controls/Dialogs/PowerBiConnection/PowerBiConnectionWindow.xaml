@@ -1,0 +1,34 @@
+﻿<Window x:Class="CD.DLS.Clients.Controls.Dialogs.PowerBiConnection.PowerBiConnectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs.PowerBiConnection"
+        mc:Ignorable="d"
+        Title="Power BI Connection" Height="300" Width="455">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Clients.Controls;component/Resources/DefaultResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <local:PowerBiConnectionChooser x:Name="connectionChooser" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"/>
+        <DockPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+            <Button Style="{StaticResource OrangeButton}" x:Name="SubmitButton" Content="OK" Grid.Row="1" Grid.Column="0" Click="SubmitButton_Click" DockPanel.Dock="Left" />
+            <Button Style="{StaticResource GreyButton}" x:Name="CancelButton"  Content="Cancel" Grid.Row="1" Grid.Column="2" Click="CancelButton_Click" DockPanel.Dock="Left"/>
+        </DockPanel>
+    </Grid>
+</Window>

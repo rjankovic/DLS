@@ -1,0 +1,10 @@
+C:\Projects\Descent\Main\bin\server\Microsoft.Azure.Documents.ServiceInterop.dll
+C:\Projects\Descent\Main\bin\server\DocumentDB.Spatial.Sql.dll
+C:\Projects\Descent\Main\bin\server\CD.DLS.Upload.exe.config
+C:\Projects\Descent\Main\bin\server\CD.DLS.Upload.exe
+C:\Projects\Descent\Main\bin\server\CD.DLS.Upload.pdb
+C:\Projects\Descent\Main\CD.DLS.Upload\obj\Debug\CD.DLS.Upload.csprojAssemblyReference.cache
+C:\Projects\Descent\Main\CD.DLS.Upload\obj\Debug\CD.DLS.Upload.csproj.CopyComplete
+C:\Projects\Descent\Main\CD.DLS.Upload\obj\Debug\CD.DLS.Upload.exe
+C:\Projects\Descent\Main\CD.DLS.Upload\obj\Debug\CD.DLS.Upload.pdb
+C:\Projects\Descent\Main\CD.DLS.Upload\obj\Debug\CD.DLS.Upload.csproj.CoreCompileInputs.cache

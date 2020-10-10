@@ -1,0 +1,29 @@
+﻿@model CD.DLS.Clients.Web.Models.MainMenu
+
+<ul class="menu" id="mainMenu">
+    @foreach (var menuItem in Model.Items)
+    {
+        if (menuItem.HasItems)
+        {
+            <li class="dropdown">
+                <a href="javascript:void(0)">menuItem.Name</a>
+                <div class="dropdown-content">
+                    @foreach (var subItem in menuItem.Items)
+                    {
+                        <a href="javascript:navigationActions.openTile(&quot;@subItem.Action&quot;)">@subItem.Name</a>
+                    }
+                </div>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="javascript:navigationActions.openTile(&quot;@menuItem.Action&quot;)">@menuItem.Name</a>
+            </li>
+        }
+
+    }
+    <li>
+        @Html.ActionLink("Sign out", "SignOut", "Account")
+    </li>
+</ul>

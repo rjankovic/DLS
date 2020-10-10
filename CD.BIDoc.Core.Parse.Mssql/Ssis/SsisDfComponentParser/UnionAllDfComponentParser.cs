@@ -1,0 +1,115 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
+using CD.DLS.Model.Mssql;
+using CD.DLS.Model.Mssql.Db;
+using CD.DLS.Model.Mssql.Ssis;
+using CD.DLS.DAL.Objects.Extract;
+
+namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
+{
+    class UnionAllDfComponentParser : SsisDfComponentParserBase, ISsisDfComponentParser
+    {
+        public int Priority { get { return 10; } }
+
+        public bool CanParse(SsisDfComponent component)
+        {
+            return component.ContractBase == "Union All";
+        }
+
+        public DfComponentElement ParseComponent(SsisDfComponentContext context)
+        {
+            var componentElement = new DfUnionAllElement(context.ComponentRefPath, context.Component.Name, context.ComponentDefinitionXml.OuterXml, context.DfElement);
+            context.DfElement.AddChild(componentElement);
+            
+            SsisDfOutput unionOutput = null;
+            foreach (var output in context.Component.Outputs)
+            {
+                if (!output.IsErrorOutput)
+                {
+                    unionOutput = output;
+                    break;
+                }
+            }
+            if (unionOutput == null)
+            {
+                throw new Exception("Missing union all output");
+            }
+
+            XmlElement outputDefinitionXml = null;
+            DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, unionOutput.Name), unionOutput.Name,
+                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, unionOutput.IdString, out outputDefinitionXml), componentElement);
+            componentElement.AddChild(outputNode);
+            outputNode.OutputType = unionOutput.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
+
+            ComponentOutput unionOutputMapping = new ComponentOutput() { ModelElement = outputNode };
+            context.ComponentIO.Outputs[unionOutput.IdString] = unionOutputMapping;
+
+
+            Dictionary<int, DfColumnElement> outputColsById = new Dictionary<int, DfColumnElement>();
+            foreach (var outputCol in unionOutput.Columns)
+            {
+                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name, outputCol.ID), outputCol.Name,
+                    context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.IdentificationString), outputNode);
+
+                colNode.Precision = outputCol.Precision;
+                colNode.Scale = outputCol.Scale;
+                colNode.Length = outputCol.Length;
+                colNode.DtsDataType = outputCol.DataType.ToString();
+
+                outputNode.AddChild(colNode);
+                unionOutputMapping[outputCol.Name] = colNode;
+                
+                var outputColId = outputCol.ID;
+                outputColsById.Add(outputColId, colNode);
+                
+            }
+            
+            foreach (var input in context.Component.Inputs)
+            {
+                XmlElement inputDefinitionXml = null;
+                DfInputElement inputNode = new DfInputElement(context.UrnBuilder.GetDfInputUrn(componentElement, input.Name),
+                    input.Name, context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml,
+                    input.IdString, out inputDefinitionXml), componentElement);
+                componentElement.AddChild(inputNode);
+
+                inputNode.InputType = DfInputTypeEnum.Input;
+
+                ComponentInput conversionInputMapping = new ComponentInput() { ModelElement = inputNode };
+
+                context.ComponentIO.Inputs[input.IdString] = conversionInputMapping;
+                Dictionary<int, DfColumnElement> inputColumnsByLineageId = new Dictionary<int, DfColumnElement>();
+                foreach (var inputCol in input.Columns)
+                {
+                    var name = inputCol.Name;
+                    var componentIdString = inputCol.IdentificationString;
+                    var externalId = inputCol.ExternalColumnID;
+                    
+                    int outputeColId = int.Parse(inputCol.GetPropertyValue("OutputColumnLineageID"));
+
+                    var outputColElement = outputColsById[outputeColId];
+                    
+                    DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name, inputCol.ID), inputCol.Name,
+                        context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.IdentificationString), outputColElement);
+
+                    colNode.Precision = inputCol.Precision;
+                    colNode.Scale = inputCol.Scale;
+                    colNode.Length = inputCol.Length;
+                    colNode.DtsDataType = inputCol.DataType.ToString();
+                    outputColElement.AddChild(colNode);
+                    
+
+                    conversionInputMapping[inputCol.Name] = colNode;
+                    inputColumnsByLineageId[inputCol.LineageID] = colNode;
+
+                }
+
+            }
+
+            return componentElement;
+        }
+    }
+}

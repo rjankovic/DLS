@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="CD.DLS.Clients.Controls.Dialogs.PowerBiConnection.PowerBiConnectionChooser"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
+             mc:Ignorable="d" 
+             >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Clients.Controls;component/Resources/DefaultResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+                <RadioButton GroupName="modeRadio" x:Name="radioDefaultWokspace" IsChecked="True" Margin="10,10,10,10.2" Width="152" Content="Default workspace" />
+                <RadioButton GroupName="modeRadio" x:Name="radioSelectWorkspace" IsChecked="False" Margin="10,10,10,10.2" Width="143" Content="Select workspace" />
+                <RadioButton GroupName="modeRadio" x:Name="reportServerWorkspace" IsChecked="False" Margin="10,10,10,10.2" Width="143" Content="Report server" />
+            </StackPanel>
+            <Label Content="ApplicationID" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Grid.Column="0" Grid.Row="1" />
+            <TextBox Style="{StaticResource GreyTextBox}" x:Name="applicationIDTextBox" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="1" Text="" />
+            <Label Content="Redirect Uri" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Grid.Column="0" Grid.Row="2" />
+            <TextBox Style="{StaticResource GreyTextBox}" x:Name="redirectUriTextBox" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="2" Text="" />
+            <Label Content="Workspace ID" IsEnabled="{Binding IsChecked,ElementName=radioSelectWorkspace }" Grid.Column="0" Grid.Row="3" />
+            <TextBox x:Name="workspaceIDTextBox" IsEnabled="{Binding IsChecked,ElementName=radioSelectWorkspace }" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="3" />
+            <Label Content="User name" IsEnabled="True" Grid.Column="0" Grid.Row="4" />
+            <TextBox x:Name="userNameTextBox" Style="{StaticResource GreyTextBox}" IsEnabled="True" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="4" />
+            <Label Content="Password" IsEnabled="True" Grid.Column="0" Grid.Row="5" />
+            <PasswordBox x:Name="passwordTextBox" Style="{StaticResource GreyPasswordBox}" IsEnabled="True" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="5" />
+            <TextBox x:Name="reportServerURLTextBox" Style="{StaticResource GreyTextBox}" IsEnabled="{Binding IsChecked,ElementName=reportServerWorkspace}" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="6" />
+            <Label Content="Report Server URL" IsEnabled="True" Grid.Column="0" Grid.Row="6" />
+            <TextBox x:Name="reportServerFolderTextBox" Style="{StaticResource GreyTextBox}" IsEnabled="{Binding IsChecked,ElementName=reportServerWorkspace}" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="7" />
+            <Label Content="Report Server folder" IsEnabled= "True" Grid.Column="0" Grid.Row="7" />
+
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="5"/>
+
+        </Grid>
+    </Grid>
+</UserControl>

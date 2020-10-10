@@ -1,0 +1,55 @@
+﻿@model CD.DLS.Clients.Web.Models.WarningsWrap
+
+    <!--
+            public string SourceName { get; set; }
+            public string SourcePath { get; set; }
+            public string TargetName { get; set; }
+            public string TargetPath { get; set; }
+            public string DataMessageType { get; set; }
+            public string Message { get; set; }
+    -->
+    <!--
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding SourceName}" Header="Source Name"/>
+                    <DataGridTextColumn Binding="{Binding SourcePath}" Header="Source Path"/>
+                    <DataGridTextColumn Binding="{Binding TargetName}" Header="Target Name"/>
+                    <DataGridTextColumn Binding="{Binding TargetPath}" Header="Target Path"/>
+                    <DataGridTextColumn Binding="{Binding DataMessageType}" Header="Message Type"/>
+                    <DataGridTextColumn Binding="{Binding Message}" Header="Message" Width="500"/>
+                </DataGrid.Columns>
+    -->
+<div class="warnings-table-container">
+    <table id="warnings-grid-@Model.TileId">
+        <thead>
+            <tr>
+                <th>Source Name</th>
+                <th>Source Path</th>
+                <th>Target Name</th>
+                <th>Target Path</th>
+                <th>Message Type</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Warnings)
+            {
+            <tr>
+                <td>@item.SourceName</td>
+                <td>@item.SourcePath</td>
+                <td>@item.TargetName</td>
+                <td>@item.TargetPath</td>
+                <td>@item.DataMessageType</td>
+                <td>@item.Message</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    var tileId = "@Model.TileId";
+
+    var table = $('#warnings-grid-' + tileId).DataTable({
+        "stripeClasses": ['table-odd-row', 'table-even-row']
+    });
+</script>

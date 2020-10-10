@@ -1,0 +1,40 @@
+﻿@model string
+
+<div class="search-bar-container" id="search-bar-container-@Model">
+    <input type="text" placeholder="Search the project model..." class="search-input" id="search-input-@Model" />
+    <div class="button" onclick="searchSubmitted()">Search</div>
+</div>
+
+<div class="search-results-container" id="search-results-container-@Model">
+    <!--<ul class="select-list">
+            <li class="select-list-item"><span class="larger">CPI</span>[SQL Table]</li>
+            <li class="select-list-item"><span class="larger">Manpower</span>[SQL Table]</li>
+            <li class="select-list-item"><span class="larger">NRWH</span>[SQL Table]</li>
+        </ul>-->
+</div>
+
+<script>
+    var tileId = "@Model";
+
+    $('#search-input-' + tileId).focus();
+
+    $('#search-input-' + tileId).keypress(function (e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        // enter
+        if (code == 13) {
+            searchSubmitted();
+        }
+    });
+
+    function searchSubmitted() {
+        console.log('search submitted');
+        var input = $('#search-input-' + tileId).val();
+        var inputEncoded = encodeURIComponent(input);
+        var tileIdEncoded = encodeURIComponent(tileId);
+        $('#search-results-container-' + tileId).html('Loading...');
+        $.get("/search/query?argument1=" + inputEncoded + '&argument2=' + tileIdEncoded, function (data) {
+            $('#search-results-container-' + tileId).html(data);
+        });
+    }
+
+</script>

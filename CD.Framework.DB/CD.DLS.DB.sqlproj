@@ -1,0 +1,492 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>CD.DLS.DB</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{3797c34f-388a-4454-a56c-ead0c00166b9}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>CD.DLS.DB</RootNamespace>
+    <AssemblyName>CD.DLS.DB</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <Recovery>SIMPLE</Recovery>
+    <ServiceBrokerOption>EnableBroker</ServiceBrokerOption>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <SuppressTSqlWarnings>71501</SuppressTSqlWarnings>
+    <SqlTargetName>CD.DLS</SqlTargetName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug64|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <SuppressTSqlWarnings>71501</SuppressTSqlWarnings>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="Security" />
+    <Folder Include="Procedures" />
+    <Folder Include="Adm" />
+    <Folder Include="Inspect" />
+    <Folder Include="BIDoc" />
+    <Folder Include="Inspect\Procedures" />
+    <Folder Include="Adm\Procedures" />
+    <Folder Include="Adm\Tables" />
+    <Folder Include="Adm\Views" />
+    <Folder Include="BIDoc\Tables" />
+    <Folder Include="BIDoc\Views" />
+    <Folder Include="Adm\TableTypes" />
+    <Folder Include="BIDoc\TableTypes" />
+    <Folder Include="Adm\TableFunctions" />
+    <Folder Include="BIDoc\TableFunctions" />
+    <Folder Include="BIDoc\Sequences" />
+    <Folder Include="BIDoc\Procedures" />
+    <Folder Include="Adm\ScalarFunctions" />
+    <Folder Include="Scripts" />
+    <Folder Include="Inspect\TableFunctions" />
+    <Folder Include="Analyst" />
+    <Folder Include="Analyst\Tables" />
+    <Folder Include="Analyst\Views" />
+    <Folder Include="Analyst\Procedures" />
+    <Folder Include="Analyst\TableFunctions" />
+    <Folder Include="Analyst\TableTypes" />
+    <Folder Include="Annotate" />
+    <Folder Include="Annotate\Tables" />
+    <Folder Include="Inspect\TableTypes" />
+    <Folder Include="Annotate\TableFunctions" />
+    <Folder Include="Annotate\TableTypes" />
+    <Folder Include="Annotate\Procedures" />
+    <Folder Include="Stg" />
+    <Folder Include="Stg\Tables" />
+    <Folder Include="Stg\TableTypes" />
+    <Folder Include="Stg\Procedures" />
+    <Folder Include="Stg\TableFunctions" />
+    <Folder Include="BIDoc\ScalarFunctions" />
+    <Folder Include="Other" />
+    <Folder Include="Search" />
+    <Folder Include="Search\Tables" />
+    <Folder Include="Search\Procedures" />
+    <Folder Include="Search\Views" />
+    <Folder Include="Search\TableFunctions" />
+    <Folder Include="Inspect\ScalarFunctions" />
+    <Folder Include="Stg\ScalarFunctions" />
+    <Folder Include="Learning" />
+    <Folder Include="Learning\Tables" />
+    <Folder Include="Learning\Procedures" />
+    <Folder Include="Learning\TableTypes" />
+    <Folder Include="Inspect\Tables" />
+    <Folder Include="Adm\Functions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Security\Inspect.sql" />
+    <Build Include="Security\BIDoc.sql" />
+    <Build Include="Security\Adm.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_ElementUsage.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_FindElement.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_FindGraphNode.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_FindOlapField.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GraphNodeLineageOrigin_Origins.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_ClearProjectGraphs.sql" />
+    <Build Include="Adm\Tables\Adm.ProjectConfigs.sql" />
+    <Build Include="Adm\Tables\Adm.MssqlDbProjectComponents.sql" />
+    <Build Include="Adm\Tables\Adm.MssqlAgentProjectComponents.sql" />
+    <Build Include="Adm\Tables\Adm.SsisProjectComponents.sql" />
+    <Build Include="Adm\Tables\Adm.SsasDbProjectComponents.sql" />
+    <Build Include="Adm\Tables\Adm.SsrsProjectComponents.sql" />
+    <Build Include="Adm\Tables\Adm.RequestMessages.sql" />
+    <Build Include="Adm\Tables\Adm.RequestMessageAttachments.sql" />
+    <Build Include="Adm\Tables\Adm.RequestMessageHistory.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.ModelElements.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.BasicGraphNodes.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.BasicGraphLinks.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.GraphDocuments.sql" />
+    <Build Include="Adm\TableTypes\Adm.UDTT_MssqlAgentProjectComponents.sql" />
+    <Build Include="Adm\TableTypes\Adm.UDTT_MssqlDbProjectComponents.sql" />
+    <Build Include="Adm\TableTypes\Adm.UDTT_RequestMessageAttachments.sql" />
+    <Build Include="Adm\TableTypes\Adm.UDTT_RequestMessages.sql" />
+    <Build Include="Adm\TableTypes\Adm.UDTT_SsasDbProjectComponents.sql" />
+    <Build Include="Adm\TableTypes\Adm.UDTT_SsisProjectComponents.sql" />
+    <Build Include="Adm\TableTypes\Adm.UDTT_SsrsProjectComponents.sql" />
+    <Build Include="BIDoc\TableTypes\BIDoc.UDTT_BasicGraphLinks.sql" />
+    <Build Include="BIDoc\TableTypes\BIDoc.UDTT_BasicGraphNodes.sql" />
+    <Build Include="BIDoc\TableTypes\BIDoc.UDTT_GraphDocuments.sql" />
+    <Build Include="BIDoc\TableTypes\BIDoc.UDTT_ModelElements.sql" />
+    <Build Include="BIDoc\TableTypes\BIDoc.UDTT_ModelLinks.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_DeleteProjectConfig.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SetProjectMssqlDbComponents.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SetProjectMssqlAgentComponents.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SetProjectSsasDbComponents.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SetProjectSsisComponents.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SetProjectSsrsComponents.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_CreateProjectConfig.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetMssqlDbProjectComponents.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetSsasDbProjectComponents.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetMssqlAgentProjectComponents.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetSsisProjectComponents.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetSsrsProjectComponents.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetProjectConfigName.sql" />
+    <Build Include="BIDoc\Sequences\BIDoc.BasicGraphLinksSequence.sql" />
+    <Build Include="BIDoc\Sequences\BIDoc.BasicGraphNodesSequence.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetModelElements.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetModelLinks.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetGraphNodes.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetGraphLinks.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetGraphDocuments.sql" />
+    <Build Include="BIDoc\Sequences\BIDoc.ModelElementsSequence.sql" />
+    <Build Include="BIDoc\Sequences\BIDoc.ModelLinksSequence.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_AddElementsToModel.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_AddNodesToGraph.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_ClearModel.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_ClearGraph.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_AddLinksToModel.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_AddLinksToGraph.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_InvalidateRequestCache.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetPotentialCacheMatches.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetMessageById.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetMessageByRequestAndType.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SaveRequestMessages.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SaveRequestMessageHistory.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetResponseForCachedMessage.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetGraphLinksUnderPath.sql" />
+    <Build Include="Adm\ScalarFunctions\Adm.f_EscapeForLike.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_AddDocumentsToGraph.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetGraphNodeIdByRefPath.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetGraphDocumentsForNode.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_ClearGraphDocuments.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_BuildTransitiveGraph.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetRequestMessageAttachments.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GetGraphNodeExtended.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GraphNodeLineageOriginOneLevel.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GetGraphNodeChildrenExtended.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetModelElementIdByRefPath.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_ListModelReports.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetModelElementById.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetGraphNodeIdByElementId.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GetDataFlowBetweenGroups.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GetGraphExplorerSuggestions.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GetExtendedGraphExplorerSuggestions.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GetHighLevelLineageDestinations.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GetHighLevelLineageSources.sql" />
+    <Build Include="Security\Analyst.sql" />
+    <Build Include="Analyst\Tables\ModelElements.sql" />
+    <Build Include="Analyst\Tables\ModelLinks.sql" />
+    <Build Include="Analyst\Tables\ModelElementTypes.sql" />
+    <Build Include="Analyst\Tables\ModelLinkTypes.sql" />
+    <Build Include="Analyst\Tables\Objects.sql" />
+    <Build Include="Analyst\Tables\ModelElementAttributeTypes.sql" />
+    <Build Include="Analyst\Tables\ModelElementTypeAttributes.sql" />
+    <Build Include="Analyst\Tables\ModelElementAttributes.sql" />
+    <Build Include="Analyst\TableTypes\UDTT_ModelElementTypeAttributes.sql" />
+    <Build Include="Adm\Tables\Adm.Users.sql" />
+    <None Include="Analyst\Procedures\sp_SetModelElementType.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetResponseForRequest.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_GetNewMessagesToObject.sql" />
+    <None Include="Scripts\EnableServiceBroker.sql" />
+    <Build Include="Adm\Tables\Adm.Log.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_WriteLog.sql" />
+    <Build Include="Adm\Tables\Adm.GlobalConfig.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_GetGlobalConfigValue.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SetGlobalConfigValue.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.ModelElementTypeDescriptions.sql" />
+    <None Include="Scripts\Fill.ModelElementTypeDescriptions.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GetHighLevelSolutionTree.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GetSolutionMidSubtree.sql" />
+    <Build Include="Security\Annotate.sql" />
+    <Build Include="Annotate\Tables\Fields.sql" />
+    <Build Include="Annotate\Tables\AnnotationViews.sql" />
+    <Build Include="Annotate\Tables\AnnotationViewFields.sql" />
+    <Build Include="Annotate\Tables\FieldValues.sql" />
+    <Build Include="Annotate\Tables\AnnotationElements.sql" />
+    <Build Include="Inspect\TableTypes\UDTT_sp_GetDataFlowBetweenGroups.sql" />
+    <Build Include="Annotate\TableFunctions\f_ListProjectViews.sql" />
+    <Build Include="Annotate\TableFunctions\f_ListViewFields.sql" />
+    <Build Include="Annotate\TableFunctions\f_GetViewFieldValues.sql" />
+    <Build Include="Annotate\TableTypes\UDTT_FieldValues.sql" />
+    <Build Include="Annotate\Procedures\sp_UpdateElementFields.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_RebindAnnotations.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GetDataFlowBetweenGroupsSteps.sql" />
+    <None Include="Scripts\Fill.GlobalConfig.sql" />
+    <Build Include="Adm\Procedures\sp_GetLogSinceId.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GetHighLevelTypesUnderElement.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GetDataFlowLinksBetweenNodes.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GetVisualNodeAncestor.sql" />
+    <Build Include="BIDoc\TableTypes\BIDoc.UDTT_IdList.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetModelElementsByIds.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetModelLinksFromElementIds.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_ListExternalDfSources.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_ListExternalDfSourceColumns.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_PropagateDataFlowVertically.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_CalculateTopologicalDataFlowOrder.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_SplitString.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_BuildHighLevelGraph.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GetGraphNodesExtended.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_BuildDataFlowSequences.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.ModelElementTypeDetailLevels.sql" />
+    <None Include="Scripts\Fill.ModelElementTypeDetailLevels.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_BuildHigherDataFlowSequences.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.ModelElementTypeClasses.sql" />
+    <None Include="Scripts\Fill.ModelElementTypeClasses.sql" />
+    <Build Include="Security\Stg.sql" />
+    <Build Include="Stg\Tables\ExtractItems.sql" />
+    <Build Include="Stg\Procedures\sp_SaveExtractItem.sql" />
+    <Build Include="Stg\TableFunctions\f_GetExtractItems.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_ClenseDataFlowSequences.sql" />
+    <Build Include="Adm\ScalarFunctions\Adm.f_SimpleJsonValue.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.ModelElementDescriptivePaths.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_SetModelElementDescriptivePaths.sql" />
+    <Build Include="BIDoc\ScalarFunctions\BIDoc.f_GetModelElementDescriptivePath.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.SourceDataTypes.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.DataTypes.sql" />
+    <None Include="Scripts\Fill.DataTypesAndSourceDataTypes.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.DataMessages.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.DataMessagesType.sql" />
+    <None Include="Scripts\Fill.DataMessagesType.sql" />
+    <Build Include="Other\fulltext_default.sql" />
+    <Build Include="BIDoc\Tables\HigherLevelElementAncestors.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_FillHigherLevelElementAncestors.sql" />
+    <Build Include="Adm\ScalarFunctions\f_SplitCamelCase.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_FillDataMessages.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetMessages.sql" />
+    <Build Include="Security\Search.sql" />
+    <Build Include="Search\Tables\Search.RootElements.sql" />
+    <Build Include="Search\Tables\Search.TypeChildTypes.sql" />
+    <Build Include="Search\Tables\Search.FulltextSearch.sql" />
+    <Build Include="Search\Procedures\Search.sp_IndexFulltext.sql" />
+    <Build Include="Search\Procedures\Search.sp_FindFulltext.sql" />
+    <None Include="Scripts\Fill.Search.TypeChildTypes.sql" />
+    <Build Include="Search\Procedures\Search.sp_FindRootElements.sql" />
+    <Build Include="Search\Views\Search.vw_TypeChildTypes.sql" />
+    <Build Include="BIDoc\TableTypes\BIDoc.UDTT_StringList.sql" />
+    <Build Include="Search\TableFunctions\Search.f_GetRootElements.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_CreateDataFlowMediumDetailGraph.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_CreateDataFlowLowDetailGraph.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GetDataFlowLinksFromNode.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GetDataFlowLinksToNode.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_TranslateDataFlowLinksDetailLevel.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GetNodesByIdExtended.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetUserDataByIdentity.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_AddUser.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_TranslateDataFlowNodeDetailLevel.sql" />
+    <Build Include="Annotate\Procedures\sp_UpdateModelElememntReferences.sql" />
+    <Build Include="Annotate\TableFunctions\f_GetBusinessDescriptionByMEId.sql" />
+    <Build Include="Annotate\Procedures\sp_CreateViews.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GetModelElementsUnderPathDisplay.sql" />
+    <Build Include="Annotate\TableFunctions\f_GetViewFieldValuesUnderPath.sql" />
+    <Build Include="Inspect\ScalarFunctions\f_GetElementTypeDetailLevel_1.sql" />
+    <Build Include="Search\Tables\Search.BusinessDictionarySupportedTypes.sql" />
+    <None Include="Scripts\Fill.Search.BusinessDictionarySupportedType.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetModelElementType.sql" />
+    <Build Include="Annotate\TableFunctions\f_GetHistory.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_CreateNewProjectSchemaAndTables.sql" />
+    <None Include="Scripts\Fill.CreateDataFlowSequences.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_CreateProjectViews.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.ModelLinks.sql" />
+    <Build Include="Stg\Tables\Extracts.sql" />
+    <Build Include="Stg\Procedures\sp_CreateNewExtract.sql" />
+    <Build Include="Security\Uploader.sql" />
+    <Build Include="Adm\Procedures\sp_SetMessageReceived.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetModelElementsNoDef.sql" />
+    <Build Include="Stg\TableFunctions\f_GetExtractItemsNoDef.sql" />
+    <Build Include="Adm\Tables\Adm.RequestsWaitFor.sql" />
+    <Build Include="Adm\TableTypes\Adm.UDTT_GuidList.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SaveRequestWaitFors.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_GetRequestsFinishedWaiting.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetCreationForRequest.sql" />
+    <Build Include="Adm\TableFunctions\Adm.f_GetProgressForRequest.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SaveDbOperationFinishedMessage.sql" />
+    <Build Include="Stg\TableFunctions\f_GetExtractItem.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_AddOrUpdateElements.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_CreateDataFlowGraph.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_BuildAggregations.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_GetCompletedComplexRequests.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SaveRequestWaitForsInactive.sql" />
+    <Build Include="Adm\Tables\Adm.Roles.sql" />
+    <Build Include="Adm\Tables\Adm.Permissions.sql" />
+    <Build Include="Adm\Tables\Adm.UserRoles.sql" />
+    <Build Include="Adm\Tables\Adm.RolePermissions.sql" />
+    <None Include="Scripts\Fill.Adm.ServerRoles.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_CreateProjectRoles.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_AddUserToRole.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_RemoveUserFromRole.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_WriteLogInfo.sql" />
+    <Build Include="Adm\Procedures\sp_WaitingTest.sql" />
+    <Build Include="Adm\Tables\ProcedureExecutionQueue.sql" />
+    <Build Include="Adm\Procedures\sp_CreateProcedureExecution.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.HighLevelTypeDescendants.sql" />
+    <None Include="Scripts\Fill.Type.HighLevelTypeDescendants.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.SequenceEndpointTypes.sql" />
+    <None Include="Scripts\Fill.SequenceEndpointTypes.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_CreateDataflowSequences.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_ClearAggregations.sql" />
+    <Build Include="Adm\Procedures\sp_SecurityQuery.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_MarkMessageReceived.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_GetRoleMembers.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_GetUserPermissions.sql" />
+    <Build Include="Adm\Tables\Adm.BroadcastMessages.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SaveBroadcastMessage.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SetBroadcastMessageInactive.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_GetBroadcastMessageById.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_GetActiveBroadcastMessages.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_GetDisplayNameAndRoleName.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_AddUserRoles.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SaveBroadcastMessageSingleton.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_DeleteRole.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_AddRole.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_DeleteRoleMember.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_DeleteRolePermission.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_AddRolePermission.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_AddRoleMember.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_ListRoles.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_ListUsers.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_ListPermissions.sql" />
+    <Build Include="Annotate\Tables\LinkTypes.sql" />
+    <Build Include="Annotate\Tables\ElementLinks.sql" />
+    <Build Include="Annotate\TableTypes\UDTT_ElementLinks.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetModelElementsSecondLevelAncestor.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetModelLinksSecondLevelAncestors.sql" />
+    <Build Include="Annotate\TableFunctions\f_ListFields.sql" />
+    <Build Include="Annotate\Procedures\sp_DeleteField.sql" />
+    <Build Include="Annotate\Procedures\sp_CreateField.sql" />
+    <Build Include="Annotate\Procedures\sp_UpdateViewFields.sql" />
+    <Build Include="BIDoc\TableTypes\BIDoc.UDTT_OrderedIdList.sql" />
+    <Build Include="Annotate\TableFunctions\f_ListLinkTypes.sql" />
+    <Build Include="Annotate\Procedures\sp_CreateLinkType.sql" />
+    <Build Include="Annotate\Procedures\sp_DeleteLinkType.sql" />
+    <Build Include="Annotate\TableFunctions\f_GetListLinksFrom.sql" />
+    <Build Include="Annotate\Procedures\sp_DeleteLink.sql" />
+    <Build Include="Annotate\TableFunctions\f_GetListLinksTo.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_SetRefPathIntervals.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_GetModelElementsUnderPathNoDef.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_GetGraphNodesUnderPath.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_GetModelElementsUnderPath.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_GetModelElementsUnderPathToChildrenOfType.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_GetModelElementsUnderPathToChildrenOfTypeNoDef.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_GetModelElementsUnderPathToChildrenOfTypesNoDef.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_GetModelLinksUnderPath.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_GetModelLinksUnderPathToChildrenOfType.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_GetModelLinksUnderPathToChildrenOfTypes.sql" />
+    <Build Include="Annotate\TableFunctions\f_GetListLinks.sql" />
+    <Build Include="Annotate\Tables\AnnotationElementTypeDescriptions.sql" />
+    <Build Include="Annotate\Tables\AnnotationElementDescriptivePaths.sql" />
+    <None Include="Scripts\Fill.AnnotationElementTypeDescriptions.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_ClearModelPartWithAggregations.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GetBusinessTree.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_RenameModelElement.sql" />
+    <Build Include="Learning\Tables\OlapFieldReferences.sql" />
+    <Build Include="Security\Learning.sql" />
+    <Build Include="Learning\Tables\OlapFields.sql" />
+    <Build Include="Learning\Tables\OlapQueryFields.sql" />
+    <Build Include="Learning\Tables\OlapRules.sql" />
+    <Build Include="Learning\Tables\OlapRulePremises.sql" />
+    <Build Include="Learning\Tables\OlapRuleConclusions.sql" />
+    <Build Include="Learning\Procedures\sp_CollectOlapFieldReferences.sql" />
+    <Build Include="Learning\Procedures\sp_GetOlapQueryFields.sql" />
+    <Build Include="BIDoc\TableTypes\BIDoc.UDTT_IdMap.sql" />
+    <Build Include="Learning\TableTypes\Learning.UDTT_OlapRules.sql" />
+    <Build Include="Learning\Procedures\sp_SetOlapRules.sql" />
+    <Build Include="Learning\Procedures\sp_GetOlapRules.sql" />
+    <Build Include="Learning\Procedures\sp_GetOlapRulePremises.sql" />
+    <Build Include="Learning\Procedures\sp_GetOlapRuleConclusions.sql" />
+    <Build Include="Learning\Procedures\sp_ListOlapFields.sql" />
+    <Build Include="Adm\Views\vw_ServiceUsage.sql" />
+    <Build Include="BIDoc\Tables\BIDoc.LineageGridQueryHistory.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_GetLineageGridFavorities.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_SaveLineageGridHistory.sql" />
+    <Build Include="Adm\Procedures\sp_GetAbandonedRequests.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_MarkMessageUnreceived.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_ListSsrsReports.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GetCloseAnnotatedSources.sql" />
+    <Build Include="Inspect\Tables\HighLevelSolutionTrees.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_FillHighLevelSolutionTree.sql" />
+    <Build Include="Adm\Tables\Adm.UserActionLog.sql" />
+    <Build Include="Adm\TableTypes\Adm.UDTT_Log.sql" />
+    <Build Include="Adm\TableTypes\Adm.UDTT_UserActionLog.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_WriteLogBatch.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_WriteUserActionLogBatch.sql" />
+    <Build Include="BIDoc\TableFunctions\BIDoc.f_GetModelElementByNodeId.sql" />
+    <Build Include="Inspect\Procedures\Inspect.sp_GetDataFlowLinksAmongNodes.sql" />
+    <Build Include="Adm\Tables\PowerBiProjectComponents.sql" />
+    <Build Include="Adm\TableTypes\Adm.UDTT_PowerBiProjectComponents.sql" />
+    <Build Include="Adm\Functions\f_GetPowerBiProjectComponents.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_SetProjectPowerBiComponents.sql" />
+    <Build Include="Annotate\TableFunctions\f_ProjectOlapAttributesLookupTable.sql" />
+    <Build Include="Annotate\TableFunctions\f_ProjectOlapMeasuresLookupTable.sql" />
+    <Build Include="Annotate\TableFunctions\f_ProjectDictionaryFieldsMapping.sql" />
+    <Build Include="Annotate\TableFunctions\f_ProjectDictionaryValues.sql" />
+    <Build Include="Inspect\TableFunctions\Inspect.f_GetGraphNodesExtended_ForceSeek.sql" />
+    <Build Include="BIDoc\Procedures\BIDoc.sp_SetElementSubtreeContents.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CDFramework_VD.publish.xml" />
+    <None Include="CDFramework.publish.xml" />
+    <None Include="CD.Framework.DB.publish.xml" />
+    <None Include="CDFramework.publish.publish.xml" />
+    <None Include="Scripts\Fill.Analyst.ModelElementAttributeTypes.sql" />
+    <None Include="CDFramework41.publish.publish.publish.xml" />
+    <None Include="CD.Framework.DB.SQL17.publish.xml" />
+    <None Include="CD.Framework.DB.Azure.publish.xml" />
+    <None Include="CD.Framework.DB.Azure.Sample.publish.xml" />
+    <None Include="CD.Framework.DB.Azure.CPI.publish.xml" />
+    <Build Include="Adm\Procedures\Adm.sp_GetRolePermissions.sql" />
+    <None Include="CD.Framework.DB.Azure.Manpower.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </PostDeploy>
+  </ItemGroup>
+</Project>

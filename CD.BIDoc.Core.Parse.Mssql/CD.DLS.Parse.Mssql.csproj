@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{31A079A7-5ABA-406A-8D9D-1960F366358B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CD.BIDoc.Core.Parse.Mssql</RootNamespace>
+    <AssemblyName>CD.BIDoc.Core.Parse.Mssql</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\server\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\server64\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unofficial.Ionic.Zip.1.9.1.8\lib\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.TransactSql.ScriptDom, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.TransactSql.ScriptDom.14.0.3811.1\lib\net40\Microsoft.SqlServer.TransactSql.ScriptDom.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Agent\AgentModelExtractor.cs" />
+    <Compile Include="Agent\Settings.cs" />
+    <Compile Include="Agent\UrnBuilder.cs" />
+    <Compile Include="Db\DatabaseIndex.cs" />
+    <Compile Include="Db\DeclarationExtractor.cs" />
+    <Compile Include="Db\LocalDeepModelExtractor.cs" />
+    <Compile Include="Db\DeepModelExtractor.cs" />
+    <Compile Include="Db\NAryQueryExpressionSequence.cs" />
+    <Compile Include="Db\SchemaTableSeekingTSqlFragmentVisitor.cs" />
+    <Compile Include="Db\DependencySeekingTSqlFragmentVisitor.cs" />
+    <Compile Include="Db\FragmentTree.cs" />
+    <Compile Include="Db\IdentifierComparer.cs" />
+    <Compile Include="Db\ISqlScriptModelExtractor.cs" />
+    <Compile Include="Db\ReferenceResolver.cs" />
+    <Compile Include="Db\ReferrableIndexBuilder.cs" />
+    <Compile Include="Db\ReferrableObject.cs" />
+    <Compile Include="Db\ScriptModelExtractor.cs" />
+    <Compile Include="Db\ScriptsModelExtender.cs" />
+    <Compile Include="ParseTreeNavigator.cs" />
+    <Compile Include="Pbi\PbiModelExtractor.cs" />
+    <Compile Include="Pbi\UrnBuilder.cs" />
+    <Compile Include="ScriptSpan.cs" />
+    <Compile Include="Db\Settings.cs" />
+    <Compile Include="Db\ShallowModelExtractor.cs" />
+    <Compile Include="Db\SqlLocalIndex.cs" />
+    <Compile Include="Db\TSqlFragmentExtensions.cs" />
+    <Compile Include="Db\UrnBuilder.cs" />
+    <Compile Include="MssqlModelParser.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQLUtils.cs" />
+    <Compile Include="Ssas\DaxGrammar.cs" />
+    <Compile Include="Ssas\MdxHelper.cs" />
+    <Compile Include="Ssas\DaxParseTreeNavigator.cs" />
+    <Compile Include="Ssas\DaxScriptModelExtractor.cs" />
+    <Compile Include="Ssas\SsasTabularDatabaseIndex.cs" />
+    <Compile Include="Ssas\SsasMultidimensionalDatabaseIndex.cs" />
+    <Compile Include="Ssas\SsasDatabaseIndex.cs" />
+    <Compile Include="Ssas\MdxGrammar.cs" />
+    <Compile Include="Ssas\MdxParseTreeNavigator.cs" />
+    <Compile Include="Ssas\MdxScriptModelExtractor.cs" />
+    <Compile Include="Ssas\SsasModelExtractor.cs" />
+    <Compile Include="Ssas\Settings.cs" />
+    <Compile Include="Ssas\TabularParser.cs" />
+    <Compile Include="Ssas\UrnBuilder.cs" />
+    <Compile Include="Ssis\ConnectionIndex.cs" />
+    <Compile Include="Ssis\ExpressionGrammar.cs" />
+    <Compile Include="Ssis\ExpressionModelExtractor.cs" />
+    <Compile Include="Ssis\ParameterMapping.cs" />
+    <Compile Include="Ssis\ProjectModelParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentContext.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\DerivedColumnComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\FallbackDfComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\GeneralDestinationDfComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\MergeJoinComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\PivotComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\AggregateComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\UnpivotComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\UnionAllDfComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\DataConversionDfComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\LookupDfComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\GeneralSourceDfComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\SsisDfComponentParserBase.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\ISsisDfComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfComponentIO.cs" />
+    <Compile Include="Ssis\SsisDfComponentParser\SqlSourceDfComponentParser.cs" />
+    <Compile Include="Ssis\SsisDfModelParser.cs" />
+    <Compile Include="Ssis\SsisIndex.cs" />
+    <Compile Include="Ssis\SsisIndexBuilder.cs" />
+    <Compile Include="Ssis\SsisModelExtractor.cs" />
+    <Compile Include="Ssis\SsisXmlProvider.cs" />
+    <Compile Include="Ssis\UrnBuilder.cs" />
+    <Compile Include="Ssrs\ExpressionGrammar.cs" />
+    <Compile Include="Ssrs\SsrsExpressionTreeNavigator.cs" />
+    <Compile Include="Ssrs\Rdl_200801.cs" />
+    <Compile Include="Ssrs\Rdl_201001.cs">
+      <DependentUpon>Rdl_201001.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Ssrs\Rdl_201601.cs" />
+    <Compile Include="Ssrs\Settings.cs" />
+    <Compile Include="Ssrs\SsrsModelExtractor.cs" />
+    <Compile Include="Ssrs\UrnBuilder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CD.Bidoc.Core.Model.Mssql\CD.DLS.Model.Mssql.csproj">
+      <Project>{2631f384-a3c2-4a93-b89e-d1df45e806d2}</Project>
+      <Name>CD.DLS.Model.Mssql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.DLS.DAL\CD.DLS.DAL.csproj">
+      <Project>{2198F00A-7561-4950-AD48-4727F89F3C9A}</Project>
+      <Name>CD.DLS.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.Framework.BIDocApi\CD.DLS.API.csproj">
+      <Project>{234E7813-512E-4BEE-9AE3-D496FBFDBDFC}</Project>
+      <Name>CD.DLS.API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.Framework.Common\CD.DLS.Common.csproj">
+      <Project>{F058EBC7-F452-4E36-9C75-14FEE97643AF}</Project>
+      <Name>CD.DLS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Irony\Irony.csproj">
+      <Project>{d81f5c91-d7db-46e5-bc99-49488fb6814c}</Project>
+      <Name>Irony</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Ionic.Zip.xml" />
+    <Content Include="Ssas\MDXGrammar.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Ssrs\Rdl_200801.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Ssrs\Rdl_201001.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Ssrs\Rdl_201601.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

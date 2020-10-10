@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab label="Data Lineage" id="dlsTab">
+        <group id="projectGroup" label="Project">
+          <!--label="Open Project"-->
+          <button id="selectProjectButton" onAction="OnSelectProjectButton" getLabel="getSelectProjectLabel" 
+             screentip="Switch to another lineage model"
+             supertip="The server can contain multiple independent lineage models" showImage="true" imageMso="FileOpen" size="large"/>
+        </group>
+        <group id="exploreGroup" label="Explore Data Lineage">
+          <button id="lineageExplorerButton" label="Source - Target Lineage" onAction="OnLineageExplorerButton"
+             screentip="Display relationships between model objects"
+             supertip="Choose the source and destination objects and explore the lineage between them" showImage="true" imageMso="AccessRelinkLists" size="large" getEnabled="getEnabledTest"/>
+
+          <button id="searchButton" label="Find Element" onAction="OnSearchButton"
+   screentip="Find a starting point for lineage exploration" showImage="true" imageMso="FindDialog" size="large" getEnabled="getEnabledTest"/>
+
+          <button id="reportButton" label="Render SSRS Report"
+   screentip="Render SSRS Report" onAction="OnReportButton"
+   supertip="Renders a SSRS report from the report portal to a new workbook" showImage="true"
+                  imageMso="ChartLayoutGallery" size="large" getEnabled="getEnabledTest"/>
+          
+        </group><group id="dictionaryGroup" label="Business Dictionary">
+            
+          <button id="businessDictionaryEditButton" label="Dictionary Editor" onAction="OnBusinessDictionaryEditButton"
+             screentip="View / Edit / Import business dictionary definitions"
+                  showImage="true" imageMso="BlogPublishDraft" size="large" getEnabled="getDictionaryEditorEndabledTest"/>
+
+          <button id="businessDictionarySaveButton" label="Save Dictionary Changes" onAction="OnBusinessDictionarySaveButton"
+             screentip="Save business dictionary changes from the current sheet"
+                  showImage="true" imageMso="BuildingBlocksSaveTableOfContents" size="large" getEnabled="getDictionaryEditorEndabledTest"/>
+<!-- imageMso="DataTypeTemplateCreate" -->
+          <checkBox id="businessDictionaryPanelActiveCb" label="Show Panel" getPressed="GetBusinessDictionaryCheckBoxPressed" onAction="OnBusinessDictionaryCheckBoxAction" getEnabled="getEnabledTest"/>
+        </group>
+        <group id="pivotTablesGroup" label="Pivot Tables">
+          
+          <button id="openPivotTemplateButton" label="Pivot Table Templates" onAction="OnOpenPivotTemplateButton"
+             screentip="Create a pivot table from previously saved tmplate"
+                  supertip="You can create pivot table templates by right clicking a pivot table and selecting Save Pivot Table Template"
+                  showImage="true" imageMso="DatabaseModelingReverse" size="large" getEnabled="getEnabledTest"/>
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
+

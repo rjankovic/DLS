@@ -1,0 +1,192 @@
+﻿
+    <Fluent:RibbonWindow x:Name="RibbonWindow" x:Class="CD.DLS.Manager.MainRibbon"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
+                     xmlns:Fluent="urn:fluent-ribbon"
+                     xmlns:fa="http://schemas.fontawesome.io/icons/"
+                     Title="DLS Manager" Icon="/CD.DLS.Manager;component/Resources/dtlns_logo.png" 
+                     Closing="RibbonWindow_Closing"
+                     PreviewMouseLeftButtonDown="RibbonWindow_PreviewMouseLeftButtonDown"
+                     PreviewMouseRightButtonDown="RibbonWindow_PreviewMouseRightButtonDown"
+                     Fluent:RibbonProperties.Size="Large"
+                     ShowInTaskbar="True" TitleBackground="#71616C" TitleForeground="#EEE" BorderBrush="#71616C"                    
+                     >
+
+    <Fluent:RibbonWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Manager;component/Resources/DefaultResourceDictionary.xaml" />
+                <ResourceDictionary>
+                    <BitmapImage x:Key="AddIcon" UriSource="/CD.DLS.Manager;component/Resources/Add.png"/>
+                    <BitmapImage x:Key="RemoveIcon" UriSource="/CD.DLS.Manager;component/Resources/Remove.png"/>
+                    <BitmapImage x:Key="ConfigIcon" UriSource="/CD.DLS.Manager;component/Resources/Config.png"/>
+                    <BitmapImage x:Key="FlowIcon" UriSource="/CD.DLS.Manager;component/Resources/Flow.png"/>
+                    <BitmapImage x:Key="HeartbeatIcon" UriSource="/CD.DLS.Manager;component/Resources/Heartbeat.png"/>
+                    <BitmapImage x:Key="OpenIcon" UriSource="/CD.DLS.Manager;component/Resources/Open.png"/>
+                    <BitmapImage x:Key="ProcessIcon" UriSource="/CD.DLS.Manager;component/Resources/Process.png"/>
+                    <BitmapImage x:Key="InputIcon" UriSource="/CD.DLS.Manager;component/Resources/Input.png"/>
+                    <BitmapImage x:Key="DbIcon" UriSource="/CD.DLS.Manager;component/Resources/Db.png"/>
+                    <BitmapImage x:Key="RequestIcon" UriSource="/CD.DLS.Manager;component/Resources/Request.png"/>
+                    <BitmapImage x:Key="HighFlowIcon" UriSource="/CD.DLS.Manager;component/Resources/HighFlow.png"/>
+                    <BitmapImage x:Key="WarningIcon" UriSource="/CD.DLS.Manager;component/Resources/Warning.png"/>
+                    <BitmapImage x:Key="SearchIcon" UriSource="/CD.DLS.Manager;component/Resources/Search.png"/>
+                    <BitmapImage x:Key="AboutIcon" UriSource="/CD.DLS.Manager;component/Resources/About.png"/>
+                    <BitmapImage x:Key="SecurityIcon" UriSource="/CD.DLS.Manager;component/Resources/Security.png"/>
+                    <BitmapImage x:Key="UserIcon" UriSource="/CD.DLS.Manager;component/Resources/User.png"/>
+                    <BitmapImage x:Key="BookIcon" UriSource="/CD.DLS.Manager;component/Resources/Book.png"/>
+                    <BitmapImage x:Key="TitleProjectIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleProject.png"/>
+                    <BitmapImage x:Key="TitleMonitoringIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleMonitoring.png"/>
+                    <BitmapImage x:Key="TitleSecurityIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleSecurity.png"/>
+                    <BitmapImage x:Key="TitleManageIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleManage.png"/>
+                    <BitmapImage x:Key="TitleDlsIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleDls.png"/>
+                    <BitmapImage x:Key="TitleBrowseIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleBrowse.png"/>
+                    <BitmapImage x:Key="TitleDebugIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleDebug.png"/>
+                    <BitmapImage x:Key="CloseIcon" UriSource="/CD.DLS.Manager;component/Resources/Close.png"/>
+                    <BitmapImage x:Key="ShowIcon" UriSource="/CD.DLS.Manager;component/Resources/Show.png"/>
+                    <BitmapImage x:Key="SystemMinIcon" UriSource="/CD.DLS.Manager;component/Resources/SystemMin.png"/>
+                    <BitmapImage x:Key="SystemMaxIcon" UriSource="/CD.DLS.Manager;component/Resources/SystemMax.png"/>
+                    <BitmapImage x:Key="SystemCloseIcon" UriSource="/CD.DLS.Manager;component/Resources/SystemClose.png"/>
+                    <BitmapImage x:Key="FiltersArrowIcon" UriSource="/CD.DLS.Manager;component/Resources/FiltersArrow.jpg"/>
+                    <BitmapImage x:Key="MenuHideIcon" UriSource="/CD.DLS.Manager;component/Resources/MenuHide.png"/>
+                    <BitmapImage x:Key="ButtonBackIcon" UriSource="/CD.DLS.Manager;component/Resources/ButtonBack.png"/>
+                    <BitmapImage x:Key="ButtBackActiveIcon" UriSource="/CD.DLS.Manager;component/Resources/ButtBackActive.png"/>
+                    <BitmapImage x:Key="LinkIcon" UriSource="/CD.DLS.Manager;component/Resources/link.png"/>
+                    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.TabsGrid.Background">#71616C</SolidColorBrush>
+                    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.Content.Background">#F2EAF0</SolidColorBrush>
+
+                    
+                    
+                    
+                    <!--<ControlTemplate x:Key="ribbonGroupBoxTemplate" TargetType="Fluent:RibbonGroupBox">
+            <Grid>
+                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+            </Grid>
+        </ControlTemplate>-->
+
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </Fluent:RibbonWindow.Resources>
+        
+            
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Fluent:Ribbon Grid.Row="0">
+            <Fluent:RibbonTabItem x:Name="RibbonProjectTab" Header="Project" Style="{StaticResource TabItemStyle1}" Background="#71616C" BorderBrush="#71616C" ActiveTabBackground="#91819C"  FontSize="12">
+                <Fluent:RibbonGroupBox>
+                    <Image Source="{StaticResource TitleProjectIcon}" Margin="0,0,0,-18.6"></Image>
+                    <Fluent:Button  x:Name="OpenProjectButton" Click="OpenProjectButton_Click" Header="Open"  LargeIcon="{StaticResource OpenIcon}" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="ConfigureProjectButton" Click="ConfigureProjectButton_Click" Header="Configure" LargeIcon="{StaticResource ConfigIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="AddProjectButton" Click="AddProjectButton_Click" Header="Add" LargeIcon="{StaticResource AddIcon}" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="RemoveProjectButton" Click="RemoveProjectButton_Click" Header="Remove" LargeIcon="{StaticResource RemoveIcon}" Template="{DynamicResource ButtonControlTemplate1}"/>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox>
+                    <Image Source="{StaticResource TitleDlsIcon}"  Margin="0,0,0,-18.6"></Image>
+                    <Fluent:Button x:Name="AboutButton" Click="AboutButton_Click"  Header="About" LargeIcon="{StaticResource AboutIcon}" Template="{DynamicResource ButtonControlTemplate1}"/>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="Lineage" x:Name="RibbonLineageTab" Style="{StaticResource TabItemStyle1}" Background="#71616C" BorderBrush="#71616C" ActiveTabBackground="#91819C"  FontSize="12">
+                <Fluent:RibbonGroupBox x:Name="BrowseLineageGroupBox">
+                    <Image Source="{StaticResource TitleBrowseIcon}"  Margin="0,0,0,-18.6"></Image>
+                    <Fluent:Button x:Name="LineageOverviewButton"  Click="LineageOverviewButton_Click" Header="Overview" LargeIcon="{StaticResource HighFlowIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="LineageSearchButton" Click="LineageSearchButton_Click"  Header="Search" LargeIcon="{StaticResource SearchIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="ExploreLineageButton" Click="ExploreLineageButton_Click" Header="Source-Target Flow" LargeIcon="{StaticResource FlowIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="ExternalSourcesButton" Click="ExternalSourcesButton_Click"  Header="Data Sources" LargeIcon="{StaticResource InputIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="FindWarningsButton" Click="FindWarningsButton_Click"  Header="Warnings" LargeIcon="{DynamicResource WarningIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox x:Name="ManageLineageGroupBox">
+                    <Image Source="{StaticResource TitleManageIcon}" Margin="0,0,0,-18.6"></Image>
+                    <Fluent:Button x:Name="UpdateLineageButton" Click="UpdateLineageButton_Click" Header="Update" LargeIcon="{StaticResource ProcessIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="Admin Panel" x:Name="RibbonAdminTab" Style="{StaticResource TabItemStyle1}" Background="#71616C" BorderBrush="#71616C" ActiveTabBackground="#91819C"  FontSize="12">
+                <Fluent:RibbonGroupBox>
+                    <Image Source="{StaticResource TitleMonitoringIcon}"  Margin="0,0,0,-18.6"></Image>
+                    <Fluent:Button x:Name="ServiceMessagesButton" Click="ServiceMessagesButton_Click" Header="Service Messages" LargeIcon="{StaticResource RequestIcon}" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="DbMessagesButton" Click="DbMessagesButton_Click" Header="DB Messages" LargeIcon="{StaticResource DbIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox>
+                    <Image Source="{StaticResource TitleSecurityIcon}" Margin="0,0,0,-18.6"></Image>
+                    <Fluent:Button x:Name="UserPermissionButton" Click="UserPermissionButton_Click" Header="User Permissions" LargeIcon="{StaticResource SecurityIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="UserSyncButton" Click="UserSyncButton_Click"  Header="Add Users from AAD" LargeIcon="{StaticResource UserIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Business Dictionary">
+                    <Fluent:Button x:Name="AdminDictionaryViewFieldsButton" Click="AdminDictionaryViewFieldsButton_Click"  Header="Views" LargeIcon="{StaticResource BookIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="AdminDictionaryFieldsButton" Click="AdminDictionaryFieldsButton_Click"  Header="Fields" LargeIcon="{StaticResource BookIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="AdminBusinessLinksTypeButton" Header="Business Link Types" Click="AdminBusinessLinksTypeButton_Click" LargeIcon="{StaticResource LinkIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+            <!--
+            <Fluent:RibbonTabItem x:Name="debugTab" Header="Debug" Visibility="Visible" Style="{StaticResource TabItemStyle1}" Background="#71616C" BorderBrush="#71616C" ActiveTabBackground="#91819C"  FontSize="12">
+                <Fluent:RibbonGroupBox>
+                    <Image Source="{StaticResource TitleDebugIcon}"></Image>
+                    <Fluent:Button x:Name="EmptyRequestButton" Click="EmptyRequestButton_Click"  Header="Empty Request" LargeIcon="{StaticResource RequestIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
+                    <Fluent:Button x:Name="SendSerializedMessage" Click="SendSerializedMessage_Click"  Header="Send Message" LargeIcon="{StaticResource DbIcon}" IsEnabled="True" Template="{DynamicResource ButtonControlTemplate1}"/>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+           -->
+        </Fluent:Ribbon>
+        
+
+        <avalonDock:DockingManager x:Name="dockingManager"
+                                   Grid.Row="1" Style="{DynamicResource DockingManagerStyle1}">
+
+            <!--<avalonDock:DockingManager.Theme>
+                <avalonDock:MetroTheme />
+            </avalonDock:DockingManager.Theme>-->
+            <avalonDock:LayoutRoot>
+                <avalonDock:LayoutPanel Orientation="Horizontal">
+                    <avalonDock:LayoutDocumentPaneGroup>
+                        <avalonDock:LayoutDocumentPane x:Name="mainDocumentPaneGroup">
+
+                        </avalonDock:LayoutDocumentPane>
+                    </avalonDock:LayoutDocumentPaneGroup>
+                </avalonDock:LayoutPanel>
+            </avalonDock:LayoutRoot>
+        </avalonDock:DockingManager>
+
+        <StatusBar Grid.Row="2" Visibility="Hidden" Name="UploadStatusBar">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem>
+                <TextBlock Text= "Uploading..." Name= "UploadStatusValue" />
+            </StatusBarItem>
+            <Separator Grid.Column="1" />
+            <StatusBarItem Grid.Column="2">
+                <ProgressBar Value= "1" Width= "90" Height= "16" Name= "UploadProgressBar" />
+            </StatusBarItem>
+            <Separator Grid.Column="3" />
+            <StatusBarItem Grid.Column="4">
+                <TextBlock Text= "1 %" Name= "UploadPercentigeValue" />
+            </StatusBarItem>
+        </StatusBar>
+        <!--The MIT License (MIT)
+             
+             Copyright (c) 2014-2016 charri
+             
+             Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+             
+             The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+             
+             THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+             -->
+    </Grid>
+</Fluent:RibbonWindow>

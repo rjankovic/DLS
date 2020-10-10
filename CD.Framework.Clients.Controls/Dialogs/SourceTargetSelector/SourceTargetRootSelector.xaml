@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="CD.DLS.Clients.Controls.Dialogs.SourceTargetSelector.SourceTargetRootSelector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:userControls="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
+             xmlns:misc="clr-namespace:CD.DLS.Clients.Controls.Dialogs.Misc"
+        mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Clients.Controls;component/Resources/DefaultResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+       
+
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1">
+            <Label Content="Source Filter" />
+        </StackPanel>
+        <userControls:RecursiveTree x:Name="sourceRecursiveTree" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1">
+        </userControls:RecursiveTree>
+        <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" Grid.Row="2" Grid.Column="0">
+            <Button x:Name="sourceRefPathButton" Content="Select" Style="{StaticResource OrangeButton}" Click="sourceRefPathButton_Click" DockPanel.Dock="Right"/>
+            <TextBox x:Name="sourceRefPathTb" HorizontalAlignment="Stretch" Style="{StaticResource GreyTextBox}" DockPanel.Dock="Left" Text="Enter Path..." />
+        </DockPanel>
+        <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        <StackPanel Grid.Row="0" Grid.Column="2">
+            <Label Content="Target Filter" />
+        </StackPanel>
+        <userControls:RecursiveTree x:Name="targetRecursiveTree" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="1">
+        </userControls:RecursiveTree>
+        <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" Grid.Row="2" Grid.Column="2">
+            <Button x:Name="targetRefPathButton" Content="Select" Style="{StaticResource OrangeButton}" DockPanel.Dock="Right"  Click="targetRefPathButton_Click"/>
+            <TextBox x:Name="targetRefPathTb" Style="{StaticResource GreyTextBox}" HorizontalAlignment="Stretch" DockPanel.Dock="Left" Text="Enter Path..."/>
+        </DockPanel>
+        <userControls:WaitingPanel x:Name="waitingPanel" Grid.Row="0" Grid.Column="0" Background="White" Opacity="0.8" Grid.ColumnSpan="3" Grid.RowSpan="3"/>
+    </Grid>
+    
+</UserControl>

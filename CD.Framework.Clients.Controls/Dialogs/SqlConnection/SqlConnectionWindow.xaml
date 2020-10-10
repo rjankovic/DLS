@@ -1,0 +1,31 @@
+﻿<Window x:Class="CD.DLS.Clients.Controls.Dialogs.SqlConnection.SqlConnectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs.SqlConnection"
+        mc:Ignorable="d"
+        Title="SQL Connection" Height="350" Width="400">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Clients.Controls;component/Resources/DefaultResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <local:SqlConnectionStringBuilder x:Name="connectionBuilder" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
+        <DockPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" LastChildFill="False">
+            <Button x:Name="okButton" Style="{StaticResource OrangeButton}" Content="OK" DockPanel.Dock="Left" Click="okButton_Click" />
+            <Button x:Name="cancelButton" Style="{StaticResource GreyButton}" Content="Cancel" DockPanel.Dock="Left" Click="cancelButton_Click" />
+        </DockPanel>
+    </Grid>
+</Window>

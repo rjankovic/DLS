@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="CD.DLS.Clients.Controls.Dialogs.SsrsConnection.SsrsConnectionChooser"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
+             mc:Ignorable="d" 
+             >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Clients.Controls;component/Resources/DefaultResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+                <RadioButton GroupName="modeRadio" x:Name="radioNativeMode" IsChecked="True" Content="Native Mode" Margin="10" />
+                <RadioButton GroupName="modeRadio" x:Name="radioIntegratedMode" IsChecked="False" Content="SharePoint Integrated Mode" Margin="10" />
+            </StackPanel>
+            <Label Content="SSRS Server URL" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Grid.Column="0" Grid.Row="1" />
+            <TextBox Style="{StaticResource GreyTextBox}" x:Name="serverTextBox" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="1" Text="http://localhost/reportserver" />
+            <Label Content="Root Folder" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Grid.Column="0" Grid.Row="2" />
+            <TextBox Style="{StaticResource GreyTextBox}" x:Name="folderTextBox" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="2" Text="/" />
+
+            <Label Content="SharePoint Site URL" IsEnabled="{Binding IsChecked,ElementName=radioIntegratedMode }" Grid.Column="0" Grid.Row="3" />
+            <TextBox x:Name="sharePointSiteTextBox" IsEnabled="{Binding IsChecked,ElementName=radioIntegratedMode }" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="3" Text="https://contoso.sharepoint.com/sites/site" />
+            <Label Content="SharePoint Folder" IsEnabled="{Binding IsChecked,ElementName=radioIntegratedMode }" Grid.Column="0" Grid.Row="4" />
+            <TextBox x:Name="sharePointFolderTextBox" IsEnabled="{Binding IsChecked,ElementName=radioIntegratedMode }" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="4" Text="/reports" />
+
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="5">
+                <Button Style="{StaticResource OrangeButton}" x:Name="ValidateButton" Content="Validate" Click="ValidateButton_Click" />
+            </StackPanel>
+
+
+        </Grid>
+    </Grid>
+</UserControl>

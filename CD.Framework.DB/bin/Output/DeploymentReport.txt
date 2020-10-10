@@ -1,0 +1,37 @@
+﻿** Highlights
+     Tables that will be rebuilt
+       [Adm].[PowerBiProjectComponents]
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       None
+     Possible data issues
+       None
+
+** User actions
+     Drop
+       [Adm].[sp_SetProjectPowerBiComponents] (Procedure)
+       [Adm].[UDTT_PowerBiProjectComponents] (User-Defined Table Type)
+     Create
+       [Adm].[UDTT_PowerBiProjectComponents] (User-Defined Table Type)
+       [Adm].[sp_SetProjectPowerBiComponents] (Procedure)
+     Table rebuild
+       [Adm].[PowerBiProjectComponents] (Table)
+     Alter
+       [Adm].[f_GetPowerBiProjectComponents] (Function)
+       [Inspect].[f_ListExternalDfSourceColumns] (Function)
+       [BIDoc].[sp_BuildHighLevelGraph] (Procedure)
+       [BIDoc].[sp_CreateDataFlowGraph] (Procedure)
+       [BIDoc].[sp_PropagateDataFlowVertically] (Procedure)
+       [Inspect].[sp_FillHighLevelSolutionTree] (Procedure)
+       [Search].[sp_FindRootElements] (Procedure)
+       [Search].[sp_IndexFulltext] (Procedure)
+
+** Supporting actions
+     Drop
+       [Adm].[FK_Adm_PowerBiProjectComponents_Adm_ProjectConfigs_ProjectConfig_ProjectConfigId] (Foreign Key)
+     Create
+       [Adm].[FK_Adm_PowerBiProjectComponents_Adm_ProjectConfigs_ProjectConfig_ProjectConfigId] (Foreign Key)
+     Refresh
+       [Adm].[sp_DeleteProjectConfig] (Procedure)
+       [BIDoc].[sp_BuildAggregations] (Procedure)

@@ -1,0 +1,29 @@
+﻿@model string
+
+<div class="diagramContainer" id=@Model>
+    Loading...
+    <!--
+    <svg id="diagram" class="diagram" width="5000" height="5000">
+
+    </svg>
+        -->
+</div>
+
+<script>
+    
+    var diagramId = "@Model";
+
+    $.get("overview/getdiagram", function (data) {
+        //console.log(data);
+        data.DiagramId = diagramId;
+        //console.log(data);
+        diagramRenderer.renderDiagram(data);
+
+        //$("#" + contentId).waitMe('hide');
+        //console.log(data);
+        //$("#" + model).html(data);
+
+
+    });
+
+</script>

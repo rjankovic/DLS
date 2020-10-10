@@ -1,0 +1,10 @@
+C:\Projects\Descent\Main\bin\server\Microsoft.Azure.Documents.ServiceInterop.dll
+C:\Projects\Descent\Main\bin\server\DocumentDB.Spatial.Sql.dll
+C:\Projects\Descent\Main\bin\server\CD.BIDoc.Core.Parse.Mssql.dll.config
+C:\Projects\Descent\Main\bin\server\CD.BIDoc.Core.Parse.Mssql.dll
+C:\Projects\Descent\Main\bin\server\CD.BIDoc.Core.Parse.Mssql.pdb
+C:\Projects\Descent\Main\CD.BIDoc.Core.Parse.Mssql\obj\Debug\CD.DLS.Parse.Mssql.csprojAssemblyReference.cache
+C:\Projects\Descent\Main\CD.BIDoc.Core.Parse.Mssql\obj\Debug\CD.DLS.Parse.Mssql.csproj.CoreCompileInputs.cache
+C:\Projects\Descent\Main\CD.BIDoc.Core.Parse.Mssql\obj\Debug\CD.DLS.Parse.Mssql.csproj.CopyComplete
+C:\Projects\Descent\Main\CD.BIDoc.Core.Parse.Mssql\obj\Debug\CD.BIDoc.Core.Parse.Mssql.dll
+C:\Projects\Descent\Main\CD.BIDoc.Core.Parse.Mssql\obj\Debug\CD.BIDoc.Core.Parse.Mssql.pdb

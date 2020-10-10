@@ -1,0 +1,5 @@
+C:\Projects\Descent\Main\CD.DLS.ExcelAddinO365\bin\Debug\Microsoft.Azure.Documents.ServiceInterop.dll
+C:\Projects\Descent\Main\CD.DLS.ExcelAddinO365\bin\Debug\DocumentDB.Spatial.Sql.dll
+C:\Projects\Descent\Main\CD.DLS.ExcelAddinO365\bin\Debug\CD.DLS.ExcelAddinO365.dll.config
+C:\Projects\Descent\Main\CD.DLS.ExcelAddinO365\obj\Debug\CD.DLS.ExcelAddinO365.csproj.CoreCompileInputs.cache
+C:\Projects\Descent\Main\CD.DLS.ExcelAddinO365\obj\Debug\CD.DLS.ExcelAddinO365.csprojAssemblyReference.cache

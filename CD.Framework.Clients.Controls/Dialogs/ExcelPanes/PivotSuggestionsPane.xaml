@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="CD.DLS.Clients.Controls.Dialogs.ExcelPanes.PivotSuggestionsPane"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs.ExcelPanes"
+             xmlns:ctrls="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <ctrls:ListPicker x:Name="listPicker" />
+    </Grid>
+    
+</UserControl>

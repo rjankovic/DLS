@@ -1,0 +1,20 @@
+﻿CREATE TYPE [Adm].[UDTT_RequestMessages] AS TABLE(
+	[MessageId] [uniqueidentifier] NOT NULL,
+	[RequestId] [uniqueidentifier] NOT NULL,
+	[Content] [nvarchar](max) NULL,
+	[RequestForCoreType] [nvarchar](50) NOT NULL,
+	[RequestProcessingMethod] [nvarchar](20) NOT NULL,
+	[MessageFromId] [uniqueidentifier] NOT NULL,
+	[MessageOriginName] [nvarchar](200) NULL,
+	[MessageOriginId] [uniqueidentifier] NOT NULL,
+	[MessageFromName] [nvarchar](200) NULL,
+	[MessageToObjectId] [uniqueidentifier] NOT NULL,
+	[MessageToProjectId] [uniqueidentifier] NULL,
+	[MessageToObjectName] [nvarchar](200) NULL,
+	[MessageType] [nvarchar](50) NOT NULL,
+	[CreatedDateTime] [datetimeoffset](7) NOT NULL,
+	--[TypeName] [nvarchar](128) NOT NULL,
+	[Project_ProjectConfigId] [uniqueidentifier] NULL,
+	[CustomerCode] NVARCHAR(200) NOT NULL,
+	RequestFromUserId INT NULL
+)

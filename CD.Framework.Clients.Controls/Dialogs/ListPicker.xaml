@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="CD.DLS.Clients.Controls.Dialogs.ListPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
+             mc:Ignorable="d" 
+             >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Clients.Controls;component/Resources/DefaultResourceDictionary.xaml" />
+                <ResourceDictionary>
+                    <ControlTemplate x:Key="ToolbarTemplate1" TargetType="{x:Type ToolBar}"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="filterTextBox" Margin="2" Style="{StaticResource GreyTextBox}" HorizontalAlignment="Stretch" Grid.Column="0" Grid.Row="0" Text="Search..."
+                 LostFocus="AddFilterPaceholder" GotFocus="RemoveFilterPaceholder" TextChanged="FilterTextBox_TextChanged" FontSize="16"/>
+            <DataGrid x:Name="gridReports" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False" ScrollViewer.CanContentScroll="True" CanUserAddRows="False" HeadersVisibility="None"
+                      AlternationCount="2" GridLinesVisibility="None" Background="White">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
+
+                        <Setter Property="Background"
+            Value="Transparent" />
+                        <Setter Property="BorderBrush" 
+            Value="LightGray" />
+                        <Setter Property="BorderThickness" 
+            Value="2" />
+                        <Setter Property="SnapsToDevicePixels"
+            Value="true" />
+                        <Setter Property="Validation.ErrorTemplate"
+            Value="{x:Null}" />
+                        <Setter Property="FontSize" Value="16" />
+                        
+                    </Style>
+
+                    <!--<Style TargetType="TextBlock">
+                        <Setter Property="Margin" Value="50,10,50,10" />
+                    </Style>-->
+
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" IsReadOnly="True" Binding="{Binding Path=Name}" Width="2*">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="ToolTip" Value="{Binding Path=Tooltip}" />
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <!--<DataGridTextColumn Header="Value" IsReadOnly="True" Binding="{Binding Path=Value}" Width="*" />-->
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</UserControl>

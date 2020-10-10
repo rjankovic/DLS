@@ -1,0 +1,461 @@
+﻿body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Segoe UI', Verdana, Helvetica, sans-serif;
+}
+
+ul.menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    /*overflow: hidden;*/
+    background-color: #333;
+    /*
+	display:flex;
+    flex: 1;
+	*/
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    z-index: 100;
+}
+
+    ul.menu li {
+        float: left;
+        font-size: 1em;
+    }
+
+        ul.menu li a, ul.menu .dropbtn {
+            display: inline-block;
+            color: #f0f0f0;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+            ul.menu li a:hover, ul.menu .dropdown:hover .dropbtn {
+                background-color: #555;
+            }
+
+        ul.menu li.dropdown {
+            display: inline-block;
+        }
+
+    ul.menu .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 101;
+    }
+
+        ul.menu .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+            ul.menu .dropdown-content a:hover {
+                background-color: #f1f1f1
+            }
+
+    ul.menu .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+
+
+.tile-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    margin: 100px;
+}
+
+.tile-header {
+    display: flex;
+    border-bottom: 2px solid #333;
+    font-size: 1em;
+    justify-content: space-between;
+}
+
+    .tile-header > span {
+        padding: 10px 20px 10px 20px;
+    }
+
+.tile-close:hover {
+    background-color: #333;
+    color: #f0f0f0;
+}
+
+.diagramContainer {
+    flex: 1;
+    width: 90%;
+    min-height: 500px;
+    border: 1px solid #333;
+    margin: 5%;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    max-height: 800px;
+}
+
+.diagramContainerNoSize {
+    /*border: 1px solid #333;*/
+    overflow-x: scroll;
+    overflow-y: scroll;
+    max-height: 800px;
+}
+
+
+
+.links path {
+    stroke: #333;
+}
+
+.links path {
+    stroke-width: 3;
+}
+
+.diagramNode {
+    fill: #EEE;
+    stroke-width: 1px;
+    stroke: #333;
+}
+
+    .diagramNode:hover {
+        cursor: pointer;
+    }
+
+#arrowhead {
+    stroke: #333;
+}
+
+.diagramNodeName {
+    font-weight: bold;
+}
+
+.diagramNodeDescription {
+}
+
+
+.diagram {
+    display: block;
+    width: 5000px;
+    height: 5000px;
+}
+
+
+.select-list {
+    list-style: none;
+    padding: 0;
+}
+
+.select-list-item {
+    font-size: 1em;
+    border-bottom: 1px solid #999;
+    padding-bottom: 5px;
+    margin-top: 5px;
+}
+
+.select-list-item:hover {
+        background: #DDD;
+        cursor: pointer;
+}
+
+
+
+/*** tabs start ***/
+/*****************************************************/
+
+
+.ui-tabs {
+    font-size: 0.9em !important;
+    border: none !important;
+}
+
+.ui-tabs-nav {
+    background-color: #fff !important; /*To overwrite jquery-ui.css*/
+    /*height: 30px;                        */ /*To stop nav block scaling of tab size*/
+}
+
+.ui-tabs .ui-tabs-nav {
+    margin: 0;
+    padding: 0.2em 0.2em 0;
+    border: none;
+    background: none;
+    border-radius: 0px 0px 0 0;
+}
+
+
+    .ui-tabs .ui-tabs-nav li {
+        border: none;
+        background: none;
+    }
+
+
+.ui-tabs-active a {
+    background-color: #666; /*To make it looks like on example pic, it is possible do do with it whatever you want*/
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1px 1px 0;
+    position: relative;
+    z-index: 5;
+    color: #EEE !important; /*To overwrite jquery-ui.css*/
+    text-decoration: none !important; /*To overwrite jquery-ui.css*/
+}
+
+.ui-tabs-panel {
+    border-top: 1px solid #666 !important;
+    padding: 0 !important;
+}
+
+
+.st-tab-header {
+    background: #eee;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+
+/*** tabs end ***/
+/*****************************************************/
+
+
+/*** splitview start ***/
+
+.split-container {
+    /*height: 70%;*/
+    /*width: 1000px;*/
+}
+
+.split-left {
+}
+
+.split-right {
+}
+
+/*** splitview end ***/
+
+/*** treeview start ***/
+
+.treeSearch {
+    background: #eee;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/*** treeview end ***/
+
+/*** ST type selection start ***/
+
+.st-type-selection {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.st-type-selection-label {
+    float: left;
+    width: 100px;
+}
+
+.input-select {
+    display: block;
+}
+
+/*** ST type selection end ***/
+
+/********** DataTable start ***********/
+
+.scrollable {
+    overflow: scroll;
+}
+
+.table-odd-row td {
+    background: #F2F2F2;
+}
+
+.table-even-row td {
+    background: #E6E6E6;
+}
+
+.selected td {
+    font-weight: bold;
+}
+
+/********** DataTable end *************/
+
+
+/************** Element view start ****************/
+
+
+
+.element-view-header {
+    background: #eee;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.element-view {
+    display: flex;
+}
+
+.business-view-label {
+    font-weight: bold;
+    padding-right: 10px;
+}
+
+
+#element-view-business table {
+    width: 100%;
+}
+
+.business-view-value {
+    flex: 1;
+}
+
+div.button {
+    border: 1px solid #666;
+    padding: 5px 10px 5px 10px;
+    background-color: #EEE;
+    text-align: center;
+    display: inline;
+    margin-bottom: 15px;
+}
+
+div.button:hover {
+    cursor: pointer;
+    background-color: #DDD;
+    border: 1px solid #777;
+}
+
+
+td.info-flash {
+    padding-top: 15px;
+}
+
+
+/****** business view start *******/
+
+.business-view {
+    padding-top: 15px !important;
+    padding-left: 15px !important;
+}
+
+/****** business view end *******/
+
+/****** tech view start *******/
+
+
+.tech-view {
+    padding-top: 15px !important;
+    padding-left: 15px !important;
+}
+
+
+.code-highlight {
+    background-color: lightyellow;
+    font-weight: bold;
+}
+
+.report-view td.has-content {
+    font-weight: bold;
+}
+
+.report-view td.highlighted {
+    background-color: yellow;
+    border-bottom: 1px dashed #333;
+}
+
+.report-view td.in-tablix {
+    background-color: lightgray;
+    border-bottom: 1px dashed #333;
+}
+
+
+.ssis-data-flow .ssis-diagram-arrow {
+    stroke: #44A;
+    fill: transparent;
+    color: #44A;
+    stroke-width: 3px;
+}
+
+.ssis-control-flow .ssis-diagram-arrow {
+    stroke: #4A4;
+    fill: transparent;
+    color: #4A4;
+    stroke-width: 3px;
+}
+
+.ssis-control-flow .ssis-arrow-head {
+    stroke: #4A4;
+    color: #4A4;
+    fill: #4A4;
+}
+
+.ssis-data-flow .ssis-arrow-head {
+    stroke: #44A;
+    color: #44A;
+    fill: #44A;
+}
+
+
+.ssis-diagram {
+    display: block;
+}
+
+.block {
+    /*display: block;*/
+}
+
+.ssis-diagram-block {
+    fill: #DDD;
+    stroke: #999;
+    stroke-width: 1px;
+    /*display:block;*/
+}
+
+.ssis-diagram-block-highlighted {
+    fill: #FFB;
+    stroke: #999;
+    stroke-width: 1px;
+    /*display:block;*/
+}
+
+
+
+.ssis-diagram-label {
+}
+
+/****** tech view end *******/
+
+/************** Element view end   ****************/
+
+/***************** search start **********************/
+
+.search-bar-container {
+    margin: 10px 20px 10px 20px;
+    font-size: 1.3em;
+    display: flex;
+}
+
+.search-input {
+    border: 0;
+    border-bottom: 1px dashed #333;
+    padding: 0;
+    flex: 1;
+    font-size: 1em;
+    height: 2em !important;
+    margin-right: 10px;
+    padding-top: 0.6em;
+    padding-bottom: 0.2em;
+}
+
+span.larger {
+    font-size: 1.5em;
+    padding-right: 10px;
+}
+
+/***************** search end ************************/

@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{99B8EAE4-8494-4170-9FBB-5321703F57A9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CD.BIDoc.Core</RootNamespace>
+    <AssemblyName>BIDoc</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\server\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\server64\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\server64\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AnalysisServices.AdomdClient, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dlls\Microsoft.AnalysisServices.AdomdClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.IntegrationServices.Build, Version=1.1.0.0, Culture=neutral, PublicKeyToken=60704e758f51fa1a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.IntegrationServices.Build.1.1.0\lib\Microsoft.SqlServer.IntegrationServices.Build.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Management.IntegrationServices, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\Windows\assembly\GAC_MSIL\Microsoft.SqlServer.Management.IntegrationServices\14.0.0.0__89845dcd8080cc91\Microsoft.SqlServer.Management.IntegrationServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Reflection.Context" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataLayer\BIDocGraphInfoConverter.cs" />
+    <Compile Include="DataLayer\BIDocHistoryContext.cs" />
+    <Compile Include="DataLayer\BIDocModel.cs" />
+    <Compile Include="DataLayer\BIDocModelConverter.cs" />
+    <Compile Include="DataLayer\Json.cs" />
+    <Compile Include="DependencyGraph\DataFlowDependencyGraph.cs" />
+    <Compile Include="DependencyGraph\BasicDependencyGraph.cs" />
+    <Compile Include="DependencyGraph\Mssql\KnowledgeBase\TransitiveDataFlowKnowledgeBase.cs" />
+    <Compile Include="DependencyGraph\Mssql\KnowledgeBase\DataFlowKnowledgeBase.cs" />
+    <Compile Include="DependencyGraph\Mssql\KnowledgeBase\TransitiveDataFlowRules.cs" />
+    <Compile Include="DependencyGraph\Mssql\KnowledgeBase\GeneralKnowledgeBase.cs" />
+    <Compile Include="DependencyGraph\Mssql\KnowledgeBase\DataFlowRules.cs" />
+    <Compile Include="DependencyGraph\Mssql\KnowledgeBase\RuleApplicationContext.cs" />
+    <Compile Include="Export\SsisExpressionDocumentExporter.cs" />
+    <Compile Include="Export\MdxDocumentExporter.cs" />
+    <Compile Include="Export\DbDocumentExporter.cs" />
+    <Compile Include="Export\DebugExport\DotExport.cs" />
+    <Compile Include="Export\DebugExport\MssqlDebugExport.cs" />
+    <Compile Include="Export\SsisDocumentExporter.cs" />
+    <Compile Include="Operations\BIDocRequestProcessor.cs" />
+    <Compile Include="Operations\GetDataFlowBetweenGroupsRequestProcessor.cs" />
+    <Compile Include="Operations\GetModelElementIdByRefPathRequestProcessor.cs" />
+    <Compile Include="Operations\GetNodeSuggestionsRequestProcessor.cs" />
+    <Compile Include="Operations\GetNodeDescendantsRequestProcessor.cs" />
+    <Compile Include="Operations\GetNodeRefPathByIdRequestProcessor.cs" />
+    <Compile Include="Operations\GetReportItemPositionsRequestProcessor.cs" />
+    <Compile Include="Operations\ExtractSettingsProvider.cs" />
+    <Compile Include="Operations\ElementTechViewRequestProcessor.cs" />
+    <Compile Include="Operations\ListReportElementsRequestProcessor.cs" />
+    <Compile Include="Operations\LineageDetailRequestProcessor.cs" />
+    <Compile Include="Operations\ReportParametersStateRequestProcessor.cs" />
+    <Compile Include="Operations\RenderReportRequestProcessor.cs" />
+    <Compile Include="Operations\ListSsrsSsrsReportsRequestProcessor.cs" />
+    <Compile Include="Operations\SaveBusinessDictionaryEntryRequestProcessor.cs" />
+    <Compile Include="Operations\GetNodeLineageInfoRequestProcessor.cs" />
+    <Compile Include="Operations\GetBasicDGRequestProcessor.cs" />
+    <Compile Include="Operations\GetDocumentsRequestProcessor.cs" />
+    <Compile Include="Operations\FindOlapFieldRequestProcessor.cs" />
+    <Compile Include="Operations\GetMssqlDocumentsRequestProcessor.cs" />
+    <Compile Include="Operations\GetSsisDocumentsRequestProcessor.cs" />
+    <Compile Include="DependencyGraph\Mssql\MssqlDependencyGraphBuilder.cs" />
+    <Compile Include="DependencyGraph\LineageAnalysis.cs" />
+    <Compile Include="DataLayer\DataProvider.cs" />
+    <Compile Include="Export\Word\MssqlWordDocumentFactory.cs" />
+    <Compile Include="Tools\NodeDeclarationConverter.cs" />
+    <Compile Include="Tools\Tools.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Operations\BIDocCore.cs" />
+    <Compile Include="Operations\CreateGraphRequestProcessor.cs" />
+    <Compile Include="Operations\ExtractMetadataRequestProcessor.cs" />
+    <Compile Include="Operations\StorageProviderExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CD.BIDoc.Core.Parse.Mssql\CD.BIDoc.Core.Parse.Mssql.csproj">
+      <Project>{31a079a7-5aba-406a-8d9d-1960f366358b}</Project>
+      <Name>CD.BIDoc.Core.Parse.Mssql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.Bidoc.Core.Model.Mssql\CD.DLS.Model.Mssql.csproj">
+      <Project>{2631f384-a3c2-4a93-b89e-d1df45e806d2}</Project>
+      <Name>CD.DLS.Model.Mssql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.Framework.BIDocApi\CD.DLS.API.csproj">
+      <Project>{234e7813-512e-4bee-9ae3-d496fbfdbdfc}</Project>
+      <Name>CD.DLS.API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.Framework.Common\CD.DLS.Common.csproj">
+      <Project>{f058ebc7-f452-4e36-9c75-14fee97643af}</Project>
+      <Name>CD.DLS.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

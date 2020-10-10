@@ -1,0 +1,7 @@
+﻿CREATE TABLE [BIDoc].[DataTypes]
+(
+	[DataTypesId] INT NOT NULL IDENTITY(1,1),
+	[DataTypeName] NVARCHAR(30) NOT NULL,
+	CONSTRAINT [PK_BIDoc_BIDocDataTypes] PRIMARY KEY CLUSTERED ([DataTypesId] ASC),
+)
+GO

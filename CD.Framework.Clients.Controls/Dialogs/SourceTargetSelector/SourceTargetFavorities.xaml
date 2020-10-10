@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="CD.DLS.Clients.Controls.Dialogs.SourceTargetSelector.SourceTargetFavorities"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:userControls="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Clients.Controls;component/Resources/DefaultResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3">
+                <Label x:Name="filterOfDataGrid" Content="Filter"/>
+            </StackPanel>
+            <StackPanel Grid.Column="0" Grid.Row="1" Background="#DFDFDF">
+                <TextBox x:Name="textboxSourceFilter" Style="{StaticResource GreyTextBox}" Text="Search..." TextChanged="textboxSourceFilter_TextChanged" LostFocus="textboxSourceFilter_LostFocus"  GotFocus="textboxSourceFilter_GotFocus"/>
+            </StackPanel>
+            <GridSplitter Grid.Column="1" Grid.Row="1" Grid.RowSpan="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+
+            <StackPanel Grid.Column="2" Grid.Row="1" Background="#DFDFDF">
+                <TextBox x:Name="textboxTargetFilter" Style="{StaticResource GreyTextBox}" Text="Search..." TextChanged="textboxTargetFilter_TextChanged" LostFocus="textboxTargetFilter_LostFocus"  GotFocus="textboxTargetFilter_GotFocus"/>
+            </StackPanel>
+        </Grid>
+
+        <DataGrid    
+            x:Name="dataGrid" 
+            Grid.Row="1" 
+            Grid.Column="0" 
+            AutoGenerateColumns="False" 
+            CanUserAddRows="False" 
+            CanUserDeleteRows="False"
+            CanUserResizeColumns="True"
+            CanUserSortColumns="True"
+            CanUserReorderColumns="True"
+            SelectionMode="Single"
+            SelectionUnit="FullRow"
+            IsReadOnly="True"
+            ClipboardCopyMode="IncludeHeader"
+            >
+            <!--<DataGrid.Resources>
+                <Style TargetType="DataGridRow">
+                    <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                </Style>
+            </DataGrid.Resources>-->
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="DarkBlue"/>
+                            <Setter Property="Foreground" Value="WhiteSmoke" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="DarkBlue"/>
+                            <Setter Property="Foreground" Value="WhiteSmoke" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding SourceRootDescriptivePath}" Header="Source Path" Width="500"/>
+                <DataGridTextColumn Binding="{Binding SourceTypeDescription}" Header="Source Type"/>
+                <DataGridTextColumn Binding="{Binding TargetRootDescriptivePath}" Header="Target Path" Width="500"/>
+                <DataGridTextColumn Binding="{Binding TargetTypeDescription}" Header="Target Type"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <userControls:WaitingPanel x:Name="waitingPanel" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Background="White" Opacity="0.8"/>
+    </Grid>
+</UserControl>

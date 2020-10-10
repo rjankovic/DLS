@@ -1,0 +1,51 @@
+﻿@model CD.DLS.Clients.Web.Models.FulltextSearchResults
+
+
+<div class="search-results-container">
+    <ul class="select-list">
+        
+        @foreach (var item in Model.Results)
+        {
+        <li class="select-list-item" onclick="javascript:selectElement('@item.ModelElementId')">
+            <span class="larger">@item.ElementName</span>[@item.TypeDescription]
+            <br />@item.DescriptiveRootPath
+        </li>
+
+        }
+    </ul>
+</div>
+
+<script>
+
+    var tileId = "@Model.TileId";
+
+    function selectElement(elementId) {
+
+        console.log('element selected: ' + elementId);
+        var searchBarSelector = '#search-bar-container-' + tileId;
+        //console.log(searchBarSelector);
+        var tileClose = $('#search-bar-container-' + tileId).closest('.tile-container').find('.tile-close');
+        //console.log(tileClose);
+        $(tileClose).each(function () {
+            $(this).closest('.tile-container').hide("drop", {
+                direction: 'down'
+            }, function () {
+                $(this).remove();
+                });
+
+            navigationActions.openTile("centricbrowser", elementId);
+        });
+
+        /*
+        $('.tile-close').each(function () {
+            $(this).closest('.tile-container').hide("drop", {
+                direction: 'down'
+            }, function () {
+                $(this).remove();
+            });
+        });
+        */
+
+    }
+
+</script>

@@ -1,0 +1,257 @@
+﻿<UserControl x:Class="CD.DLS.Clients.Controls.Dialogs.ProjectConfigurator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
+             mc:Ignorable="d" 
+             >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <ControlTemplate x:Key="ToolbarTemplate1" TargetType="{x:Type ToolBar}"/>
+                </ResourceDictionary>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Clients.Controls;component/Resources/DefaultResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <!--<Grid.Resources>
+            <Style TargetType="DataGridRow">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="LightGray" />
+                <Setter Property="BorderThickness"  Value="2" />
+                <Setter Property="SnapsToDevicePixels" Value="true" />
+            </Style>
+            <Style TargetType="DataGridCell">
+                <Setter Property="BorderThickness"  Value="0" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Padding" Value="10 0 10 0" />
+            </Style>
+            <Style TargetType="DataGrid">
+                <Setter Property="GridLinesVisibility" Value="Horizontal" />
+                <Setter Property="HorizontalGridLinesBrush" Value="Gray" />
+            </Style>
+        </Grid.Resources>-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TabControl Grid.Row="0" Grid.ColumnSpan="2">
+            <TabItem Header="SQL DB">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid x:Name="gridSqlDbs" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" AutoGenerateColumns="False" ScrollViewer.CanContentScroll="True" CanUserAddRows="False">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Server" IsReadOnly="True" Binding="{Binding Path=ServerName}" Width="*" />
+                            <DataGridTextColumn Header="Database" IsReadOnly="True" Binding="{Binding Path=DbName}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DockPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+                        <Button Style="{StaticResource OrangeButton}" Content="Add" HorizontalAlignment="Left"  Width="70" DockPanel.Dock="Left" x:Name="addSqlDbButton" Click="addSqlDbButton_Click"></Button>
+                        <Button Style="{StaticResource GreyButton}" Content="Edit" HorizontalAlignment="Left" Width="70" DockPanel.Dock="Left"  x:Name="editSqlDbButton" Click="editSqlDbButton_Click"></Button>
+                        <Button Style="{StaticResource GreyButton}" Content="Remove" HorizontalAlignment="Left" Width="70" DockPanel.Dock="Left" x:Name="removeSqlDbButton" Click="removeSqlDbButton_Click"></Button>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="SSIS">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid x:Name="gridSsisProjects" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" AutoGenerateColumns="False" ScrollViewer.CanContentScroll="True" CanUserAddRows="False">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Server" IsReadOnly="True" Binding="{Binding Path=ServerName}" Width="*" />
+                            <DataGridTextColumn Header="Folder" IsReadOnly="True" Binding="{Binding Path=FolderName}" Width="*" />
+                            <DataGridTextColumn Header="Project" IsReadOnly="True" Binding="{Binding Path=ProjectName}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DockPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3">
+                        <Button Style="{StaticResource OrangeButton}" Content="Add" DockPanel.Dock="Left" Width="70" x:Name="addSsisButton" Click="addSsisButton_Click"></Button>
+                        <Button Style="{StaticResource GreyButton}" Content="Edit" DockPanel.Dock="Left" Width="70" x:Name="editSsisButton" Click="editSsisButton_Click"></Button>
+                        <Button Style="{StaticResource GreyButton}" Content="Remove" DockPanel.Dock="Left" Width="70" x:Name="removeSsisButton" Click="removeSsisButton_Click"></Button>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="SSAS">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid x:Name="gridSsasDbs" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" AutoGenerateColumns="False" ScrollViewer.CanContentScroll="True" CanUserAddRows="False">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Server" IsReadOnly="True" Binding="{Binding Path=ServerName}" Width="*" />
+                            <DataGridTextColumn Header="Database" IsReadOnly="True" Binding="{Binding Path=DbName}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DockPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1">
+                        <Button Style="{StaticResource OrangeButton}" Content="Add" DockPanel.Dock="Left" Width="70" x:Name="addSsasButton" Click="addSsasButton_Click"></Button>
+                        <Button Style="{StaticResource GreyButton}" Content="Edit" DockPanel.Dock="Left" Width="70" x:Name="editSsasButton" Click="editSsasButton_Click"></Button>
+                        <Button Style="{StaticResource GreyButton}" Content="Remove" DockPanel.Dock="Left" Width="70" x:Name="removeSsasButton" Click="removeSsasButton_Click"></Button>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="SSRS">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid x:Name="gridSsrsPrejects" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" AutoGenerateColumns="False" ScrollViewer.CanContentScroll="True" CanUserAddRows="False">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Service URL" IsReadOnly="True" Binding="{Binding Path=CombinedBaseUrl}" Width="*" />
+                            <DataGridTextColumn Header="Folder" IsReadOnly="True" Binding="{Binding Path=CombinedFolder}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DockPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3">
+                        <Button Style="{StaticResource OrangeButton}" Content="Add" Width="70" DockPanel.Dock="Left" x:Name="addSsrsButton" Click="addSsrsButton_Click"></Button>
+                        <Button Style="{StaticResource GreyButton}" Content="Edit" Width="70" DockPanel.Dock="Left" x:Name="editSsrsButton" Click="editSsrsButton_Click"></Button>
+                        <Button Style="{StaticResource GreyButton}" Content="Remove" Width="70" DockPanel.Dock="Left" x:Name="removeSsrsButton" Click="removeSsrsButton_Click"></Button>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Power BI">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid x:Name="gridPowerBi" Grid.Row="0" Grid.ColumnSpan="5" Grid.Column="0" AutoGenerateColumns="False" ScrollViewer.CanContentScroll="True" CanUserAddRows="False">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Application ID" IsReadOnly="True" Binding="{Binding Path=ApplicationID}" Width="*" />
+                            <DataGridTextColumn Header="Redirect URI" IsReadOnly="True" Binding="{Binding Path=RedirectUri}" Width="*" />
+                            <DataGridTextColumn Header="Workspace ID" IsReadOnly="True" Binding="{Binding Path=WorkspaceID}" Width="*" />
+                            <DataGridTextColumn Header="Report Server URL" IsReadOnly="True" Binding="{Binding Path=ReportServerURL}" Width="*" />
+                            <DataGridTextColumn Header="Report Server Folder" IsReadOnly="True" Binding="{Binding Path=ReportServerFolder}" Width="*" />
+                            <!--<DataGridTextColumn Header="User Name" IsReadOnly="True" Binding="{Binding Path=UserName}" Width="*" />-->
+                            <!--<DataGridTextColumn Header="Password" IsReadOnly="True" Binding="{Binding Path=Password}" Width="*" />-->
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DockPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3">
+                        <Button Style="{StaticResource OrangeButton}" Content="Add" DockPanel.Dock="Left" Width="70" x:Name="addPowerBiButton" Click="addPowerBiButton_Click"></Button>
+                        <Button Style="{StaticResource GreyButton}" Content="Edit" DockPanel.Dock="Left" Width="70" x:Name="editPowerBiButton" Click="editPowerBiButton_Click"></Button>
+                        <Button Style="{StaticResource GreyButton}" Content="Remove" DockPanel.Dock="Left" Width="70" x:Name="removePowerBiButton" Click="removePowerBiButton_Click"></Button>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+            <!--
+            <TabItem Header="SQL Agent">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid x:Name="gridAgentJobs" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" AutoGenerateColumns="False" ScrollViewer.CanContentScroll="True" CanUserAddRows="False">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Server" IsReadOnly="True" Binding="{Binding Path=ServerName}" Width="*" />
+                            <DataGridTextColumn Header="Job" IsReadOnly="True" Binding="{Binding Path=JobName}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button Content="Add" HorizontalAlignment="Left" Width="70" Grid.Column="0" Grid.Row="1"></Button>
+                    <Button Content="Edit" HorizontalAlignment="Center" Width="70" Grid.Column="1" Grid.Row="1"></Button>
+                    <Button Content="Remove" HorizontalAlignment="Right" Width="70" Grid.Column="2" Grid.Row="1"></Button>
+                </Grid>
+            </TabItem>
+            -->
+        </TabControl>
+        <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
+            <Button Style="{StaticResource OrangeButton}" Content="Save" HorizontalAlignment="Left" Width="100" DockPanel.Dock="Left" x:Name="saveButton" Click="saveButton_Click"></Button>
+            <Button Style="{StaticResource GreyButton}" Content="Cancel" HorizontalAlignment="Right" Width="100" DockPanel.Dock="Left" x:Name="cancelButton" Click="cancelButton_Click"></Button>
+        </DockPanel>
+    <!--<TextBox x:Name="filterTextBox" Margin="2" HorizontalAlignment="Stretch" Grid.Column="0" Grid.Row="0" Text="Search..."
+                 LostFocus="AddFilterPaceholder" GotFocus="RemoveFilterPaceholder" TextChanged="FilterTextBox_TextChanged"/>
+            <DataGrid x:Name="gridReports" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False" ScrollViewer.CanContentScroll="True" CanUserAddRows="False">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" IsReadOnly="True" Binding="{Binding Path=Name}" Width="2*" />
+                    <DataGridTextColumn Header="Value" IsReadOnly="True" Binding="{Binding Path=Value}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>-->
+    </Grid>
+</UserControl>

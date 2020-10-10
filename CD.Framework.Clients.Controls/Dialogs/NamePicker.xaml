@@ -1,0 +1,39 @@
+﻿<Window x:Class="CD.DLS.Clients.Controls.Dialogs.NamePicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
+             mc:Ignorable="d" 
+             >
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Clients.Controls;component/Resources/DefaultResourceDictionary.xaml" />
+                
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label x:Name="captionLabel" Grid.Column="0" Grid.Row="0" />
+            <ComboBox x:Name="nameComboBox" Margin="2" HorizontalAlignment="Stretch" Grid.Column="0" Grid.Row="1" Text="" SelectionChanged="nameComboBox_SelectionChanged"/>
+            <Label x:Name="errorLabel" Content="The name is already in use." Grid.Row="2" Grid.Column="0" Foreground="DarkRed" />
+            <DockPanel Grid.Column="0" Grid.Row="3" LastChildFill="False">
+                <Button Style="{StaticResource OrangeButton}" x:Name="okButton" Content="OK" Click="okButton_Click"  DockPanel.Dock="Left"/>
+                <Button Style="{StaticResource GreyButton}" x:Name="cancelButton" Content="Cancel" Click="cancelButton_Click"  DockPanel.Dock="Left" IsCancel="True"/>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</Window>

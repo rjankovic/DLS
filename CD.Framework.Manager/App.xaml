@@ -1,0 +1,16 @@
+﻿<Application
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:CD.DLS.Manager"
+             xmlns:fluent="urn:fluent-ribbon" xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock" x:Class="CD.DLS.Manager.App"
+             StartupUri="Ribbon/MainRibbon.xaml"
+             
+             >
+    <Application.Resources>
+        <!-- Attach default Theme -->
+        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml">
+            
+        </ResourceDictionary>
+
+    </Application.Resources>
+</Application>

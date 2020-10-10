@@ -1,0 +1,524 @@
+﻿using CD.DLS.Common.Structures;
+using CD.DLS.DAL.Configuration;
+using CD.DLS.DAL.Objects.Extract;
+using CD.DLS.Extract.PowerBi.PowerBiAPI;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
+using Microsoft.SqlServer.ReportingServices2010;
+using System.Net;
+using System.Security.Principal;
+
+namespace CD.DLS.Extract.PowerBi
+{
+    class PowerBiExtractor
+    {
+        private PowerBiProjectComponent powerBiProject;
+        private string inputDirPath;
+        private string outputDirPath;
+        private string dataMashupPath;
+        private string reportLayoutPath;
+        private string diagramLayoutPath;
+        private string connectionsPath;
+        private string columnNames = "FillColumnNames";
+        private string formulatext = "LastAnalysisServicesFormulaText";
+        private PBIAPIClient pbic = null;
+        private Manifest manifest;
+        private string relativePathBase;
+
+        private string userName;
+        private string password;
+
+        private string currentReportName = null;
+
+        public PowerBiExtractor(PowerBiProjectComponent powerBiproject, string relativePathBase, string outputDirPath, Manifest manifest, string userName, string password)
+        {
+            this.powerBiProject = powerBiproject;
+            this.outputDirPath = outputDirPath;
+            this.manifest = manifest;
+            this.relativePathBase = relativePathBase;
+
+            this.userName = userName;
+            this.password = password;         
+        }
+
+        public void Extract()
+        {
+            if (String.IsNullOrEmpty(powerBiProject.ReportServerURL) && String.IsNullOrEmpty(powerBiProject.ReportServerFolder))
+            {               
+                ReportsFromService(outputDirPath);
+            }
+            else
+            {
+                ReportsFromReportServer(outputDirPath);
+            }
+
+
+        }
+       
+        public void ReportsFromReportServer(string outputDirPath)
+        {
+            var dir = Path.Combine(outputDirPath, "dir");
+            if (Directory.Exists(dir))
+            {
+                Directory.Delete(dir, true);
+            }
+            Directory.CreateDirectory(dir);
+            var url = ""; //example: "http://127.0.0.1/Reports/api/v2.0/catalogitems(89304C36-026D-4A73-AE96-F90CBE2DD774)/Content/$value";
+            var urlSplit = Regex.Matches(powerBiProject.ReportServerURL, ".+?(?=\\/)", RegexOptions.CultureInvariant);
+
+            url = urlSplit[0].Value + urlSplit[1].Value + urlSplit[2].Value + "/reportserver/reportservice2010.asmx";
+
+            ConfigManager.Log.Important(string.Format("Extracting PowerBI items  {0},  {1}", powerBiProject.ReportServerURL, powerBiProject.ReportServerFolder));
+
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            using (identity.Impersonate())
+            {
+                using (var client = new WebClient())
+                {
+                    client.Credentials = CredentialCache.DefaultNetworkCredentials;
+                    client.UseDefaultCredentials = true;
+                    var rs = new ReportingService2010
+                    {
+                        Credentials = CredentialCache.DefaultCredentials,
+                        Url = url
+                    };                  
+                    var items = rs.FindItems(powerBiProject.ReportServerFolder, BooleanOperatorEnum.Or, new Microsoft.SqlServer.ReportingServices2010.Property[] { }, new SearchCondition[] { });
+
+                    foreach (var item in items)
+                    {
+                        if (item.TypeName == "PowerBIReport")
+                        {
+                            this.currentReportName = item.Name;
+                            var file = Path.Combine(dir, item.Name + ".zip");                          
+                            url = String.Format("{0}/api/v2.0/catalogitems({1})/Content/$value", powerBiProject.ReportServerURL, item.ID);
+                            client.DownloadFile(url, file);
+                            var dirExtract = Path.Combine(dir, item.Name);
+                            ZipFile.ExtractToDirectory(file, dirExtract);
+                        }
+                    }
+                }
+            }
+
+            List<Report> extractedReports = ExtractReports();
+            Tenant tenant = new Tenant(powerBiProject.ReportServerURL, extractedReports);
+
+            string tenantString = tenant.Serialize();
+            var fileName = urlSplit[2].Value.Trim('/') + ".json";
+            var path = Path.Combine(outputDirPath, fileName);
+            File.WriteAllText(path, tenantString);
+
+            manifest.Items.Add(new ManifestItem()
+            {
+                ComponentId = powerBiProject.PowerBiProjectComponentId,
+                Name = fileName,
+                ExtractType = "PowerBi",
+                RelativePath = Path.Combine(relativePathBase, fileName)
+            });
+
+            Directory.Delete(Path.Combine(outputDirPath, "dir"), true);
+        }
+
+        private void ReportsFromService(string outputDirPath)
+        {
+            pbic = new PBIAPIClient(powerBiProject.ApplicationID, powerBiProject.RedirectUri, userName, password);
+            if (powerBiProject.WorkspaceID != null)
+            {
+                pbic.SetWorkspaceID(powerBiProject.WorkspaceID);
+            }
+            ConfigManager.Log.Important(string.Format("Extracting PowerBI items  {0},  {1}", powerBiProject.ApplicationID, powerBiProject.RedirectUri));
+
+            PBIGroup myGroup = pbic;
+
+            var dir = Path.Combine(outputDirPath, "dir");
+            var reports = myGroup.Reports;
+            if (Directory.Exists(dir))
+            {
+                Directory.Delete(dir, true);
+            }
+            Directory.CreateDirectory(dir);
+            foreach (PBIReport r in reports)
+            {
+                var file = Path.Combine(dir, r.Name + ".zip");
+                try
+                {                  
+                    r.Export(file);
+                    this.currentReportName = r.Name;
+                }
+                catch 
+                {
+                    continue;
+                }
+                
+
+                var dirExtract = Path.Combine(dir, r.Name);
+                ZipFile.ExtractToDirectory(file, dirExtract);
+            }
+
+            List<Report> extractedReports = ExtractReports();
+            Tenant tenant = new Tenant(powerBiProject.ApplicationID, extractedReports);
+
+            string tenantString = tenant.Serialize();
+            var fileName = pbic.TenantId + ".json";
+            var path = Path.Combine(outputDirPath, fileName);
+            File.WriteAllText(path, tenantString);
+
+            manifest.Items.Add(new ManifestItem()
+            {
+                ComponentId = powerBiProject.PowerBiProjectComponentId,
+                Name = fileName,
+                ExtractType = "PowerBi",
+                RelativePath = Path.Combine(relativePathBase, fileName)
+            });
+
+            Directory.Delete(Path.Combine(outputDirPath, "dir"), true);
+        }
+
+        public List<Report> ExtractReports()
+        {
+            List<Report> reports = new List<Report>();
+            var directories = Directory.GetDirectories(Path.Combine(outputDirPath, "dir"));
+            for (int i = 0; i < directories.Length; i++)
+            {
+                inputDirPath = directories[i];
+                dataMashupPath = inputDirPath + @"\DataMashup";
+                reportLayoutPath = inputDirPath + @"\Report\Layout";
+                diagramLayoutPath = inputDirPath + @"\DiagramLayout";
+                connectionsPath = inputDirPath + @"\Connections";
+
+                List<Connection> connections = null;
+
+                if (!File.Exists(connectionsPath)) // If this file DOES not exists, the connections are IMPORT type
+                {
+                    connections = ExtractConnectionsImportMode(GetEntryValue(LoadXml(dataMashupPath), formulatext));
+                }
+                else // If file exist then LIVE CONNECTION type
+                {
+                    connections = ExtractConnectionsLiveConnection();
+
+                }
+               
+                List<ReportSection> sections = ExtractSections(GetVisualLayout(reportLayoutPath), connections);
+                Filter[] filters = GetVisualLayout(reportLayoutPath).GetFilters();
+                string name = this.currentReportName;
+                reports.Add(new Report(name, connections, sections, filters));
+            }
+
+            return reports;
+        }
+
+        private  XmlDocument LoadXml(string dir)
+        {
+            var xmlString = System.IO.File.ReadAllText(dir);
+            var splits = Regex.Split(xmlString, @"(?=(<\?xml))");
+            var regExp = Regex.Match(splits[4], "<.*>", RegexOptions.CultureInvariant).Value;
+            regExp = regExp.Replace((char)0x16, '\0');
+            regExp = regExp.Replace("&quot;", "'");
+            XmlDocument xdoc = new XmlDocument();
+            xdoc.LoadXml(regExp);
+            return xdoc;
+        }
+
+        private List<string> GetEntryValue(XmlDocument inputXml, string entryType)
+        {
+            List<string> parametersValue = new List<string>();
+            var nodes = inputXml.SelectNodes("//Entry[@Type='" + entryType + "']");
+            foreach (XmlNode node in nodes)
+            {
+                parametersValue.Add(node.Attributes["Value"].Value);
+            }
+            return parametersValue;
+        }
+
+        /*
+        private  string ExtractReportName(int index)
+        {
+            List<string> names = new List<string>();
+            PBIGroup myGroup = pbic;
+            return myGroup.Reports[index].Name;
+        }
+        */
+
+        private List<Connection> ExtractConnectionsLiveConnection()
+        {
+            List<Connection> connections = new List<Connection>();
+
+            var jsonString = System.IO.File.ReadAllText(connectionsPath);
+            LiveConnectionDataSource liveConnection = JsonConvert.DeserializeObject<LiveConnectionDataSource>(jsonString);
+
+            for (int i = 0; i<liveConnection.Connections.Length; i++)
+            {
+                Connection conn = new Connection(i, null, null, null);
+                conn.Type = liveConnection.Connections[i].ConnectionType;
+                var dataSource = Regex.Match(liveConnection.Connections[i].ConnectionString, "(?<=Source=).+?(?=;)", RegexOptions.CultureInvariant).Value;
+                var catalog = Regex.Match(liveConnection.Connections[i].ConnectionString, "(?<=Catalog=).+?(?=;)", RegexOptions.CultureInvariant).Value;
+                conn.Source = dataSource + "\\" + catalog;
+                conn.Tables = ExtractTableNamesLiveConnection();
+                connections.Add(conn);
+            }
+            return connections;
+        }
+
+        private  List<Connection> ExtractConnectionsImportMode(List<string> entry)
+        {
+            List<Connection> connections = new List<Connection>();
+            for (int i = 0; i < entry.Count; i++)
+            {
+                Connection conn = new Connection(i, null, null, null);
+                conn.Type = Regex.Match(entry[i], "(?<=Source = ).+?(?=\\()", RegexOptions.CultureInvariant).Value;
+                conn.Source = ExtractConnectionString(entry[i], conn);
+
+                var table = ExtractColumnsImportMode(GetEntryValue(LoadXml(dataMashupPath), columnNames)[i], conn);
+
+                bool duplicity = false;
+                foreach (Connection connection in connections)
+                {
+                    if (connection.Source == conn.Source && connection.Type == conn.Type)
+                    {
+                        connection.Tables.Add(table);
+                        duplicity = true;
+                        break;
+                    }
+                }
+                if (duplicity == true)
+                {
+                    continue;
+                }
+                conn.Tables.Add(table);
+                connections.Add(conn);
+            }
+            return connections;
+        }
+
+        private List<PbiTable> ExtractTableNamesLiveConnection()
+        {
+            List<PbiTable> tmp = new List<PbiTable>();
+            var jsonString = System.IO.File.ReadAllText(diagramLayoutPath,Encoding.Unicode);
+            jsonString = jsonString.Replace(" ", "");
+            Example table = JsonConvert.DeserializeObject<Example>(jsonString);
+            foreach (Diagram d in table.diagrams)
+            {
+                foreach (string t in d.tables)
+                {
+                    PbiTable tbl = new PbiTable(t);
+                    tmp.Add(tbl);
+                }
+            }
+
+            return tmp;
+        }
+
+
+        private string ExtractTableNameImportMode(string entry, Connection con)
+        {
+            string tableName = null;
+            switch (con.Type)
+            {
+                case "Sql.Databases":
+                    var splitDb = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None)[3].Trim(' ');
+                    tableName = Regex.Match(splitDb, "(?<=).+?(?= )", RegexOptions.CultureInvariant).Value;
+                    break;
+                case "Excel.Workbook":
+                    var splitExcel = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None)[2].Trim(' ');
+                    var splitPathExcel = splitExcel.Split(new string[] { "\\" }, StringSplitOptions.None);
+                    tableName = Regex.Match(splitExcel, "(?<=Item=\\\\').+?(?=\\\\')", RegexOptions.Multiline).Value;
+                    break;
+                case "OData.Feed":
+                    var splitOdata = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None)[2].Trim(' ');
+                    tableName = Regex.Match(splitOdata, "(?<=).+?(?= )", RegexOptions.CultureInvariant).Value;
+                    break;
+                case "Table.FromColumns":
+                    var splitFromColumns = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None)[1];
+                    var splitPath = splitFromColumns.Split(new string[] { "\\" }, StringSplitOptions.None);
+                    tableName = System.IO.Path.GetFileNameWithoutExtension(splitPath[splitPath.Length - 2]);
+                    break;
+                case "AnalysisServices.Databases":
+                    var splitAs = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None)[4];
+                    tableName = Regex.Match(splitAs, "(?<=Id=).+?(?=])", RegexOptions.Multiline).Value.Trim('\'', '\\'); 
+                    break;
+            }
+            return tableName;
+        }
+
+        private string ExtractConnectionString(string entry, Connection con)
+        {
+            string connectionString = null;
+            switch (con.Type)
+            {
+                case "Sql.Databases":
+                case "AnalysisServices.Databases":
+                case "Excel.Workbook":
+                case "Table.FromColumns":
+                    var splits = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None);
+                    foreach (string split in splits)
+                    {
+                        if (split.Contains("Source"))
+                        {
+                            var regExp = Regex.Match(split, "(?<=\').+?(?=\\')", RegexOptions.CultureInvariant);
+                            connectionString += regExp.Value;
+                        }
+                    }
+                    break;
+
+                case "OData.Feed":
+                    var splitsOdata = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None);
+                    foreach (string split in splitsOdata)
+                    {
+                        if (split.Contains("Source"))
+                        {
+                            var regExp = Regex.Match(split, "(?<=\').+?(?=\\')", RegexOptions.CultureInvariant);
+                            connectionString += regExp.Value;
+                            connectionString = connectionString.Trim('\\');
+                            break;
+                        }
+                    }
+                    break;
+            }
+            return connectionString;
+        }
+
+        private PbiTable ExtractColumnsImportMode(string entry, Connection con)
+        {
+            PbiTable tablesList = new PbiTable(ExtractTableNameImportMode(GetEntryValue(LoadXml(dataMashupPath), formulatext)[con.ConnId], con));
+            List<PbiColumn> column = new List<PbiColumn>();
+            var columnnames = Regex.Match(entry, "(?<=\\[).+?(?=\\])", RegexOptions.CultureInvariant).Value;
+            var splits = columnnames.Split(',');
+            var customQuery = ExtractCustomCollumnQuery(GetEntryValue(LoadXml(dataMashupPath), formulatext)[con.ConnId]);
+            var query = ExtractQuery(GetEntryValue(LoadXml(dataMashupPath), formulatext)[con.ConnId], con);
+            if (customQuery.Count == 0)
+            {
+                for (int j = 0; j < splits.Length; j++)
+                {
+                    splits[j] = splits[j].Trim('\'');
+                    PbiColumn col = new PbiColumn(splits[j], null)
+                    {
+                        Querry = query
+                    };
+                    column.Add(col);
+                }
+            }
+            else
+            {
+                for (int j = 0; j < splits.Length; j++)
+                {
+                    splits[j] = splits[j].Trim('\'');
+                    PbiColumn col = new PbiColumn(splits[j], null);
+                    for (int k = 0; k < customQuery.Count; k++)
+                    {
+                        if (customQuery[k].Contains("\\'" + splits[j] + "\\'"))
+                        {
+                            col.Querry = customQuery[k];
+                            break;
+                        }
+                        else
+                        {
+                            col.Querry = query;
+                        }
+                    }
+                    column.Add(col);
+                }
+            }
+            tablesList.Columns = column;
+            return tablesList;
+        }
+
+        private  List<string> ExtractCustomCollumnQuery(string entry)
+        {
+            List<string> query = new List<string>();
+            var splits = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None);
+            foreach (string split in splits)
+            {
+                if (split.Contains("Added Custom"))
+                {
+                    var regExp = Regex.Match(split, "(?<= = ).+?(?=\\))", RegexOptions.CultureInvariant).Value;
+                    query.Add(regExp);
+                }
+            }
+            return query;
+        }
+
+        private string ExtractQuery(string entry, Connection con)
+        {
+            string query = null;
+            switch (con.Type)
+            {
+                case "Sql.Databases":
+                case "Excel.Workbook":
+                    var splitsDb = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None);
+                    var splitDb = splitsDb[3].Trim(' ');
+                    query = Regex.Match(splitDb, " =.+", RegexOptions.CultureInvariant).Value;
+                    break;
+
+                case "AnalysisServices.Databases":
+                    var splitsAs = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None);
+                    var ssas = Regex.Match(entry, "(= Cube).+?(}\\))", RegexOptions.CultureInvariant).Value;
+                    query = Regex.Replace(ssas, @"\\r\\n", String.Empty);
+                    break;
+
+                case "OData.Feed":
+                    var splitsOdata = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None);
+                    query = Regex.Match(splitsOdata[2], "=.+").Value;
+                    break;
+
+                case "Table.FromColumns":
+                    var splits = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None)[1].Trim(' '); ;
+                    query = Regex.Match(splits, "=.+").Value;
+                    break;
+            }
+            return query;
+        }
+
+        private Layout GetVisualLayout(string jsonPath)
+        {
+            string json = File.ReadAllText(jsonPath, Encoding.Unicode);
+            Layout layout = JsonConvert.DeserializeObject<Layout>(json);
+            return layout;
+        }
+
+        private List<ReportSection> ExtractSections(Layout layout, List<Connection> connections)
+        {
+            List<ReportSection> sections = new List<ReportSection>();
+            foreach (Section section in layout.Sections)
+            {
+                var visuals = ExtractVisuals(section.VisualContainers, connections);
+                sections.Add(new ReportSection(visuals, section.Name, section.DisplayName, section.GetFilters()));
+            }
+            return sections;
+        }
+
+        private List<Visual> ExtractVisuals(VisualContainer[] visualContainers, List<Connection> connections)
+        {
+            List<Visual> visuals = new List<Visual>();
+            foreach (VisualContainer vc in visualContainers)
+            {
+                var config = vc.GetConfig();
+                Visual visual = new Visual(vc.Id, config.SingleVisual1.VisualType, vc.GetFilters());
+                PropertyInfo[] properties = typeof(VisualContainerConfig.Projections).GetProperties();
+                foreach (PropertyInfo property in properties)
+                {
+                    Projection[] projections = (Projection[])property.GetValue(config.SingleVisual1.Projections);
+                    if (projections != null)
+                    {
+                        foreach (var projection in projections)
+                        {
+                            visual.Projections.Add(new Projection(projection.QueryRef,property.Name));
+                        }
+                    }
+                }
+                visuals.Add(visual);
+            }
+            return visuals;
+        }
+
+    }
+}

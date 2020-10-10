@@ -1,0 +1,391 @@
+﻿@model CD.DLS.Clients.Web.Models.ElementView
+
+<div id="@Model.ElementViewId-element-view">
+
+    <div class="element-view-header">
+        @foreach (var pathPart in Model.RefPathParts)
+        {
+            @pathPart<br />
+        }
+    </div>
+
+    <div id="@Model.ElementViewId-element-view-tabs-container">
+        <ul>
+            <li><a href="#@Model.ElementViewId-element-view-business">Business View</a></li>
+            @*@if (@Model.TechViewType != CD.DLS.Clients.Web.Models.ElementTechViewTypeEnum.None)
+            {*@
+                <li id="@Model.ElementViewId-element-view-tech-label" style="display: none;"><a href="#@Model.ElementViewId-element-view-tech">Tech View</a></li>
+            @*}*@
+        </ul>
+
+        <div id="@Model.ElementViewId-element-view-business" class="business-view">
+            <table class="business-fields">
+                @foreach (var dictionaryField in Model.BusinessDictionary)
+                {
+                    <tr>
+                        <td class="business-view-label">@dictionaryField.FieldName</td>
+                        <td id="@Model.ElementViewId-dictionary-field-@dictionaryField.FieldId" dls-field-id="@dictionaryField.FieldId" class="business-view-value"><textarea rows="3" cols="50">@dictionaryField.FieldValue</textarea></td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="2"><div class="button" id="@Model.ElementViewId-dictionary-save-button">Save</div></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="info-flash" id="@Model.ElementViewId-dictionary-values-saved-info" style="display:none;">Values saved.</td>
+                </tr>
+            </table>
+        </div>
+
+        @*@if (@Model.TechViewType != CD.DLS.Clients.Web.Models.ElementTechViewTypeEnum.None)
+        {*@
+            <div id="@Model.ElementViewId-element-view-tech" class="tech-view">
+
+            </div>
+        @*}*@
+
+    </div>
+</div>
+
+<script>
+
+    var elementId = "@Model.ElementId";
+    var elementViewId = "@Model.ElementViewId";
+
+    var tabs = $("#" + elementViewId + "-element-view-tabs-container").tabs();
+
+    $('#' + elementViewId + '-dictionary-save-button').click(function () {
+        /*
+        var htmlTable = $('#' + elementViewId + '-element-view-business > table');
+        console.log($(htmlTable));
+        var tableRows = $(htmlTable).children('tbody > tr');
+        console.log($(tableRows));
+        */
+        var fieldValueCells = $('#' + elementViewId + '-element-view-tabs-container td.business-view-value');
+        console.log($(fieldValueCells));
+        var fieldValues = [];
+        $(fieldValueCells).each(function (cell) {
+            var cellValue = $(fieldValueCells[cell]);
+            //console.log($(cellValue));
+            var obj = { FieldId: $(cellValue).attr('dls-field-id'), FieldValue: $(cellValue).children('textarea').first().val() };
+            //console.log(obj);
+            fieldValues.push(obj);
+        });
+
+        var allValues = { ElementId: elementId, FieldValues: fieldValues };
+        console.log('Saving business dictionary values');
+        console.log(allValues);
+        var allValuesStringified = encodeURI(JSON.stringify(allValues));
+
+        $.get("elementview/savebusinessdictionary?argument1=" + allValuesStringified, function (data) {
+            $('#' + elementViewId + '-dictionary-values-saved-info').show('fast', function () {
+                $('#' + elementViewId + '-dictionary-values-saved-info').delay(3000).hide('slow');
+            });    
+        });  
+    });
+
+    $.get("elementview/techview?argument1=" + elementId, function (data) {
+        var visualType = data.VisualType;
+        console.log('Rendering tech view');
+        console.log(data);
+
+        if (visualType != "None") {
+            $('#' + elementViewId + '-element-view-tech').html('Loading...');
+            $('#' + elementViewId + '-element-view-tech-label').css('display', 'inline');
+
+            switch (visualType) {
+                case 'Code':
+                    var sqlText = data.Text;
+                    var offset = data.HighlightFrom;
+                    var len = data.HighlightLength;
+                    console.log('Highlight offset: ' + offset);
+                    console.log('Highlight end: ' + len);
+                    var wrappedText = sqlText;
+                    if (len > 0) {
+                        console.log(sqlText.substring(offset, len));
+                        console.log(sqlText.substring(0, offset));
+                        wrappedText = sqlText.substring(0, offset) + '<span class="code-highlight">' + sqlText.substring(offset, offset + len) + '</span>' + sqlText.substring(offset + len);
+                    }
+                    var textWithPre = '<pre>' + wrappedText + '</pre>';
+
+                    $('#' + elementViewId + '-element-view-tech').html(textWithPre);
+                    break;
+                case 'Report':
+                    var table = $('<table>').addClass('report-view');
+                    var structure = data.Structure;
+                    var rowCount = structure.RowCount;
+                    var colCount = structure.ColCount;
+                    for (row = 0; row < rowCount; row++) {
+                        var tr = $('<tr>');
+                        for (col = 0; col < colCount; col++) {
+                            var idx = row * colCount + col;
+                            var cell = structure.Cells[idx];
+                            var td = $('<td>');
+                            if (cell != null) {
+                                td.text(cell.Content);
+                                td.addClass('has-content');
+                                if (cell.Highlighted) {
+                                    td.addClass('highlighted');
+                                }
+                                else if (cell.InTablix) {
+                                    td.addClass('in-tablix');
+                                }
+                            }
+                            tr.append(td);
+                        }
+
+                        //text('result ' + i);
+                        table.append(tr);
+                    }
+
+                    $('#' + elementViewId + '-element-view-tech').html(table);
+                    break;
+                case "Ssis":
+                    var controlFlow = data.ControlFlow;
+                    var dataFlow = data.DataFlow;
+                    console.log('creating SSIS container');
+                    var ssisContainer = $('<div>');
+                    $(ssisContainer).attr('id', elementViewId.toString() + '-element-view-tech-ssis');
+                    //var techViewContainer = $('#' + elementViewId + '-element-view-tech');
+                    //$(techViewContainer).empty();
+                    //console.log(techViewContainer);
+                    //console.log(ssisContainer);
+                    //$(techViewContainer).append(ssisContainer);
+
+                    //$(ssisContainer).html(`<svg width="1000" height="1000" class="ssis-diagram">
+                    //                          <defs>
+                    //                              <!-- arrowhead marker definition -->
+                    //                              <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
+                    //                                      markerWidth="3" markerHeight="3"
+                    //                                      orient="auto-start-reverse"
+                    //                                      class="controlflow-arrow-head">
+                    //                                  <path d="M 0 0 L 10 5 L 0 10 z" />
+                    //                              </marker>
+                    //                          </defs>
+                    //                          <g class="block" transform="translate(200,200.25)">
+                    //                              <rect class="ssis-diagram-block" width="200" height="42"></rect>
+                    //                              <text x="20" y="25" class="ssis-diagram-label">Executable 1</text>
+                                                  
+                    //                          </g>
+                    //                          <g transform="translate(230,292.25)">
+                    //                              <rect class="ssis-diagram-block" width="200" height="42"></rect>
+                    //                              <text x="20" y="25" class="ssis-diagram-label">Executable 2</text>
+                    //                          </g>
+                    //                          <g class="block" transform="translate(200,200.25)">
+                    //                              <polyline class="controlflow-arrow" points="100,42 100,62 130,62 130,92" marker-end="url(#arrow)"></polyline>
+                                                  
+                    //                          </g>
+                    //                      </svg>`);
+
+                    console.log('creating choice div');
+                    $(ssisContainer).addClass('ssis-techview-container');
+                    var ssisViewChoice = $('<ul>');
+                    ssisContainer.append(ssisViewChoice);
+                    var cfId = elementViewId.toString() + '-element-view-tech-ssis-control-flow';
+                    var dfId = elementViewId.toString() + '-element-view-tech-ssis-data-flow';
+
+                    if (controlFlow != null) {
+                        console.log('control flow present');
+                        var cfLi = $('<li>');
+                        ssisViewChoice.append(cfLi);
+                        console.log('creating CF href');
+                        $(cfLi).html('<a href=#' + cfId + '>Control Flow </a>');
+                        
+                        console.log('creating CF container');
+                        var cfContainer = $('<div>');
+                        ssisContainer.append(cfContainer);
+                        $(cfContainer).attr('id', cfId);
+                        $(cfContainer).addClass('ssis-control-flow');
+                        console.log('rendering control flow');
+                        
+                        var svgContent = renderSsisFlow(controlFlow, 'cf');
+                        var svgWrap = '<svg class="ssis-diagram" width="' + controlFlow.Width + '" height="' + controlFlow.Height + '">' + svgContent + '</svg>';
+                        console.log(svgWrap);
+                        $(cfContainer).html(svgWrap);
+                    }
+
+                    if (dataFlow != null) {
+                        console.log('data flow present');
+                        var dfLi = $('<li>');
+                        ssisViewChoice.append(dfLi);
+                        console.log('creating DF href');
+                        $(dfLi).html('<a href=#' + dfId + '>Data Flow </a>');
+
+                        console.log('creating DF container');
+                        var dfContainer = $('<div>');
+                        ssisContainer.append(dfContainer);
+                        $(dfContainer).attr('id', dfId);
+                        $(dfContainer).addClass('ssis-data-flow');
+                        console.log('rendering data flow');
+
+                        var svgContent = renderSsisFlow(dataFlow, 'df');
+                        var svgWrap = '<svg class="ssis-diagram" width="' + dataFlow.Width + '" height="' + dataFlow.Height
+                            + '">' + svgContent + '</svg>';
+                        console.log(svgWrap);
+                        $(dfContainer).html(svgWrap);
+                    }
+                    
+
+                    $('#' + elementViewId + '-element-view-tech').html(ssisContainer);
+                    $('#' + elementViewId + '-element-view-tech-ssis').tabs();
+            }
+
+        }
+        else
+        {
+            $('#' + elementViewId + '-element-view-tech-label').css('display', 'none');
+        }
+
+
+
+        /*
+        $('#' + elementViewId + '-dictionary-values-saved-info').show('fast', function () {
+            $('#' + elementViewId + '-dictionary-values-saved-info').delay(3000).hide('slow');
+        });
+        */
+    });
+
+    function renderSsisFlow(flow, suffix) {
+        var svg = $('<svg>');
+        /**/
+        $(svg).css('width', flow.Width);
+        $(svg).css('height', flow.Height);
+        /*
+        $(container).css('width', flow.Width * 10);
+        $(container).css('height', flow.Height * 10);
+        */
+        /**/
+
+        //$(container).append(svg);
+        //$(svg).attr('width', flow.Width);
+        //$(svg).attr('height', flow.Height);
+        $(svg).addClass('ssis-diagram');
+        $(svg).html(`
+                                              <defs>
+                                                  <!-- arrowhead marker definition -->
+                                                  <marker id="ssis-arrow-head-` + elementViewId + `-` + suffix + `" viewBox="0 0 10 10" refX="5" refY="5"
+                                                          markerWidth="3" markerHeight="3"
+                                                          orient="auto-start-reverse"
+                                                          class="ssis-arrow-head">
+                                                      <path d="M 0 0 L 10 5 L 0 10 z" />
+                                                  </marker>
+                                              </defs>`);
+
+        for (var i = 0; i < flow.Blocks.length; i++) {
+            console.log('block ' + i + ' of ' + flow.Blocks.length);
+            var block = flow.Blocks[i];
+            var blockG = $('<g>');
+            $(svg).append(blockG);
+            $(blockG).addClass('block');
+            $(blockG).attr('transform', 'translate(' + block.Position.X.toString() + ',' + block.Position.Y.toString() + ')');
+            var rect = $('<rect>');
+            $(blockG).append(rect);
+            if (block.Highlighted == true) {
+                $(rect).addClass('ssis-diagram-block-highlighted');
+            }
+            else {
+                $(rect).addClass('ssis-diagram-block');
+            }
+            $(rect).attr('width', block.Width);
+            $(rect).attr('height', block.Height);
+            $(rect).attr('rx', 5);
+            $(rect).attr('ry', 5);
+
+            var blockText = $('<text>');
+            $(blockG).append(blockText);
+            $(blockText).addClass('ssis-diagram-label');
+            $(blockText).attr('x', 20);
+            $(blockText).attr('y', 20);
+            
+            $(blockText).text(block.Name);
+        }
+
+        for (var i = 0; i < flow.Arrows.length; i++) {
+            console.log('arrow ' + i + ' of ' + flow.Arrows.length);
+            var arrow = flow.Arrows[i];
+            var arrowG = $('<g>');
+            $(svg).append(arrowG);
+            $(arrowG).addClass('block');
+            $(arrowG).attr('transform', 'translate(' + arrow.Position.X.toString() + ',' + arrow.Position.Y.toString() + ')');
+            var polyLine = $('<polyline>');
+            $(arrowG).append(polyLine);
+            $(polyLine).addClass('ssis-diagram-arrow');
+            $(polyLine).attr('marker-end', 'url(#ssis-arrow-head-' + elementViewId + '-' + suffix + ')');
+            var pathMap = arrow.Path.map(s => s.X + ',' + s.Y);
+            var pathJoin = pathMap.join(' ');
+            $(polyLine).attr('points', pathJoin);
+        }
+
+        return $(svg).html();
+
+        /*
+         <svg width="1000" height="1000" class="ssis-diagram">
+                                              <defs>
+                                                  <!-- arrowhead marker definition -->
+                                                  <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5"
+                                                          markerWidth="3" markerHeight="3"
+                                                          orient="auto-start-reverse"
+                                                          class="controlflow-arrow-head">
+                                                      <path d="M 0 0 L 10 5 L 0 10 z" />
+                                                  </marker>
+                                              </defs>
+                                              <g class="block" transform="translate(200,200.25)">
+                                                  <rect class="ssis-diagram-block" width="200" height="42"></rect>
+                                                  <text x="20" y="25" class="ssis-diagram-label">Executable 1</text>
+
+                                              </g>
+                                              <g transform="translate(230,292.25)">
+                                                  <rect class="ssis-diagram-block" width="200" height="42"></rect>
+                                                  <text x="20" y="25" class="ssis-diagram-label">Executable 2</text>
+                                              </g>
+                                              <g class="block" transform="translate(200,200.25)">
+                                                  <polyline class="controlflow-arrow" points="100,42 100,62 130,62 130,92" marker-end="url(#arrow)"></polyline>
+
+                                              </g>
+                                          </svg>
+         */
+
+        /*
+         {ControlFlow: {…}, DataFlow: null, VisualType: "Ssis"}
+ControlFlow:
+Arrows: Array(3)
+0:
+Path: Array(2)
+0: {X: 0, Y: 0}
+1: {X: 0, Y: 52.5}
+length: 2
+__proto__: Array(0)
+Position:
+X: 90
+Y: 165
+__proto__: Object
+__proto__: Object
+1: {Position: {…}, Path: Array(2)}
+2: {Position: {…}, Path: Array(2)}
+length: 3
+__proto__: Array(0)
+Blocks: Array(5)
+0:
+Height: 42
+Highlighted: false
+ModelElementId: 17106442
+Name: "Package Start Info"
+Position: {X: 7, Y: 5.5}
+RefPath: "IntegrationServices[Name='DWH-SERVER']/Catalog/Folder
+Width: 166
+__proto__: Object
+1: {Width: 169, Height: 248, Name: "Sequence Container", RefPath: "IntegrationServices
+2: {Width: 153, Height: 42, Name: "Insert -1 record", RefPath: "IntegrationServices
+3: {Width: 158, Height: 42, Name: "Load DimActivity", RefPath: "IntegrationServices[
+4: {Width: 136, Height: 44, Name: "Package End Info", RefPath: "IntegrationServices[
+length: 5
+__proto__: Array(0)
+Height: 447.5
+Width: 174.5
+__proto__: Object
+DataFlow: null
+VisualType: "Ssis"
+__proto__: Object
+         */ 
+    }
+    
+</script>

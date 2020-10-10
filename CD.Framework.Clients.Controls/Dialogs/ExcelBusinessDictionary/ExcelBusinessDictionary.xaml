@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="CD.DLS.Clients.Controls.Dialogs.ExcelBusinessDictionary.ExcelBusinessDictionary"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs.ExcelBusinessDictionary"
+             mc:Ignorable="d" 
+             d:DesignHeight="650" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="0 0 0 10"/>
+            <Setter Property="BorderBrush" Value="LightGray" />
+            <Setter Property="Padding" Value="3 3 3 3" />
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5 5 5 5" />
+            <Setter Property="Padding" Value="3 3 3 3" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="Background" Value="WhiteSmoke" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid x:Name="mainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition>
+            </ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="elementNameLabel" Content="Element Name" />
+        <Separator Grid.Row="1" Grid.Column="0" Margin="5 5 5 5"/>
+        <ScrollViewer Grid.Row="2" VerticalAlignment="Top" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto">
+
+
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" x:Name="businessDictionaryFields">
+                    <!--<Label Content="Field 1 Name" />
+                    <TextBox HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" MinLines="3" MaxLines="5" AcceptsReturn="True"
+                 Text="Lorem ipsum Lorem ipsum" />
+
+                    <Label Content="Field 2 Name" />
+                    <TextBox HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" MinLines="3" MaxLines="5" AcceptsReturn="True"
+                 Text="Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum " />
+
+                    <Label Content="Field 3 Name" />
+                    <TextBox HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" MinLines="3" MaxLines="5" AcceptsReturn="True"
+                 Text="Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum" />-->
+                </StackPanel>
+
+                <Grid x:Name="buttonsGrid" Margin="0 10 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Grid.Row="0" Content="Save" x:Name="saveButton" Click="SaveButton_Click"></Button>
+                    <Button Grid.Column="1" Grid.Row="0" Content="Undo" x:Name="undoButton" Click="UndoButton_Click"></Button>
+                    <Button Grid.Column="0" Grid.Row="1" Content="Details..." x:Name="detailsButton" Click="DetailsButton_Click"></Button>
+                    <Label x:Name="savedIndicatorLabel" Content="Values saved." Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"></Label>
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+
+
+
+    </Grid>
+</UserControl>

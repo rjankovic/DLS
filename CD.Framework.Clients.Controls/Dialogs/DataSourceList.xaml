@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="CD.DLS.Clients.Controls.Dialogs.DataSourceList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:clr="clr-namespace:System;assembly=mscorlib"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
+             mc:Ignorable="d" 
+             >
+    <UserControl.Resources>
+        <ControlTemplate x:Key="ToolbarTemplate1" TargetType="{x:Type ToolBar}"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <DataGrid x:Name="grid" Grid.Row="0" Grid.Column="0" AutoGenerateColumns="False" 
+                      CanUserAddRows="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" IsReadOnly="True"
+                      RowDetailsVisibilityMode="Collapsed"
+                      >
+                <DataGrid.Resources>
+                    <clr:String x:Key="DetailsLink">Details</clr:String>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <!--
+                            public int ModelElementId { get; set; }
+        public string Command { get; set; }
+        public string Refpath { get; set; }
+        public string Name { get; set; }
+        public string ManagerName { get; set; }
+        public string SourceType { get; set; }
+        public string ConnectionString { get; set; }
+        public int LocaleID { get; set; }
+        public int CodePage { get; set; }
+        public string FileFormat { get; set; }
+        public int PackageElementId { get; set; }
+        public string PackageRefPath { get; set; }
+        public string PackageName { get; set; }
+                    -->
+                    <DataGridTemplateColumn Header="Columns">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="Show/Hide" TextDecorations="Underline" Foreground="DarkBlue" PreviewMouseDown="DetailsTextBlock_PreviewMouseDown"></TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Source Type" Binding="{Binding Path=SourceType}" />
+                    <DataGridTextColumn Header="Connection String" Binding="{Binding Path=ConnectionString}" />
+                    <DataGridTextColumn Header="SSIS Package" Binding="{Binding Path=PackageName}" />
+                    <DataGridTextColumn Header="SSIS Component" Binding="{Binding Path=Name}" />
+                    <DataGridTextColumn Header="File Format" Binding="{Binding Path=FileFormat}" />
+                    <DataGridTextColumn Header="File Format" Binding="{Binding Path=FileFormat}" />
+                    <DataGridTextColumn Header="Locale ID" Binding="{Binding Path=LocaleID}" />
+                    <DataGridTextColumn Header="Code Page" Binding="{Binding Path=CodePage}" />
+                    <DataGridTextColumn Header="Table / Command" Binding="{Binding Path=Command}" />
+                </DataGrid.Columns>
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <!--
+                                public int ModelElementId { get; set; }
+        public string ColumnName { get; set; }
+        public string DataType { get; set; }
+        public int Length { get; set; }
+        public int Precision { get; set; }
+        public int Scale { get; set; }
+                        -->
+                        <DataGrid ItemsSource="{Binding Path=Columns}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" Background="#BBBBBB"  Padding="20,0,0,0">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Column Name" Binding="{Binding Path=ColumnName}" />
+                                <DataGridTextColumn Header="Data Type" Binding="{Binding Path=DataType}" />
+                                <DataGridTextColumn Header="Length" Binding="{Binding Path=Length}" />
+                                <DataGridTextColumn Header="Precision" Binding="{Binding Path=Precision}" />
+                                <DataGridTextColumn Header="Scale" Binding="{Binding Path=Scale}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+            <local:WaitingPanel x:Name="waitingPanel" Grid.Row="0" Grid.Column="0" Background="White" Opacity="0.8" Grid.ColumnSpan="1" Grid.RowSpan="1"/>
+        </Grid>
+    </Grid>
+</UserControl>

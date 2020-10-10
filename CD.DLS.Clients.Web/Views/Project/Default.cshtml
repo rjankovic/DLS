@@ -1,0 +1,11 @@
+﻿@model IEnumerable<CD.DLS.Common.Structures.ProjectConfig>
+
+
+<ul class="select-list">
+
+    @foreach (var item in Model)
+    {
+        <li class="select-list-item" onclick="javascript:projectActions.selectProject('@item.ProjectConfigId')">@item.Name</li>
+
+    }
+</ul>

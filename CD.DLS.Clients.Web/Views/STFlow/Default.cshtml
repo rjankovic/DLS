@@ -1,0 +1,329 @@
+﻿@model  string
+
+<div id="@Model-tabsContainer">
+    <ul>
+        <li id="@Model-tabs-tree-li"><a href="#@Model-tabs-tree">Root Selection</a></li>
+        <li id="@Model-tabs-type-li" style="display: none;"><a href="#@Model-tabs-type">Type Selection</a></li>
+        <li id="@Model-tabs-map-li" style="display: none;"><a href="#@Model-tabs-map">Lineage Map</a></li>
+        <li id="@Model-tabs-flow-li" style="display: none;"><a href="#@Model-tabs-flow">Flow Detail</a></li>
+    </ul>
+    <div id="@Model-tabs-tree">
+        <!--<p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>-->
+        <!---->
+
+        <div class="split-container">
+            <div class="split-left">
+                <!--Proin elit arcu, rutrum commodo-->
+
+                <div id="@Model-sourceTree"></div>
+
+            </div>
+
+            <div class="split-right">
+                <div id="@Model-targetTree"></div>
+            </div>
+        </div>
+        <!---->
+    </div>
+    <div id="@Model-tabs-type">
+
+    </div>
+    <div id="@Model-tabs-map">
+        <div class="st-tab-header" id="@Model-tabs-map-header"> </div>
+        <div class="scrollable">
+            <table id="@Model-tabs-map-table">
+                <thead>
+                    <tr>
+                        <th>Source Name</th>
+                        <th>Target Name</th>
+                        <th>Source Description</th>
+                        <th>Target Description</th>
+                        <th>Source Ref Path</th>
+                        <th>Target Ref Path</th>
+                        <th>Source Element Id</th>
+                        <th>Target Element Id</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div id="@Model-tabs-flow">
+
+        <!--- flow detail start-->
+        <div class="split-container" id="@Model-split-container-flow">
+            <div class="split-left">
+
+                <div class="st-tab-header" id="@Model-st-flow-diagram-header">
+                    Detail level:
+                    <select id="@Model-st-target-flow-detail-selection">
+                        <option value="3">Low</option>
+                        <option value="2" selected="selected">Medium</option>
+                        <option value="1">High</option>
+                    </select>
+                </div>
+
+                <div class="diagramContainerNoSize" id="@Model-st-flow-diagram-container">
+                    <!-- Loading... -->
+                    <!-- <svg id="svg-@Model-st-flow-diagram-container" class="diagram" width="5000" height="5000">
+
+    </svg> -->
+                </div>
+            </div>
+
+            <div class="split-right" id="@Model-st-flow-right-pane">
+
+
+            </div>
+        </div>
+        <!-- flow detail end -->
+
+    </div>
+</div>
+
+<script>
+    var tileId = "@Model";
+    var sourceTreeId = tileId + "-sourceTree";
+    var targetTreeId = tileId + "-targetTree";
+    var sourceTree = $('#' + sourceTreeId);
+    var targetTree = $('#' + targetTreeId);
+    var tabsTreeLi = $('#' + tileId + '-tabs-tree-li');
+    var tabsTypeLi = $('#' + tileId + '-tabs-type-li');
+    var tabsMapLi = $('#' + tileId + '-tabs-map-li');
+    var tabsFlowLi = $('#' + tileId + '-tabs-flow-li');
+    var tabsContainerId = tileId + '-tabsContainer';
+
+    var tabsTypeDiv = $('#' + tileId + '-tabs-type');
+    var tabsTypeDivId = tileId + '-tabs-type';
+    
+    var tabs = $("#" + tabsContainerId).tabs();
+    
+    var sourceRootSelected = false;
+    var targetRootSelected = false;
+    var sourceRootId = 0;
+    var targetRootId = 0;
+    var sourceTypeSelected = false;
+    var targetTypeSelected = false;
+    var sourceElementType = "";
+    var targetElementType = "";
+
+    var detailSourceElementId = 0;
+    var detailTargetElementId = 0;
+    var detailSourceElementRefPath = "";
+    var detailTargetElementRefPath = "";
+
+    var lineageMapTableInner = null;
+    var lineageMapHeader = $('#' + tileId + '-tabs-map-header');
+    var lineageMapTable = $('#' + tileId + '-tabs-map-table');
+
+    $.get("stflow/getsolutiontree", function (data) {
+        treeView.showTree(sourceTree, data, "Source", function (item) {
+            console.log(item);
+            sourceRootId = item[0];
+            sourceRootSelected = true;
+            if (targetRootSelected) {
+                activatePhase("type");
+            }
+        });
+
+        treeView.showTree(targetTree, data, "Target", function (item) {
+            console.log(item);
+            targetRootId = item[0];
+            targetRootSelected = true;
+            if (sourceRootSelected) {
+                activatePhase("type");
+            }
+        });
+        
+        var splitContainer = $('#' + tileId + '-tabs-tree .split-container');
+        
+        $(splitContainer).width($('#' + tileId + '-tabs-tree .split-container').parent().width());
+        $(splitContainer).height($(window).height() * 0.5);
+
+
+        var splitter = $(splitContainer).split({
+            orientation: 'vertical',
+            limit: 10,
+            position: '50%', // if there is no percentage it interpret it as pixels
+            onDrag: function (event) {
+                //console.log(splitter.position());
+            }
+        });
+
+        var flowSplitContainer = $('#' + tileId + '-tabs-flow .split-container');
+        $(flowSplitContainer).width($('#' + tileId + '-tabs-tree .split-container').parent().width());
+        $(flowSplitContainer).height($(window).height() * 0.8);
+
+
+        var flowSplitter = $(flowSplitContainer).split({
+            orientation: 'vertical',
+            limit: 10,
+            position: '50%', // if there is no percentage it interpret it as pixels
+            onDrag: function (event) {
+                //console.log(splitter.position());
+            }
+        });
+
+
+    });
+    
+    $('#' + tileId + '-st-target-flow-detail-selection').change(function () {
+        console.log('Detail level changed to ' + $('#' + tileId + '-st-target-flow-detail-selection').val());
+        activatePhase('flow');
+    });
+
+    function activatePhase(phase) {
+        switch (phase) {
+            case "root":
+                $(tabsTypeLi).css('display', 'none');
+                $(tabsMapLi).css('display', 'none');
+                $(tabsFlowLi).css('display', 'none');
+                tabs.tabs("refresh");
+                break;
+            case "type":
+                sourceTypeSelected = false;
+                targetTypeSelected = false;
+                $(tabsTypeLi).css('display', 'inline');
+                $(tabsMapLi).css('display', 'none');
+                $(tabsFlowLi).css('display', 'none');
+                tabs.tabs("refresh");
+                
+                $.get("/stflow/typeselection/" + sourceRootId + "/" + targetRootId, function (data) {
+                    $(tabsTypeDiv).html(data);
+
+                    $('#' + tabsTypeDivId + ' .st-source-type-selection').change(function () {
+                        sourceElementType = $('#' + tabsTypeDivId + ' .st-source-type-selection').val();
+                        console.log('Source type: ' + sourceElementType);
+                        sourceTypeSelected = true;
+                        if (targetTypeSelected) {
+                            activatePhase("map");
+                        }
+                    });
+
+                    $('#' + tabsTypeDivId + ' .st-target-type-selection').change(function () {
+                        targetElementType = $('#' + tabsTypeDivId + ' .st-target-type-selection').val();
+                        console.log('Target type: ' + targetElementType);
+                        targetTypeSelected = true;
+                        if (sourceTypeSelected) {
+                            activatePhase("map");
+                        }
+                    });
+                });
+                $(tabsTypeDiv).html
+                break;
+            case "map":
+                $(tabsTypeLi).css('display', 'inline');
+                $(tabsMapLi).css('display', 'inline');
+                $(tabsFlowLi).css('display', 'none');
+                tabs.tabs("refresh");
+                
+                $(lineageMapHeader).html('Loading...');
+                //$(lineageMapTable).hide();
+
+                var mapSpec = { sourceRootId: sourceRootId, targetRootId: targetRootId, sourceElementType: sourceElementType, targetElementType: targetElementType };
+                var mapSpecString = encodeURIComponent(JSON.stringify(mapSpec));
+                $.get("/stflow/lineagemap?argument1=" + mapSpecString, function (data) {
+                    console.log('Rendering lineage map');
+                    console.log(data);
+                    
+                    $(lineageMapHeader).html('Source: ' + data.SourceDescriptivePath + ' >> Target: ' + data.TargetDescriptivePath);
+
+                    if (lineageMapTableInner != null) {
+                        console.log('Destroying old lineage map')
+                        lineageMapTableInner.destroy();
+                    }
+                    lineageMapTableInner = $(lineageMapTable).DataTable({
+                        select: true,
+                        data: data.DataFlow,
+                        dom: 'Rlfrtip',
+                        columns: [
+                            // SourceNodeId,SourceName,SourceRefPath,SourceElementId,Source Descriptive Path,TargetNodeId,TargetName,TargetRefPath,TargetElementId,Target Descriptive Path
+                            { data: 'SourceNodeName' },
+                            { data: 'TargetNodeName' },
+                            { data: 'SourceDescriptivePath' },
+                            { data: 'TargetDescriptivePath' },
+                            { data: 'SourceElementRefPath' },
+                            { data: 'TargetElementRefPath' },
+                            { data: 'SourceElementId' },
+                            { data: 'TargetElementId' }//,
+                            
+                        ],
+                        "stripeClasses": ['table-odd-row', 'table-even-row']
+                    });
+                    
+                    lineageMapTableInner.on('select', function (e, dt, type, indexes) {
+                        if (type === 'row') {
+                            var data = lineageMapTableInner.rows(indexes).data()
+                            detailSourceElementRefPath = data.pluck('SourceElementRefPath')[0];
+                            detailTargetElementRefPath = data.pluck('TargetElementRefPath')[0];
+                            detailSourceElementId = data.pluck('SourceElementId')[0];
+                            detailTargetElementId = data.pluck('TargetElementId')[0];
+                            console.log('Lineage map selection: ');
+                            console.log(data);
+                            activatePhase('flow');
+
+                            /*
+        public LineageDetailLevelEnum LineageDetailLevel { get; set; }
+        public string SourceElementRefPath { get; set; }
+        public string TargetElementRefPath { get; set; }
+        public int SourceElementId { get; set; }
+        public int TargetElementId { get; set; }
+                             */ 
+
+                            
+                        }
+                    });
+
+                });
+
+                break;
+            case "flow":
+                $(tabsTypeLi).css('display', 'inline');
+                $(tabsMapLi).css('display', 'inline');
+                $(tabsFlowLi).css('display', 'inline');
+                tabs = $("#" + tabsContainerId).tabs();
+                tabs.tabs("refresh");
+
+
+                var detailLevel = $('#' + tileId + '-st-target-flow-detail-selection').val();
+                var flowSpec = {
+                    LineageDetailLevel: detailLevel,
+                    SourceElementRefPath: detailSourceElementRefPath,
+                    TargetElementRefPath: detailTargetElementRefPath,
+                    SourceElementId: detailSourceElementId,
+                    TargetElementId: detailTargetElementId
+                };
+                var flowSpecString = encodeURIComponent(JSON.stringify(flowSpec));
+
+                $('#' + tileId + '-st-flow-diagram-container').html('Loading...');
+                $('#' + tileId + '-st-flow-right-pane').html('');
+                
+                $.get("/stflow/flowdetail?argument1=" + flowSpecString, function (data) {
+                    // if the detail level has been switched in the meantime
+                    if (detailLevel != $('#' + tileId + '-st-target-flow-detail-selection').val()) {
+                        return;
+                    }
+
+                    console.log('Rendering flow detail');
+                    console.log(data);
+
+                    var diagramId = tileId + '-st-flow-diagram-container';
+                    data.DiagramId = diagramId;
+
+                    diagramRenderer.renderDiagram(data, loadElementView);
+
+                });
+
+
+
+                break;
+        }
+    }
+
+    function loadElementView(selectedNodeId) {
+        $("#" + tileId + "-st-flow-right-pane").html('Loading...');
+        $.get("/elementview?argument1=" + selectedNodeId, function (data) {
+            $("#" + tileId + "-st-flow-right-pane").html(data);
+        });
+    }
+</script>
+

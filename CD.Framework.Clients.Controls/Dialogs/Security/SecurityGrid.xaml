@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="CD.DLS.Clients.Controls.Dialogs.Security.SecurityGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Clients.Controls;component/Resources/DefaultResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+            <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Grid.Column="0" Grid.Row="1" LastChildFill="True" Width="auto" Visibility="Visible">
+            <Button Content="Add" Style="{StaticResource OrangeButton}" HorizontalAlignment="Left"  Width="70" DockPanel.Dock="Left" x:Name="addRole" Click="AddRole_Click"></Button>
+            <Button Content="Remove" Style="{StaticResource GreyButton}" HorizontalAlignment="Left" Width="70" DockPanel.Dock="Left" x:Name="removeRole" Click="RemoveRole_Click"></Button>
+        </DockPanel>
+
+        <DataGrid    
+            x:Name="userGrid" 
+            Grid.Row="2" 
+            Grid.Column="0" 
+            AutoGenerateColumns="False" 
+            CanUserAddRows="False" 
+            CanUserDeleteRows="False"
+            CanUserResizeColumns="True"
+            CanUserSortColumns="True"
+            CanUserReorderColumns="True"
+            IsReadOnly="True"
+            ClipboardCopyMode="IncludeHeader"
+            >
+            <DataGrid.Columns x:Uid="dataGrid">
+                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"/>
+                <DataGridHyperlinkColumn Header="Permissions" Binding="{Binding Path=Permission}">
+                    <DataGridHyperlinkColumn.ElementStyle>
+                        <Style>
+                            <EventSetter Event="Hyperlink.Click" Handler="Permissions_Click"/>
+                        </Style>
+                    </DataGridHyperlinkColumn.ElementStyle>
+                </DataGridHyperlinkColumn>
+                <DataGridHyperlinkColumn Header="Members" Binding="{Binding Path=Member}">
+                    <DataGridHyperlinkColumn.ElementStyle>
+                        <Style>
+                            <EventSetter Event="Hyperlink.Click" Handler="Members_Click"/>
+                        </Style>
+                    </DataGridHyperlinkColumn.ElementStyle>
+                </DataGridHyperlinkColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <local:WaitingPanel x:Name="waitingPanel" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="White" Opacity="0.8" Visibility="Hidden"/>
+    </Grid>
+</UserControl>

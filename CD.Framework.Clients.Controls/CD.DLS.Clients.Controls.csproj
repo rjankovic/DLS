@@ -1,0 +1,610 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6583D9B9-FD00-4685-9505-075BF010D2F9}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <RootNamespace>CD.DLS.Clients.Controls</RootNamespace>
+    <AssemblyName>CD.DLS.Clients.Controls</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\client\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AnalysisServices, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.AnalysisServices\v4.0_14.0.0.0__89845dcd8080cc91\Microsoft.AnalysisServices.DLL</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AnalysisServices.AdomdClient, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\Microsoft.NET\ADOMD.NET\140\Microsoft.AnalysisServices.AdomdClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AnalysisServices.Core, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.AnalysisServices.Core\v4.0_15.0.0.0__89845dcd8080cc91\Microsoft.AnalysisServices.Core.DLL</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.ConnectionInfo">
+      <HintPath>..\Assemblies\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Smo">
+      <HintPath>..\Assemblies\Microsoft.SqlServer.Smo.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.SqlClrProvider, Version=14.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\v12\Microsoft.SqlServer.SqlClrProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.8.19076.18510, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.8.19076.18510, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Dialogs\BusinessDictionaryAdmin\FieldsPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\BusinessDictionaryAdmin\AddLinkPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\BusinessDictionaryAdmin\TypePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\BusinessDictionaryAdmin\ViewsPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\BusinessObjects\BusinessFolderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\CentricGraphBrowser\CentricBrowser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ElementView\PivotTableTemplateCustomView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\DynamicDataGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\CheckedListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\DataSourceList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ElementView\ElementBusinessView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ElementView\ElementDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ElementView\ElementTechView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ElementView\ElementView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ExcelBusinessDictionary\ExcelBusinessDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ExcelPanes\PivotSuggestionsPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Misc\AboutPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Misc\MultiSelectComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Multiselect.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\NamePicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PowerBiConnection\PowerBiConnectionChooser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PowerBiConnection\PowerBiConnectionWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Security\RoleMembers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Security\RolePermissions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Security\SecurityGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SourceTargetSelector\SourceTargetFavorities.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SsrsRenderer\ParameterSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SsrsRenderer\ReportSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\TextInput.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Overview\DataFlowOverview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Search\FulltextSearchBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Search\FulltextSearchPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\Search\FulltextSearchResults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SourceTargetSelector\VisualTargetSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SourceTargetSelector\SourceTargetFlowDetail.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SourceTargetSelector\SourceTargetLineageGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SourceTargetSelector\SourceTargetSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SourceTargetSelector\SourceTargetTypeSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SourceTargetSelector\SourceTargetRootSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SourceTargetSelector\WarningGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SsasConnection\SsasConnectionChooser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SsasConnection\SsasConnectionWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SsisConnection\SsisConnectionChooser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\NameChooser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\LogViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\RecursiveTree.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ProjectConfigurator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ListPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SqlConnection\LoadingCircle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SqlConnection\SqlConnectionStringBuilder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SqlConnection\SqlConnectionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SsisConnection\SSISConnectionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\SsrsConnection\SsrsConnectionWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SsrsConnection\SsrsConnectionChooser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\TreeFilterSelector\TreeFilterRootSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\TreeFilterSelector\TreeFilterSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\TreeFilterSelector\TreeFilterTypeSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\WaitingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\DefaultResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\NameChooserWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ServiceLogViewerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Converters\MultiOrConverter.cs" />
+    <Compile Include="DataManagers\BusinessObjectsTreeManager.cs" />
+    <Compile Include="Diagrams\DiagramConstructor.cs" />
+    <Compile Include="Diagrams\GeometryHelper.cs" />
+    <Compile Include="Dialogs\BusinessDictionaryAdmin\FieldsPanel.xaml.cs">
+      <DependentUpon>FieldsPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\BusinessDictionaryAdmin\AddLinkPanel.xaml.cs">
+      <DependentUpon>AddLinkPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\BusinessDictionaryAdmin\TypePanel.xaml.cs">
+      <DependentUpon>TypePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\BusinessDictionaryAdmin\ViewsPanel.xaml.cs">
+      <DependentUpon>ViewsPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\BusinessObjects\BusinessFolderEditor.xaml.cs">
+      <DependentUpon>BusinessFolderEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\CentricGraphBrowser\CentricBrowser.xaml.cs">
+      <DependentUpon>CentricBrowser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ElementView\PivotTableTemplateCustomView.xaml.cs">
+      <DependentUpon>PivotTableTemplateCustomView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\DynamicDataGrid.xaml.cs">
+      <DependentUpon>DynamicDataGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\CheckedListView.xaml.cs">
+      <DependentUpon>CheckedListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\DataSourceList.xaml.cs">
+      <DependentUpon>DataSourceList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ElementView\ElementBusinessView.xaml.cs">
+      <DependentUpon>ElementBusinessView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ElementView\ElementDataView.xaml.cs">
+      <DependentUpon>ElementDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ElementView\ElementTechView.xaml.cs">
+      <DependentUpon>ElementTechView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ElementView\ElementView.xaml.cs">
+      <DependentUpon>ElementView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ExcelBusinessDictionary\ExcelBusinessDictionary.xaml.cs">
+      <DependentUpon>ExcelBusinessDictionary.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ExcelPanes\PivotSuggestionsPane.xaml.cs">
+      <DependentUpon>PivotSuggestionsPane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Misc\AboutPane.xaml.cs">
+      <DependentUpon>AboutPane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Misc\MultiSelectComboBox.xaml.cs">
+      <DependentUpon>MultiSelectComboBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Misc\StretchingTreeView.cs" />
+    <Compile Include="Dialogs\Multiselect.xaml.cs">
+      <DependentUpon>Multiselect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\NamePicker.xaml.cs">
+      <DependentUpon>NamePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\PowerBiConnection\PowerBiConnectionChooser.xaml.cs" />
+    <Compile Include="Dialogs\PowerBiConnection\PowerBiConnectionWindow.xaml.cs" />
+    <Compile Include="Dialogs\Security\RoleMembers.xaml.cs">
+      <DependentUpon>RoleMembers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Security\RolePermissions.xaml.cs">
+      <DependentUpon>RolePermissions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Security\SecurityGrid.xaml.cs">
+      <DependentUpon>SecurityGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SourceTargetSelector\SourceTargetFavorities.xaml.cs">
+      <DependentUpon>SourceTargetFavorities.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SsrsRenderer\ParameterSelector.xaml.cs">
+      <DependentUpon>ParameterSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SsrsRenderer\ReportSelector.xaml.cs">
+      <DependentUpon>ReportSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\TextInput.xaml.cs">
+      <DependentUpon>TextInput.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Overview\DataFlowOverview.xaml.cs">
+      <DependentUpon>DataFlowOverview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Overview\DiagramLoader.cs" />
+    <Compile Include="Diagrams\DiagramObjects.cs" />
+    <Compile Include="Dialogs\Search\FulltextSearchBar.xaml.cs">
+      <DependentUpon>FulltextSearchBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Search\FulltextSearchPanel.xaml.cs">
+      <DependentUpon>FulltextSearchPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Search\FulltextSearchResults.xaml.cs">
+      <DependentUpon>FulltextSearchResults.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SourceTargetSelector\VisualTargetSelector.xaml.cs">
+      <DependentUpon>VisualTargetSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SourceTargetSelector\SourceTargetFlowDetail.xaml.cs">
+      <DependentUpon>SourceTargetFlowDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SourceTargetSelector\SourceTargetLineageGrid.xaml.cs">
+      <DependentUpon>SourceTargetLineageGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SourceTargetSelector\SourceTargetSelector.xaml.cs">
+      <DependentUpon>SourceTargetSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SourceTargetSelector\SourceTargetTypeSelector.xaml.cs">
+      <DependentUpon>SourceTargetTypeSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SourceTargetSelector\SourceTargetRootSelector.xaml.cs">
+      <DependentUpon>SourceTargetRootSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SourceTargetSelector\WarningGrid.xaml.cs">
+      <DependentUpon>WarningGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SsasConnection\SsasConnectionChooser.xaml.cs">
+      <DependentUpon>SsasConnectionChooser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SsasConnection\SsasProjectListing.cs" />
+    <Compile Include="Dialogs\SsasConnection\SsasConnectionWindow.xaml.cs">
+      <DependentUpon>SsasConnectionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SsisConnection\SsisConnectionChooser.xaml.cs">
+      <DependentUpon>SsisConnectionChooser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\NameChooser.xaml.cs">
+      <DependentUpon>NameChooser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\LogViewer.xaml.cs">
+      <DependentUpon>LogViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\RecursiveTree.xaml.cs">
+      <DependentUpon>RecursiveTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ProjectConfigurator.xaml.cs">
+      <DependentUpon>ProjectConfigurator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ListPicker.xaml.cs">
+      <DependentUpon>ListPicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SqlConnection\DatabaseTable.cs" />
+    <Compile Include="Dialogs\SqlConnection\ISmoTasks.cs" />
+    <Compile Include="Dialogs\SqlConnection\LoadingCircle.xaml.cs" />
+    <Compile Include="Dialogs\SqlConnection\SmoTasks.cs" />
+    <Compile Include="Dialogs\SqlConnection\SqlConnectionString.cs" />
+    <Compile Include="Dialogs\SqlConnection\SqlConnectionStringBuilder.xaml.cs" />
+    <Compile Include="Dialogs\SqlConnection\SqlConnectionWindow.xaml.cs">
+      <DependentUpon>SqlConnectionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SsisConnection\SSISConnectionWindow.xaml.cs">
+      <DependentUpon>SSISConnectionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SsisConnection\SsisProjectListing.cs" />
+    <Compile Include="Dialogs\SsrsConnection\SsrsConnectionWindow.xaml.cs" />
+    <Compile Include="Dialogs\SsrsConnection\SsrsConnectionChooser.xaml.cs" />
+    <Compile Include="Dialogs\TreeFilterSelector\TreeFilterRootSelector.xaml.cs">
+      <DependentUpon>TreeFilterRootSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\TreeFilterSelector\TreeFilterSelector.xaml.cs">
+      <DependentUpon>TreeFilterSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\TreeFilterSelector\TreeFilterTypeSelector.xaml.cs">
+      <DependentUpon>TreeFilterTypeSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\WaitingPanel.xaml.cs">
+      <DependentUpon>WaitingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\ICloseable.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Renderers\CanvasRenderer.cs" />
+    <Compile Include="Renderers\VisualPartNodeRenderer.cs" />
+    <Compile Include="Renderers\ReportLayoutRenderer.cs" />
+    <Compile Include="Renderers\SsisPackageRenderer.cs" />
+    <Compile Include="Windows\NameChooserWindow.xaml.cs">
+      <DependentUpon>NameChooserWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ServiceLogViewerWindow.xaml.cs">
+      <DependentUpon>ServiceLogViewerWindow.xaml</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Resource Include="webfonts\fa-solid-900.ttf" />
+    <Resource Include="webfonts\fa-regular-400.ttf" />
+    <Resource Include="webfonts\fa-brands-400.ttf" />
+    <None Include="webfonts\fa-brands-400.eot" />
+    <None Include="webfonts\fa-brands-400.woff" />
+    <None Include="webfonts\fa-brands-400.woff2" />
+    <None Include="webfonts\fa-regular-400.eot" />
+    <None Include="webfonts\fa-regular-400.woff" />
+    <None Include="webfonts\fa-regular-400.woff2" />
+    <None Include="webfonts\fa-solid-900.eot" />
+    <None Include="webfonts\fa-solid-900.woff" />
+    <None Include="webfonts\fa-solid-900.woff2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CD.DLS.DAL\CD.DLS.DAL.csproj">
+      <Project>{2198F00A-7561-4950-AD48-4727F89F3C9A}</Project>
+      <Name>CD.DLS.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.Framework.BIDocApi\CD.DLS.API.csproj">
+      <Project>{234E7813-512E-4BEE-9AE3-D496FBFDBDFC}</Project>
+      <Name>CD.DLS.API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.Framework.Common\CD.DLS.Common.csproj">
+      <Project>{F058EBC7-F452-4E36-9C75-14FEE97643AF}</Project>
+      <Name>CD.DLS.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="fonts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\brands.css" />
+    <Content Include="Content\brands.min.css" />
+    <Content Include="Content\fontawesome-all.css" />
+    <Content Include="Content\fontawesome-all.min.css" />
+    <Content Include="Content\fontawesome.css" />
+    <Content Include="Content\fontawesome.min.css" />
+    <Content Include="Content\regular.css" />
+    <Content Include="Content\regular.min.css" />
+    <Content Include="Content\solid.css" />
+    <Content Include="Content\solid.min.css" />
+    <Content Include="Content\svg-with-js.css" />
+    <Content Include="Content\svg-with-js.min.css" />
+    <Content Include="Content\v4-shims.css" />
+    <Content Include="Content\v4-shims.min.css" />
+    <Content Include="Scripts\fontawesome\all.js" />
+    <Content Include="Scripts\fontawesome\all.min.js" />
+    <Content Include="Scripts\fontawesome\brands.js" />
+    <Content Include="Scripts\fontawesome\brands.min.js" />
+    <Content Include="Scripts\fontawesome\conflict-detection.js" />
+    <Content Include="Scripts\fontawesome\conflict-detection.min.js" />
+    <Content Include="Scripts\fontawesome\fontawesome.js" />
+    <Content Include="Scripts\fontawesome\fontawesome.min.js" />
+    <Content Include="Scripts\fontawesome\regular.js" />
+    <Content Include="Scripts\fontawesome\regular.min.js" />
+    <Content Include="Scripts\fontawesome\solid.js" />
+    <Content Include="Scripts\fontawesome\solid.min.js" />
+    <Content Include="Scripts\fontawesome\v4-shims.js" />
+    <Content Include="Scripts\fontawesome\v4-shims.min.js" />
+    <Content Include="webfonts\fa-brands-400.svg" />
+    <Content Include="webfonts\fa-regular-400.svg" />
+    <Content Include="webfonts\fa-solid-900.svg" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

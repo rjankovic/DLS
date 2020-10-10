@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.MdxElement">
+    <Position X="62.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\MdxModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.MdxFragmentElement">
+    <Position X="62.5" Y="14.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Ssas\MdxModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.MdxScriptElement">
+    <Position X="57" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\MdxModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.MdxStatementElement">
+    <Position X="63.5" Y="17" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\MdxModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.CalculatedMeasureElement">
+    <Position X="67.5" Y="19" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\MdxModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.CalculatedSetElement">
+    <Position X="59.25" Y="19" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\MdxModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.CalculatedMemberElement">
+    <Position X="61.75" Y="19" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\MdxModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.ScopeStatementElement">
+    <Position X="64.75" Y="19" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\MdxModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.SsasModelElement">
+    <Position X="57" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.ServerElement">
+    <Position X="34.25" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.DatabaseElement">
+    <Position X="38.75" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.DatasourceViewElement">
+    <Position X="46.5" Y="10.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.DatasourceViewTableElement">
+    <Position X="40.5" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.DatasourceViewColumnElement">
+    <Position X="46.25" Y="6.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.DimensionElement">
+    <Position X="56" Y="6.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.DimensionAttributeElement">
+    <Position X="91.75" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAIRACAAAAAAAAAAAAAAAAAAAAAAAIAAQQAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.ColumnElement">
+    <Position X="102.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.KeyColumnElement">
+    <Position X="104.5" Y="9.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.ValueColumnElement">
+    <Position X="107" Y="9.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.NameColumnElement">
+    <Position X="109.5" Y="9.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.CustomRollupColumnElement">
+    <Position X="94.75" Y="9.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.CustomRollupPropertiesColumnElement">
+    <Position X="97.75" Y="9.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.UnaryOperatorColumnElement">
+    <Position X="101.5" Y="9.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.RelatedAttributeElement">
+    <Position X="31.5" Y="10.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.HierarchyElement">
+    <Position X="36.5" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.HierarchyLevelElement">
+    <Position X="41" Y="10.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.CubeElement">
+    <Position X="49.25" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAIAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.CubeDimensionElement">
+    <Position X="43.5" Y="6.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.MeasureGroupElement">
+    <Position X="49.5" Y="6.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.MeasureGroupDimensionElement">
+    <Position X="66.75" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.RegularMeasureGroupDimensionElement">
+    <Position X="58.5" Y="9.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.ReferencedMeasureGroupDimensionElement">
+    <Position X="62.25" Y="9.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.ManyToManyMeasureGroupDimensionElement">
+    <Position X="66.25" Y="9.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.DegenerateMeasureGroupDimensionElement">
+    <Position X="70.25" Y="9.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.DataMiningMeasureGroupDimensionElement">
+    <Position X="74.25" Y="9.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.MeasureGroupDimensionColumnBindingElement">
+    <Position X="43" Y="15.25" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.PartitionElement">
+    <Position X="50.75" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.DsvTableBoundPartitionElement">
+    <Position X="47.25" Y="17.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.QueryBoundPartitionElement">
+    <Position X="50.5" Y="17.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.TableBoundPartitionElement">
+    <Position X="53.5" Y="17.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.PartitionColumnElement">
+    <Position X="43.75" Y="10.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.MeasureElement">
+    <Position X="51.75" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.PhysicalMeasureElement">
+    <Position X="51.5" Y="12.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CD.BIDoc.Core.Model.Mssql.Ssas.PhysicalMeasurePartitionSourceElement">
+    <Position X="52.25" Y="6.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ssas\SsasModelElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2631F384-A3C2-4A93-B89E-D1DF45E806D2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CD.DLS.Model</RootNamespace>
+    <AssemblyName>CD.DLS.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\server64\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Business\Excel\ExcelModelElements.cs" />
+    <Compile Include="Business\Excel\PivotTableTemplateElements.cs" />
+    <Compile Include="Business\Organization\OrganizationElements.cs" />
+    <Compile Include="Mssql\DependencyGraph\DataFlowDependencyGraphNode.cs" />
+    <Compile Include="Mssql\DependencyGraph\DependencyGraphBuilder.cs" />
+    <Compile Include="Mssql\DependencyGraph\DependencyGrpah.cs" />
+    <Compile Include="Mssql\DependencyGraph\KnowledgeBase\DataFlowKnowledgeBase.cs" />
+    <Compile Include="Mssql\DependencyGraph\KnowledgeBase\DataFlowRules.cs" />
+    <Compile Include="Mssql\DependencyGraph\KnowledgeBase\GeneralKnowledgeBase.cs" />
+    <Compile Include="Mssql\DependencyGraph\KnowledgeBase\RuleApplicationContext.cs" />
+    <Compile Include="Mssql\DependencyGraph\KnowledgeBase\TransitiveDataFlowKnowledgeBase.cs" />
+    <Compile Include="Mssql\DependencyGraph\KnowledgeBase\TransitiveDataFlowRules.cs" />
+    <Compile Include="Interfaces\ExportDocumentTargetEnum.cs" />
+    <Compile Include="Interfaces\ExtractSettings.cs" />
+    <Compile Include="Interfaces\IDependencyGraph.cs" />
+    <Compile Include="Interfaces\IKnowledgeBase.cs" />
+    <Compile Include="Interfaces\ILog.cs" />
+    <Compile Include="Interfaces\IModelConverter.cs" />
+    <Compile Include="Interfaces\IModelElement.cs" />
+    <Compile Include="Interfaces\ModelLink.cs" />
+    <Compile Include="Mssql\Pbi\PbiModelElements.cs" />
+    <Compile Include="Mssql\Ssas\DaxArgumentList.cs" />
+    <Compile Include="Mssql\Ssas\DaxFunctionFactory.cs" />
+    <Compile Include="Mssql\Ssas\DaxFunctions.cs" />
+    <Compile Include="Mssql\Ssas\DaxModelElements.cs" />
+    <Compile Include="Serialization\BIDocGraphInfoConverter.cs" />
+    <Compile Include="Serialization\BIDocHistoryContext.cs" />
+    <Compile Include="Serialization\BIDocModel.cs" />
+    <Compile Include="Serialization\BIDocModelConverter.cs" />
+    <Compile Include="Serialization\DataProvider.cs" />
+    <Compile Include="Serialization\Json.cs" />
+    <Compile Include="Serialization\SerializationHelper.cs" />
+    <Compile Include="SolutionModelElement.cs" />
+    <Compile Include="Mssql\Agent\AgentModelElements.cs" />
+    <Compile Include="Mssql\Db\ModelElements.cs" />
+    <Compile Include="Mssql\Db\SqlScriptModelElements.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="ModelActivator.cs" />
+    <Compile Include="ModelConverter.cs" />
+    <Compile Include="ModelElements.cs" />
+    <Compile Include="RefPathExtensions.cs" />
+    <Compile Include="Mssql\Db\StatementParts.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Mssql\Ssas\MdxModelElements.cs" />
+    <Compile Include="Mssql\Ssas\SsasModelElements.cs" />
+    <Compile Include="Mssql\Ssas\TabularModelElements.cs" />
+    <Compile Include="Mssql\Ssis\SsisDfModelElements.cs" />
+    <Compile Include="Mssql\Ssis\SsisExpressionModelElements.cs" />
+    <Compile Include="Mssql\Ssis\SsisModelElements.cs" />
+    <Compile Include="Mssql\Ssrs\SsrsModelElements.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Mssql\Diagrams\SsasDiagram.cd" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CD.DLS.DAL\CD.DLS.DAL.csproj">
+      <Project>{2198F00A-7561-4950-AD48-4727F89F3C9A}</Project>
+      <Name>CD.DLS.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.Framework.BIDocApi\CD.DLS.API.csproj">
+      <Project>{234E7813-512E-4BEE-9AE3-D496FBFDBDFC}</Project>
+      <Name>CD.DLS.API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.Framework.Common\CD.DLS.Common.csproj">
+      <Project>{F058EBC7-F452-4E36-9C75-14FEE97643AF}</Project>
+      <Name>CD.DLS.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

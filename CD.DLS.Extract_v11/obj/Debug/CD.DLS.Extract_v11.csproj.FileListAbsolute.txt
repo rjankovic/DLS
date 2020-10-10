@@ -1,0 +1,10 @@
+C:\Projects\Descent\Main\CD.DLS.Extract_v11\obj\Debug\CD.DLS.Extract_v11.csprojAssemblyReference.cache
+C:\Projects\Descent\Main\bin\server\extractor\v11\Microsoft.Azure.Documents.ServiceInterop.dll
+C:\Projects\Descent\Main\bin\server\extractor\v11\DocumentDB.Spatial.Sql.dll
+C:\Projects\Descent\Main\bin\server\extractor\v11\CD.DLS.Extract_v11.exe.config
+C:\Projects\Descent\Main\bin\server\extractor\v11\CD.DLS.Extract_v11.exe
+C:\Projects\Descent\Main\bin\server\extractor\v11\CD.DLS.Extract_v11.pdb
+C:\Projects\Descent\Main\CD.DLS.Extract_v11\obj\Debug\CD.DLS.Extract_v11.csproj.CoreCompileInputs.cache
+C:\Projects\Descent\Main\CD.DLS.Extract_v11\obj\Debug\CD.DLS.Extract_v11.csproj.CopyComplete
+C:\Projects\Descent\Main\CD.DLS.Extract_v11\obj\Debug\CD.DLS.Extract_v11.exe
+C:\Projects\Descent\Main\CD.DLS.Extract_v11\obj\Debug\CD.DLS.Extract_v11.pdb

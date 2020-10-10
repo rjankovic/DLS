@@ -1,0 +1,9 @@
+{
+  "functionTimeout": "00:10:00",
+
+  "serviceBus": {
+    "maxConcurrentCalls": 4,
+    "prefetchCount": 100,
+    "autoRenewTimeout": "00:05:00"
+  }
+}

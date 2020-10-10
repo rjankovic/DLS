@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{234E7813-512E-4BEE-9AE3-D496FBFDBDFC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CD.DLS.API</RootNamespace>
+    <AssemblyName>CD.DLS.API</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\server\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug64\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessObjects\GetPivotTableTemplateRequest.cs" />
+    <Compile Include="BusinessObjects\SavePivotTableTemplateRequest.cs" />
+    <Compile Include="BusinessObjects\CreateFolderRequest.cs" />
+    <Compile Include="Common\DLSApiProgressResponse.cs" />
+    <Compile Include="Common\DLSApiRequest.cs" />
+    <Compile Include="Common\CompositeDLSApiRequest.cs" />
+    <Compile Include="Common\IRequestProcessor.cs" />
+    <Compile Include="ModelUpdate\6_0_0_ParsePbiComponentsRequest.cs" />
+    <Compile Include="ModelUpdate\6_1_0_ParsePbiComponentRequest.cs" />
+    <Compile Include="ModelUpdate\2_2_1_ParseSqlDatabaseObjectDeepRequest.cs" />
+    <Compile Include="ModelUpdate\2_1_1_ParseSqlDatabaseObjectShallowRequest.cs" />
+    <Compile Include="ModelUpdate\2_2_0_ParseSqlDatabaseDeepRequest.cs" />
+    <Compile Include="ModelUpdate\2_1_0_ParseSqlDatabaseShallowRequest.cs" />
+    <Compile Include="ModelUpdate\3_2_1_ParseSsasDatabaseCubeRequest.cs" />
+    <Compile Include="ModelUpdate\3_1_1_ParseSsasDatabaseDimensionRequest.cs" />
+    <Compile Include="ModelUpdate\3_2_0_ParseSsasDatabaseCubesRequest.cs" />
+    <Compile Include="ModelUpdate\3_1_0_ParseSsasDatabaseRequest.cs" />
+    <Compile Include="ModelUpdate\4_2_1_ParseSsisPackageDeepRequest.cs" />
+    <Compile Include="ModelUpdate\4_1_1_ParseSsisPackageShallowRequest.cs" />
+    <Compile Include="ModelUpdate\4_2_0_ParseSsisProjectDeepRequest.cs" />
+    <Compile Include="ModelUpdate\4_1_0_ParseSsisProjectShallowRequest.cs" />
+    <Compile Include="ModelUpdate\6_1_1_ParsePbiTenantRequest.cs" />
+    <Compile Include="ModelUpdate\7_1_0_ParsePivotTableTemplatesRequest.cs" />
+    <Compile Include="ModelUpdate\7_0_0_ParseBusinessObjectsRequest.cs" />
+    <Compile Include="ModelUpdate\8_0_0_FindAssociationRulesRequest.cs" />
+    <Compile Include="ModelUpdate\10_0_0_SetModelAvailableRequest.cs" />
+    <Compile Include="ModelUpdate\9_0_0_BuildAggregationsRequest.cs" />
+    <Compile Include="ModelUpdate\5_1_1_ParseSsrsReportRequest.cs" />
+    <Compile Include="ModelUpdate\5_1_0_ParseSsrsComponentRequest.cs" />
+    <Compile Include="ModelUpdate\5_0_0_ParseSsrsComponentsRequest.cs" />
+    <Compile Include="ModelUpdate\4_0_0_ParseSsisProjectsRequest.cs" />
+    <Compile Include="ModelUpdate\3_0_0_ParseSsasDatabasesRequest.cs" />
+    <Compile Include="ModelUpdate\2_0_0_ParseSqlDatabasesRequest.cs" />
+    <Compile Include="ModelUpdate\1_0_0_UpdateModelRequest.cs" />
+    <Compile Include="Query\ElementTechViewRequest.cs" />
+    <Compile Include="Query\ReportItemPositionsRequest.cs" />
+    <Compile Include="Query\LineageDetailRequest.cs" />
+    <Compile Include="Render\RenderReportRequest.cs" />
+    <Compile Include="Structures\LinkDeclaration.cs" />
+    <Compile Include="Structures\NodeDescription.cs" />
+    <Compile Include="Structures\NodeDeclaration.cs" />
+    <Compile Include="Structures\PivotTableStructure.cs" />
+    <Compile Include="Structures\ReportDataMap.cs" />
+    <Compile Include="Structures\ReportGridStructure.cs" />
+    <Compile Include="Structures\ReportItemAbsolutePosition.cs" />
+    <Compile Include="Structures\ReportItemDataTable.cs" />
+    <Compile Include="Test\EmptyRequest.cs" />
+    <Compile Include="Common\DLSApiMessage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CD.Framework.Common\CD.DLS.Common.csproj">
+      <Project>{F058EBC7-F452-4E36-9C75-14FEE97643AF}</Project>
+      <Name>CD.DLS.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

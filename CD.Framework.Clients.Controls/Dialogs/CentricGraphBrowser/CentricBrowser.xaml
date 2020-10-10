@@ -1,0 +1,110 @@
+﻿<UserControl x:Class="CD.DLS.Clients.Controls.Dialogs.CentricGraphBrowser.CentricBrowser"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs.CentricGraphBrowser"
+             xmlns:elementView="clr-namespace:CD.DLS.Clients.Controls.Dialogs.ElementView"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="1000">
+
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Clients.Controls;component/Resources/DefaultResourceDictionary.xaml" />
+
+                <ResourceDictionary>
+                    <ContextMenu x:Key="nodeContextMenu">
+                        <MenuItem x:Name="CMShowLineage" Click="CMShowLineage_Click" Header="Show Lineage" />
+                        <MenuItem x:Name="CmHideLineage" Click="CmHideLineage_Click" Header="Hide Lineage" />
+                        <Separator />
+                        <MenuItem x:Name="CmShowImpact" Click="CmShowImpact_Click" Header="Show Impact" />
+                        <MenuItem x:Name="CmHideImpact" Click="CmHideImpact_Click" Header="Hide Impact" />
+                    </ContextMenu>
+                    <Style TargetType="Button">
+                        <Setter Property="Padding" Value="10 5 10 5" />
+                        <Setter Property="Margin" Value="10 5 10 5" />
+                    </Style>
+                    <Style TargetType="GridSplitter">
+                        <Setter Property="Background" Value="#88888888"/>
+                    </Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Margin" Value="5 5 5 5" />
+                    </Style>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Padding" Value="0,5,0,5" />
+                        <!--<Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="DeepSkyBlue" />
+            </Trigger>
+        </Style.Triggers>-->
+                    </Style>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="5,3,5,3" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                    <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <Style TargetType="DataGrid">
+                        <Setter Property="GridLinesVisibility" Value="Vertical" />
+                        <Setter Property="HorizontalGridLinesBrush" Value="#AAAAAA" />
+                        <Setter Property="VerticalGridLinesBrush" Value="#AAAAAA" />
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="AlternatingRowBackground" Value="#DDDDDD"  />
+                    </Style>
+
+                    <Style TargetType="DockPanel">
+                        <Setter Property="LastChildFill" Value="False" />
+                    </Style>
+                </ResourceDictionary>
+
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+
+
+
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="50" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" MinWidth="50" />
+        </Grid.ColumnDefinitions>
+
+        <Border BorderThickness="0 0 0 5" Grid.Column="0" Grid.Row="0" BorderBrush="#DFDFDF">
+            <StackPanel Orientation="Horizontal" Background="#DFDFDF">
+            <Label Content="Detail" Margin="10 0 10 0" />
+            <ComboBox x:Name="DetailLevelCombo" SelectionChanged="DetailLevelCombo_SelectionChanged">
+                <ComboBoxItem x:Name="HighDetailComboItem" Content="High" />
+                    <ComboBoxItem x:Name="MediumDetailComboItem" Content="Medium" IsSelected="True" />
+                    <ComboBoxItem x:Name="LowDetailComboItem" Content="Low" />
+            </ComboBox>
+            <Label Content="|" Margin="10 0 10 0"/>
+            <Button x:Name="ToggleImpactButton" Click="ToggleImpactButton_Click" Content="Show Impact" Margin="10 0 10 0" IsEnabled="False"/>
+            <Label Content="|" Margin="10 0 10 0"/>
+            <Button x:Name="ToggleLineageButton" Click="ToggleLineageButton_Click" Content="Show Lineage" Margin="10 0 10 0" IsEnabled="False"/>
+            
+        </StackPanel>
+        </Border>
+
+        <ScrollViewer HorizontalScrollBarVisibility="Visible"  VerticalScrollBarVisibility="Visible"
+                      Grid.Row="1" Grid.Column="0" x:Name="diagramViewer">
+        </ScrollViewer>
+
+        <GridSplitter Grid.Column="1" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.RowSpan="2" />
+        <elementView:ElementView Grid.Row="0" Grid.Column="2" x:Name="elementView" Grid.RowSpan="2" />
+    </Grid>
+</UserControl>

@@ -1,0 +1,163 @@
+﻿@model CD.DLS.Clients.Web.Models.CentricBrowserInit
+
+
+<div class="split-container" id="split-container-centric-@Model.TileId">
+    <div class="split-left">
+
+        <div class="st-tab-header" id="centric-diagram-header-@Model.TileId">
+            Detail level:
+            <select name="color" id="centric-detail-selection-@Model.TileId">
+                <option value="3">Low</option>
+                <option value="2" selected="selected">Medium</option>
+                <option value="1">High</option>
+            </select>
+        </div>
+
+        <div class="diagramContainerNoSize" id="centric-diagram-container-@Model.TileId">
+            Loading...
+            <!--<svg id="diagram2" class="diagram" width="5000" height="5000">
+
+            </svg>-->
+        </div>
+    </div>
+
+    <div class="split-right">
+
+        <!-- element view -->
+
+        <div id="element-view-@Model.TileId">
+
+        </div>
+
+        <!-- element view end -->
+
+
+    </div>
+</div>
+
+<script>
+    var tileId = "@Model.TileId";
+    var elementId = @Model.ElementId;
+    var centralNodeId;
+    var currentDetailLevel
+
+    var diagramContainerId = 'centric-diagram-container-' + tileId;
+
+    
+    var diagramObject = null;
+
+    $.get("centricbrowser/initialnode?argument1=" + elementId, function (data) {
+        $('#centric-detail-selection-' + tileId).val(data.DetailLevel)
+
+        var splitContainer = $('#split-container-centric-' + tileId);
+
+        $(splitContainer).width($('#split-container-centric-' + tileId).parent().width());
+        $(splitContainer).height($(window).height() * 0.8);
+
+
+        var splitter = $(splitContainer).split({
+            orientation: 'vertical',
+            limit: 10,
+            position: '50%', // if there is no percentage it interpret it as pixels
+            onDrag: function (event) {
+                //console.log(splitter.position());
+            }
+        });
+
+
+        currentDetailLevel = data.DetailLevel;
+
+        centralNodeId = data.Nodes[0].id;
+        renderDiagram(data);
+
+        $('#centric-detail-selection-' + tileId).change(function () {
+
+            if (diagramObject == null) {
+                return;
+            }
+
+            $('#' + diagramContainerId).html('Loading...');
+            $("#" + "element-view-" + tileId).html();
+
+            newDetailLevel = $('#centric-detail-selection-' + tileId).val();
+
+            var switchSpec = {
+                CentralNodeId: centralNodeId,
+                SourceDetailLevel: currentDetailLevel,
+                TargetDetailLevel: newDetailLevel,
+                DisplayedNodeIds: []
+            };
+
+            for (i = 0; i < diagramObject.nodes.length; i++) {
+                if (i >= 50) {
+                    break;
+                }
+
+                switchSpec.DisplayedNodeIds.push(diagramObject.nodes[i].id);
+            }
+
+            var switchSpecString = encodeURIComponent(JSON.stringify(switchSpec));
+
+            $.get("centricbrowser/switchdetaillevel?argument1=" + switchSpecString, function (data) {
+                renderDiagram(data);
+            });
+
+            currentDetailLevel = newDetailLevel;
+
+        });
+
+    });
+    
+    function renderDiagram(diagramData) {
+        diagramData.DiagramId = diagramContainerId;
+        
+        var contextMenu =
+            //new
+            {
+            items: {
+                "showLineage": { name: "Show Node Lineage" },
+                "hideLineage": { name: "Hide Node Lineage" },
+                "sep1": "---------",
+                "showImpact": { name: "Show Node Impact" },
+                "hideImpact": { name: "Hide Node Impact" }
+            },
+            callback: nodeContextMenuClicked
+            }
+        //console.log(contextMenu);
+        diagramObject = diagramRenderer.renderDiagram(diagramData, loadElementView, contextMenu);
+    }
+
+    function nodeContextMenuClicked(key, nodeId) {
+        console.log('context menu clicked - ' + key + ' ' + nodeId);
+
+        switch (key) {
+            case "showLineage":
+                $.get("centricbrowser/shownodelineage?argument1=" + nodeId, function (showLineageData) {
+                    diagramRenderer.addToDiagram(diagramObject, showLineageData);
+                });
+                break;
+            case "showImpact":
+                $.get("centricbrowser/shownodeimpact?argument1=" + nodeId, function (showImpactData) {
+                    diagramRenderer.addToDiagram(diagramObject, showImpactData);
+                });
+                break;
+            case "hideLineage":
+                diagramRenderer.removeInboundLinks(diagramObject, nodeId);
+                break;
+            case "hideImpact":
+                diagramRenderer.removeOutboundLinks(diagramObject, nodeId);
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    function loadElementView(selectedNodeId) {
+        $("#" + "element-view-" + tileId).html('Loading...');
+        $.get("/elementview?argument1=" + selectedNodeId, function (data) {
+            $("#" + "element-view-" + tileId).html(data);
+        });
+    }
+
+</script>

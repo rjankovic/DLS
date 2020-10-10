@@ -1,0 +1,19 @@
+﻿<Window x:Class="CD.DLS.Clients.Controls.Windows.ServiceLogViewerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Windows"
+        xmlns:dialogs="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
+        mc:Ignorable="d"
+        Title="ServiceLogViewerWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <dialogs:LogViewer x:Name="logViewer" Grid.Column="0" Grid.Row="0" />
+    </Grid>
+</Window>

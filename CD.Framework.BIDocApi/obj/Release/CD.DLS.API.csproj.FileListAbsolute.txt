@@ -1,0 +1,11 @@
+C:\Projects\Descent\Main\CD.Framework.BIDocApi\bin\Release\CD.DLS.API.dll
+C:\Projects\Descent\Main\CD.Framework.BIDocApi\bin\Release\CD.DLS.API.pdb
+C:\Projects\Descent\Main\CD.Framework.BIDocApi\bin\Release\CD.DLS.Common.dll
+C:\Projects\Descent\Main\CD.Framework.BIDocApi\bin\Release\Newtonsoft.Json.dll
+C:\Projects\Descent\Main\CD.Framework.BIDocApi\bin\Release\CD.DLS.Common.pdb
+C:\Projects\Descent\Main\CD.Framework.BIDocApi\bin\Release\Newtonsoft.Json.xml
+C:\Projects\Descent\Main\CD.Framework.BIDocApi\obj\Release\CD.DLS.API.csprojAssemblyReference.cache
+C:\Projects\Descent\Main\CD.Framework.BIDocApi\obj\Release\CD.DLS.API.csproj.CopyComplete
+C:\Projects\Descent\Main\CD.Framework.BIDocApi\obj\Release\CD.DLS.API.dll
+C:\Projects\Descent\Main\CD.Framework.BIDocApi\obj\Release\CD.DLS.API.pdb
+C:\Projects\Descent\Main\CD.Framework.BIDocApi\obj\Release\CD.DLS.API.csproj.CoreCompileInputs.cache
