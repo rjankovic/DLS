@@ -1,9 +1,0 @@
-C:\Projects\Descent\Main\CD.Framework.Common\bin\Release\CD.DLS.Common.dll
-C:\Projects\Descent\Main\CD.Framework.Common\bin\Release\CD.DLS.Common.pdb
-C:\Projects\Descent\Main\CD.Framework.Common\bin\Release\Newtonsoft.Json.dll
-C:\Projects\Descent\Main\CD.Framework.Common\bin\Release\Newtonsoft.Json.xml
-C:\Projects\Descent\Main\CD.Framework.Common\obj\Release\CD.DLS.Common.csproj.CopyComplete
-C:\Projects\Descent\Main\CD.Framework.Common\obj\Release\CD.DLS.Common.dll
-C:\Projects\Descent\Main\CD.Framework.Common\obj\Release\CD.DLS.Common.pdb
-C:\Projects\Descent\Main\CD.Framework.Common\obj\Release\CD.DLS.Common.csprojAssemblyReference.cache
-C:\Projects\Descent\Main\CD.Framework.Common\obj\Release\CD.DLS.Common.csproj.CoreCompileInputs.cache

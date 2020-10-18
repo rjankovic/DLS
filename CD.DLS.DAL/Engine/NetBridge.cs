@@ -61,9 +61,9 @@ namespace CD.DLS.DAL.Engine
 
         private void RefreshBrokerConnection()
         {
-            // BROKER
-            // just don't use the broker
-            return;
+            //// BROKER
+            //// just don't use the broker
+            //return;
             
             if (ConfigManager.QueueMode == QueueModeEnum.AzureTopic)
             {
@@ -93,7 +93,7 @@ namespace CD.DLS.DAL.Engine
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format("CD Framework failed to connect to: \"{0}\", {1}", _connString, ex.Message));
+                throw new Exception(string.Format("DLS failed to connect to: \"{0}\", {1}", _connString, ex.Message));
             }
         }
 

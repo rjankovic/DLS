@@ -5,6 +5,7 @@ using CD.DLS.DAL.Managers;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using Nito.AsyncEx;
+using Nito.AsyncEx.Synchronous;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -105,7 +106,7 @@ namespace CD.DLS.DAL.Receiver
                         {
                             subscriptionName = Configuration.ConfigManager.ServiceBusCustomerTopicSubscription;
                         }
-                        else if(ConfigManager.ApplicationClass == ApplicationClassEnum.Service)
+                        else if (ConfigManager.ApplicationClass == ApplicationClassEnum.Service)
                         {
                             subscriptionName = ConfigManager.ServiceBusServiceTopicSubscription;
                         }
@@ -124,7 +125,7 @@ namespace CD.DLS.DAL.Receiver
                     var serviceBusConnectionString = Configuration.ConfigManager.ServiceBusConnectionString;
 
                     _subscriptionClient = new MessageReceiver(serviceBusConnectionString, EntityNameHelper.FormatSubscriptionPath(subscriptionTopicName, subscriptionName), ReceiveMode.PeekLock);
-                    
+
                     //_subscriptionClient = new SubscriptionClient(serviceBusConnectionString, subscriptionTopicName, subscriptionName);
                     RegisterServiceBusOnMessageHandlerAndReceiveMessages();
                 }
@@ -188,14 +189,14 @@ namespace CD.DLS.DAL.Receiver
         {
 
             ServiceBusMessage busMessage;
-            
+
             var body = Encoding.UTF8.GetString(message.Body);
 
             busMessage = ServiceBusMessage.Deserialize(body);
-            
+
             // Process the message.
             //Console.WriteLine($"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{body}");
-            
+
             //try
             //{
             //}
@@ -204,7 +205,7 @@ namespace CD.DLS.DAL.Receiver
             //    await _subscriptionClient.CompleteAsync(message.SystemProperties.LockToken);
             //    throw;
             //}
-            
+
             // this message is not for me, leave it be
             if (busMessage.TargetId != _id && busMessage.MessageType != ServiceBusMessageTypeEnum.ServiceLog && busMessage.MessageType != ServiceBusMessageTypeEnum.Broadcast)
             {
@@ -250,7 +251,7 @@ namespace CD.DLS.DAL.Receiver
 
 
             //await _subscriptionClient.CompleteAsync(message.SystemProperties.LockToken);
-            
+
             //if (busMessage.MessageType != ServiceBusMessage.MessageTypeEnum.ServiceLog)
             //{
             //    // Complete the message so that it is not received again.
@@ -313,12 +314,13 @@ namespace CD.DLS.DAL.Receiver
 
 
 
-        public async Task<RequestMessage> PostMessage(RequestMessage message)
+        public Task<RequestMessage> PostMessage(RequestMessage message)
         {
             message.MessageFromId = this.Id;
             message.MessageFromName = this.Name;
             RequestManager rm = _requestManager;
-            if (ConfigManager.DeploymentMode == DeploymentModeEnum.Azure || ConfigManager.ApplicationClass == ApplicationClassEnum.Service)
+
+            if (ConfigManager.DeploymentMode == DeploymentModeEnum.Azure)
             {
                 //var nb = new NetBridge(true);
                 //nb.SetConnectionString(ConfigManager.GetCustomerDatabaseConnectionString(message.CustomerCode));
@@ -327,7 +329,7 @@ namespace CD.DLS.DAL.Receiver
             }
 
             rm.SaveRequestMessage(message);
-            
+
             var semaphore = new SemaphoreSlim(0, 1);
 
             string dependencyId = null;
@@ -335,27 +337,40 @@ namespace CD.DLS.DAL.Receiver
             {
                 var respHandle = rm.GetResponseHandle(message);
                 dependencyId = respHandle.Id;
-                respHandle.OnChange += BrokerResponseReceived;    
+                respHandle.OnChange += BrokerResponseReceived;
             }
             // the will handle itself in ProcessServiceBusMessagesAsync
             // but need to post the message to the service bus
             else if (Configuration.ConfigManager.QueueMode == Configuration.QueueModeEnum.AzureTopic)
             {
-                await PostMessageToServiceBus(message);
+                var task = PostMessageToServiceBus(message);
+                task.WaitAndUnwrapException();
                 dependencyId = message.RequestId.ToString();
             }
 
             var waitingDependency = new WaitingDependency() { RequestId = message.RequestId, Signal = new AsyncManualResetEvent(false) };
             _waitingDependencies.Add(dependencyId, waitingDependency);
 
+            return WaitForResult(waitingDependency, rm);
+
+            //await waitingDependency.Signal.WaitAsync();
+
+            //RequestMessage response = rm.GetResponseForRequest(message.RequestId);
+            //rm.SetMessageReceived(response.MessageId);
+
+            //return response;
+        }
+
+
+        private async Task<RequestMessage> WaitForResult(WaitingDependency waitingDependency, RequestManager rm)
+        {
             await waitingDependency.Signal.WaitAsync();
 
-            RequestMessage response = rm.GetResponseForRequest(message.RequestId);
+            RequestMessage response = rm.GetResponseForRequest(waitingDependency.RequestId);
             rm.SetMessageReceived(response.MessageId);
 
             return response;
         }
-
 
         public async void PostBroadcastMessageToServiceBus(BroadcastMessage broadcastMessage, string customerCode)
         {
@@ -470,7 +485,7 @@ namespace CD.DLS.DAL.Receiver
             waitingDependency.Signal.Set();
         }
 
-        
+
         private void BrokerMessagesReceived(object sender,
    SqlNotificationEventArgs e)
         {

@@ -1,7 +1,0 @@
-C:\Projects\Descent\Main\bin\server\CD.DLS.API.dll
-C:\Projects\Descent\Main\bin\server\CD.DLS.API.pdb
-C:\Projects\Descent\Main\CD.Framework.BIDocApi\obj\Debug\CD.DLS.API.csprojAssemblyReference.cache
-C:\Projects\Descent\Main\CD.Framework.BIDocApi\obj\Debug\CD.DLS.API.csproj.CoreCompileInputs.cache
-C:\Projects\Descent\Main\CD.Framework.BIDocApi\obj\Debug\CD.DLS.API.csproj.CopyComplete
-C:\Projects\Descent\Main\CD.Framework.BIDocApi\obj\Debug\CD.DLS.API.dll
-C:\Projects\Descent\Main\CD.Framework.BIDocApi\obj\Debug\CD.DLS.API.pdb

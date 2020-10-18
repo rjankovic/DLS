@@ -1,8 +1,0 @@
-C:\Projects\Descent\Main\Irony\bin\Debug\Irony.dll
-C:\Projects\Descent\Main\Irony\bin\Debug\Irony.pdb
-C:\Projects\Descent\Main\Irony\obj\Debug\Irony.Resources.resources
-C:\Projects\Descent\Main\Irony\obj\Debug\Irony.csproj.GenerateResource.cache
-C:\Projects\Descent\Main\Irony\obj\Debug\Irony.csproj.CoreCompileInputs.cache
-C:\Projects\Descent\Main\Irony\obj\Debug\Irony.dll
-C:\Projects\Descent\Main\Irony\obj\Debug\Irony.pdb
-C:\Projects\Descent\Main\Irony\obj\Debug\Irony.csprojAssemblyReference.cache

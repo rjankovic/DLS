@@ -21,12 +21,14 @@ namespace CD.DLS.Tests.MessagingTests
         {
             ConfigManager.SetCustomConfigManager(new StandardConfigManager());
             ManualConfigManager mcm = new ManualConfigManager();
+            ConfigManager.SetCustomConfigManager(mcm);
             mcm.DeploymentMode = DeploymentModeEnum.OnPremises;
             mcm.QueueMode = QueueModeEnum.ServiceBroker;
-            mcm.CustomerDatabaseConnectionString = "Data Source=localhost;Initial Catalog=CDFramework;Integrated Security=True;Pooling=False";
+            mcm.CustomerDatabaseConnectionString = "Data Source=localhost;Initial Catalog=DLS;Integrated Security=True;Pooling=False";
             mcm.Log = new DbLogger();
+            mcm.CustomerCode = "DEFAULT";
 
-            ConfigManager.SetCustomConfigManager(mcm);
+            
             var cs = ConfigManager.CustomerDatabaseConnectionString;
             var nb = new NetBridge();
             nb.SetConnectionString(cs);

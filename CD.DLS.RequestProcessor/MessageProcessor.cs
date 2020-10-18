@@ -111,7 +111,6 @@ namespace CD.DLS.RequestProcessor
                 SendContinuationRequests(message);
                 CheckCompletedComplexRequests(message);
                 CheckFinishedWaits(rm);
-
             }
             else
             {
@@ -123,48 +122,9 @@ namespace CD.DLS.RequestProcessor
         }
 
         /// <summary>
-        /// Request processing for the web - multipart requests not supported
+        /// Used in Azure functions
         /// </summary>
         /// <param name="message"></param>
-        /// <returns></returns>
-        public async Task<RequestMessage> ProcessShortAsync(RequestMessage message)
-        {
-            ConfigManager.Log.Important(string.Format("Processing request {0} for project {1}", message.Content, message.MessageToProjectId));
-
-            //_receiver.SetAzureTargetTopicClientBasedOnCustomerCode(message.CustomerCode);
-            var rm = GetRequestManager(message);
-
-            if (message.MessageType != MessageTypeEnum.RequestCreated)
-            {
-                throw new Exception("Only 'RequestCreated' requests are supported");
-            }
-            RequestMessage response = await ProcessNewRequestAsync(message);
-            
-            if (response == null)
-            {
-                throw new Exception("Failed to process the request, see log for details");
-            }
-
-            /*
-            var saved = rm.SaveRequestMessage(message);
-
-            if (!saved)
-            {
-                throw new Exception("Failed to save the request response");
-            }
-            */
-
-            if (response.MessageType != MessageTypeEnum.RequestProcessed)
-            {
-                throw new Exception(string.Format("Unexpected response type: {0}", response.MessageType.ToString()));
-            }
-
-            rm.SaveRequestMessage(response);
-
-            return response;
-        }
-
-
         public void ProcessSync(RequestMessage message)
         {
             ConfigManager.Log.Important(string.Format("Processing request {0} for project {1}", message.Content, message.MessageToProjectId));
@@ -431,7 +391,7 @@ namespace CD.DLS.RequestProcessor
         }
 
 
-        public async Task<RequestMessage> ProcessNewRequestAsync(RequestMessage request)
+        private async Task<RequestMessage> ProcessNewRequestAsync(RequestMessage request)
         {
             var resp = Helpers.CreateResponse(request);
             resp.MessageType = MessageTypeEnum.RequestAcknowledged;
@@ -545,16 +505,6 @@ namespace CD.DLS.RequestProcessor
                 {
                     att.MessageId = respMsg.MessageId;
                 }
-
-                //if (!(resp is DLSApiProgressResponse))
-                //{
-                //    CheckWaitingMessagesAfterRequestProcessed(input.RequestId, respMsg);
-                //}
-                //else
-                //{
-                //    var progressResponse = resp as DLSApiProgressResponse;
-                //    SendContinuationRequests(progressResponse, respMsg);
-                //}
 
                 return respMsg;
             });

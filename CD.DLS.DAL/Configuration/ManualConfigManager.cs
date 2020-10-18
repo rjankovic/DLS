@@ -74,7 +74,8 @@ namespace CD.DLS.DAL.Configuration
 
         public string GetCustomerDatabaseConnectionString(string customerCode)
         {
-            throw new NotImplementedException();
+            return "DEFAULT";
+            //throw new NotImplementedException();
         }
 
         public string GetServiceBusCustomerTopicName(string customerCode)
