@@ -55,6 +55,8 @@ namespace CD.DLS.DAL.Configuration
         public const string DLS_AZURE_FUNCTION_SECRET_NAME = "AzureFunctionSecretName";
         public const string DLS_AZURE_FUNCTION_KEY = "HttpFunctionKey";
 
+        public const string DLS_DEFAULT_CUSTOMER = "DefaultCustomer";
+
         /// <summary>
         /// Is this an on-premises or cloud instance of the framework
         /// </summary>

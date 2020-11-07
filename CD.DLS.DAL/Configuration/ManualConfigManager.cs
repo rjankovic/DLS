@@ -9,6 +9,11 @@ namespace CD.DLS.DAL.Configuration
 {
     public class ManualConfigManager : IConfigManager
     {
+        public ManualConfigManager()
+        {
+            CustomerCode = StandardConfigManager.DLS_DEFAULT_CUSTOMER;
+        }
+
         public DeploymentModeEnum DeploymentMode { get; set; }
 
         public ApplicationClassEnum ApplicationClass { get; set; }

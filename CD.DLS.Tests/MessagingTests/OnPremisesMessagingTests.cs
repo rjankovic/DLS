@@ -26,7 +26,7 @@ namespace CD.DLS.Tests.MessagingTests
             mcm.QueueMode = QueueModeEnum.ServiceBroker;
             mcm.CustomerDatabaseConnectionString = "Data Source=localhost;Initial Catalog=DLS;Integrated Security=True;Pooling=False";
             mcm.Log = new DbLogger();
-            mcm.CustomerCode = "DEFAULT";
+            //mcm.CustomerCode = "DEFAULT";
 
             
             var cs = ConfigManager.CustomerDatabaseConnectionString;

@@ -360,3 +360,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+CD.Framework.DB/CD.DLS.DB.dbmdl
+CD.Framework.DB/CD.DLS.DB.jfm
+*.dbmdl
+*.jfm
+*.jfm
