@@ -19,7 +19,7 @@ namespace CD.DLS.Manager.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -65,41 +65,17 @@ namespace CD.DLS.Manager.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap AddIcon {
             get {
-                object obj = ResourceManager.GetObject("Add", resourceCulture);
+                object obj = ResourceManager.GetObject("AddIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap SecurityIcon
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("Security", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap UserIcon
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("User", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap ConfigIcon {
             get {
-                object obj = ResourceManager.GetObject("Config", resourceCulture);
+                object obj = ResourceManager.GetObject("ConfigIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -109,7 +85,7 @@ namespace CD.DLS.Manager.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap FlowIcon {
             get {
-                object obj = ResourceManager.GetObject("Flow", resourceCulture);
+                object obj = ResourceManager.GetObject("FlowIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,41 +99,17 @@ namespace CD.DLS.Manager.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap SearchIcon
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("Search", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap OpenIcon {
             get {
-                object obj = ResourceManager.GetObject("Open", resourceCulture);
+                object obj = ResourceManager.GetObject("OpenIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap HighFlowIcon
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("HighFlow", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -173,67 +125,7 @@ namespace CD.DLS.Manager.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap RemoveIcon {
             get {
-                object obj = ResourceManager.GetObject("Remove", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap WarningIcon
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("Warning", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap InputIcon
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("Input", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ProcessIcon
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("Process", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap DbIcon
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("Db", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap RequestIcon
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("Request", resourceCulture);
+                object obj = ResourceManager.GetObject("RemoveIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

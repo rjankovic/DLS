@@ -63,20 +63,20 @@ namespace CD.DLS.DAL.Configuration
         public DeploymentModeEnum DeploymentMode
         {
             get {
-                //if (_deploymentMode == DeploymentModeEnum.NA)
-                //{
-                //    var configVal = GetConfiguredValueFromRegistryOrAppConfig(DLS_DEPLOYMENT_MODE);
-                //    try
-                //    {
-                //        _deploymentMode = (DeploymentModeEnum)Enum.Parse(typeof(DeploymentModeEnum), configVal);
-                //    }
-                //    catch
-                //    {
-                //        throw new Exception(string.Format("Failed to parse deployment mode from config {0}: '{1}'", DLS_DEPLOYMENT_MODE, configVal));
-                //    }
-                //}
-                //return _deploymentMode;
-                return DeploymentModeEnum.Azure;
+                if (_deploymentMode == DeploymentModeEnum.NA)
+                {
+                    var configVal = GetConfiguredValueFromRegistryOrAppConfig(DLS_DEPLOYMENT_MODE);
+                    try
+                    {
+                        _deploymentMode = (DeploymentModeEnum)Enum.Parse(typeof(DeploymentModeEnum), configVal);
+                    }
+                    catch
+                    {
+                        throw new Exception(string.Format("Failed to parse deployment mode from config {0}: '{1}'", DLS_DEPLOYMENT_MODE, configVal));
+                    }
+                }
+                return _deploymentMode;
+                //return DeploymentModeEnum.Azure;
             }
         }
 

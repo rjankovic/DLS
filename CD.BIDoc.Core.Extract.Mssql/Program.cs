@@ -136,7 +136,7 @@ namespace CD.DLS.Extract.Mssql
                 for (int i = 0; i<projectConfig.PowerBiComponents.Count;i++)
                 {
                     //MessageBox.Show(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),projectConfig.ProjectConfigId.ToString(),powerBicomponent.ApplicationID));
-                    var credentialsFilePath = Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "config", projectConfig.ProjectConfigId.ToString());
+                    var credentialsFilePath = Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "config", projectConfig.ProjectConfigId.ToString() + ".credentials");
                     Credentials credentials = JsonConvert.DeserializeObject<Credentials>(File.ReadAllText(credentialsFilePath));
                     Credential credential = credentials.FindCredential(projectConfig.PowerBiComponents[i].PowerBiProjectComponentId,"PowerBi");
                     var extractor = new PowerBi.PowerBiExtractor(projectConfig.PowerBiComponents[i], relativePathBase, powerBiDirPath, manifest, credential.Username, credential.Password);

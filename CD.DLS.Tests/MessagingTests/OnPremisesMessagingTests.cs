@@ -51,7 +51,7 @@ namespace CD.DLS.Tests.MessagingTests
 
             var respTask = _r1.PostMessage(msg);
             var resp = DAL.Receiver.Helpers.CreateResponse(msg);
-            _r2.PostMessageNoResponse(resp);
+            _r2.PostMessageNoResponse(resp).Wait();
 
             var receivedResp = respTask.Result;
             Assert.IsTrue(resp.MessageId == receivedResp.MessageId);

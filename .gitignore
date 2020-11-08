@@ -365,3 +365,5 @@ CD.Framework.DB/CD.DLS.DB.jfm
 *.dbmdl
 *.jfm
 *.jfm
+*.dbmdl
+*.jfm

@@ -18,7 +18,7 @@ namespace CD.DLS.DAL.Managers
     public class LogEntry
     {
         public LogTypeEnum LogType { get; set; }
-        public DateTime CreatedTime { get; set; }
+        public DateTimeOffset CreatedTime { get; set; }
         public string Message { get; set; }
         public string StackTrace { get; set; }
         public int LogId { get; set; }
@@ -225,13 +225,15 @@ namespace CD.DLS.DAL.Managers
             List<LogEntry> entries = new List<LogEntry>();
             foreach (DataRow row in dt.Rows)
             {
+                LogTypeEnum lt = LogTypeEnum.Info;
+                Enum.TryParse(row["MessageType"].ToString(), out lt);
                 entries.Add(new LogEntry()
                 {
                     LogId = (int)row["LogId"],
                     StackTrace = (row["StackTrace"] == DBNull.Value ? null : (string)row["Stacktrace"]),
                     Message = (string)row["Message"],
-                    CreatedTime = (DateTime)row["CreatedDate"],
-                    LogType = (LogTypeEnum)(int.Parse(row["MessageType"].ToString()) - 1)
+                    CreatedTime = (DateTimeOffset)row["CreatedDate"],
+                    LogType = lt
                 });
             }
             return entries;

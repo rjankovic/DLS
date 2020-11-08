@@ -88,34 +88,40 @@ namespace CD.DLS.Manager
             var receiverIdConfigValue = ConfigManager.ServiceReceiverId;
             _serviceReceiverId = receiverIdConfigValue;
 
-            _receiver = new HttpReceiver(ConfigManager.CustomerCode);
-
+            if (ConfigManager.DeploymentMode == DeploymentModeEnum.Azure)
+            {
+                _receiver = new HttpReceiver(ConfigManager.CustomerCode);
+            }
+            else if (ConfigManager.DeploymentMode == DeploymentModeEnum.OnPremises)
+            {
+                _receiver = new Receiver(Guid.NewGuid(), "Desktop app - " + IdentityProvider.GetCurrentUser().Identity);
+            }
             //_receiver.BroadcastMessageReceived += BroadcastMessageReceived;
             // global permissions
             SetVisibilityBasedOnPermissions();
         }
 
-        private void BroadcastMessageReceived(BroadcastMessage message)
-        {
-            if (_projectConfig == null)
-            {
-                return;
-            }
+        //private void BroadcastMessageReceived(BroadcastMessage message)
+        //{
+        //    if (_projectConfig == null)
+        //    {
+        //        return;
+        //    }
 
-            if (_projectConfig.ProjectConfigId != message.ProjectConfigId)
-            {
-                return;
-            }
+        //    if (_projectConfig.ProjectConfigId != message.ProjectConfigId)
+        //    {
+        //        return;
+        //    }
 
-            if (message.Type == BroadcastMessageType.ProjectUpdateFinished)
-            {
-                ModelUpdateFinished();
-            }
-            else if (message.Type == BroadcastMessageType.ProjectUpdateStarted)
-            {
-                ModelUpdateStarted();
-            }
-        }
+        //    if (message.Type == BroadcastMessageType.ProjectUpdateFinished)
+        //    {
+        //        ModelUpdateFinished();
+        //    }
+        //    else if (message.Type == BroadcastMessageType.ProjectUpdateStarted)
+        //    {
+        //        ModelUpdateStarted();
+        //    }
+        //}
 
         private void ModelUpdateStarted()
         {
@@ -133,6 +139,10 @@ namespace CD.DLS.Manager
 
         private void SetVisibilityBasedOnPermissions()
         {
+            if(ConfigManager.DeploymentMode == DeploymentModeEnum.OnPremises)
+            {
+                return;
+            }
             var user = IdentityProvider.GetCurrentUser();
             var isGlobalAdmin = user.Groups.Any(x => x.Name == GLOBAL_ADMIN_AAD_GROUP);
 
@@ -349,7 +359,7 @@ namespace CD.DLS.Manager
                 ProjectConfigManager.DeleteProjectConfig(projectConfig.ProjectConfigId);
                 //ReconfigureService();
 
-                var credentialsFilePath = Path.Combine(System.IO.Path.GetDirectoryName(ConfigManager.ExtractorPath), "config", projectConfig.ProjectConfigId.ToString());
+                var credentialsFilePath = Path.Combine(System.IO.Path.GetDirectoryName(ConfigManager.ExtractorPath), "config", projectConfig.ProjectConfigId.ToString() + ".credentials");
                 File.Delete(credentialsFilePath);
 
                 Mouse.OverrideCursor = origCursor;

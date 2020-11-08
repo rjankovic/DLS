@@ -53,7 +53,7 @@ namespace CD.DLS.DAL.Managers
             Credentials credentials = null;
             if (System.IO.Path.GetDirectoryName(ConfigManager.ExtractorPath) != null)
             {
-                var credentialsFilePath = Path.Combine(System.IO.Path.GetDirectoryName(ConfigManager.ExtractorPath), "config", res.ProjectConfigId.ToString());
+                var credentialsFilePath = Path.Combine(System.IO.Path.GetDirectoryName(ConfigManager.ExtractorPath), "config", res.ProjectConfigId.ToString() + ".credentials");
                 Directory.CreateDirectory(Path.GetDirectoryName(credentialsFilePath));
 
                 if (File.Exists(credentialsFilePath))
@@ -354,8 +354,11 @@ namespace CD.DLS.DAL.Managers
             });
 
 
-            var credentialsFilePath = Path.Combine(System.IO.Path.GetDirectoryName(ConfigManager.ExtractorPath), "config", config.ProjectConfigId.ToString());
-            File.Delete(credentialsFilePath);
+            var credentialsFilePath = Path.Combine(System.IO.Path.GetDirectoryName(ConfigManager.ExtractorPath), "config", config.ProjectConfigId.ToString() + ".credentials");
+            if (File.Exists(credentialsFilePath))
+            {
+                File.Delete(credentialsFilePath);
+            }
             Credentials credentials = new Credentials();
 
             var projectConfig = this.GetProjectConfig(config.ProjectConfigId);
@@ -389,8 +392,11 @@ namespace CD.DLS.DAL.Managers
 
         public void DeleteProjectConfig(Guid id)
         {
-            var credentialsFilePath = Path.Combine(System.IO.Path.GetDirectoryName(ConfigManager.ExtractorPath),"config",id.ToString());
-            
+            var credentialsFilePath = Path.Combine(System.IO.Path.GetDirectoryName(ConfigManager.ExtractorPath),"config",id.ToString() + ".credentials");
+            if (File.Exists(credentialsFilePath))
+            {
+                File.Delete(credentialsFilePath);
+            }
             NetBridge.ExecuteProcedure("Adm.sp_DeleteProjectConfig", new Dictionary<string, object>()
             {
                 { "projectconfigid", id }

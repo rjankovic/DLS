@@ -10,8 +10,8 @@ namespace CD.DLS.Common.Tools
     public static class Registry
     {
         public const string DB_CONNECTION_VALUE_NAME = "DbConnection";
-        public const string CONFIG_REGISTRY_PATH = "SOFTWARE\\CleverDecision\\Framework";
-        public const string CONFIG_REGISTRY_X86_PATH = "SOFTWARE\\WOW6432Node\\CleverDecision\\Framework";
+        public const string CONFIG_REGISTRY_PATH = "SOFTWARE\\DLS";
+        public const string CONFIG_REGISTRY_X86_PATH = "SOFTWARE\\WOW6432Node\\DLS";
 
         private static string ReadValueAsString(string keyPath, string value)
         {
