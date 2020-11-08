@@ -42,6 +42,7 @@ namespace CD.DLS.DAL.Configuration
             get {
                 return _innerConfigManager.DeploymentMode;
             }
+            set { _innerConfigManager.DeploymentMode = value; }
         }
 
         /// <summary>

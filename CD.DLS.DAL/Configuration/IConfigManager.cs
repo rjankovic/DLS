@@ -14,7 +14,7 @@ namespace CD.DLS.DAL.Configuration
         /// <summary>
         /// Is this an on-premises or cloud instance of the framework
         /// </summary>
-        DeploymentModeEnum DeploymentMode { get; }
+        DeploymentModeEnum DeploymentMode { get; set; }
 
         /// <summary>
         /// Is the currently running process a service, a client or else?

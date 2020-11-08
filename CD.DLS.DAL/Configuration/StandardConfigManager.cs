@@ -78,6 +78,8 @@ namespace CD.DLS.DAL.Configuration
                 return _deploymentMode;
                 //return DeploymentModeEnum.Azure;
             }
+
+            set { _deploymentMode = value; }
         }
 
         /// <summary>
@@ -447,6 +449,10 @@ namespace CD.DLS.DAL.Configuration
 
             string configValue;
             if (ApplicationClass == ApplicationClassEnum.Client || ApplicationClass == ApplicationClassEnum.Daemon)
+            {
+                configValue = Registry.GetConfigValue(key);
+            }
+            else if (DeploymentMode == DeploymentModeEnum.OnPremises && ApplicationClass == ApplicationClassEnum.Service)
             {
                 configValue = Registry.GetConfigValue(key);
             }

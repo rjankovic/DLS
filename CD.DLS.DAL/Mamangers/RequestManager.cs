@@ -520,7 +520,7 @@ AS
             var brokerCommand = new SqlCommand(
             "SELECT [MessageId] FROM adm.RequestMessages WHERE [MessageToObjectId] = @objectId AND Received = 0",
                     NetBridge.BrokerConnection);
-            _logger.Important("Waiting for messages: " + brokerCommand.CommandText + "(" + targetObjectId.ToString() + ")");
+            _logger.Important("Waiting for messages: " + brokerCommand.CommandText + " (" + targetObjectId.ToString() + ")");
             brokerCommand.Parameters.AddWithValue("@objectId", targetObjectId);
             var dependency = new SqlDependency(brokerCommand);
             using (SqlDataReader reader = brokerCommand.ExecuteReader())
