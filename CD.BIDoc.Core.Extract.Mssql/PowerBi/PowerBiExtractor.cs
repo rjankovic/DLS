@@ -21,7 +21,7 @@ using System.Security.Principal;
 
 namespace CD.DLS.Extract.PowerBi
 {
-    class PowerBiExtractor
+    public class PowerBiExtractor
     {
         private PowerBiProjectComponent powerBiProject;
         private string inputDirPath;
@@ -217,8 +217,29 @@ namespace CD.DLS.Extract.PowerBi
             return reports;
         }
 
+        public Report ExtractPbix(string pbixPath)
+        {
+            var fileName = Path.GetFileName(pbixPath);
+            this.currentReportName = fileName;
+            var extractDirRoot = Path.Combine(outputDirPath, "dir");
+            if (Directory.Exists(extractDirRoot))
+            {
+                Directory.Delete(extractDirRoot, true);
+            }
+            Directory.CreateDirectory(extractDirRoot);
+            var dirExtract = Path.Combine(extractDirRoot, fileName);
+            ZipFile.ExtractToDirectory(pbixPath, dirExtract);
+
+            var reports = ExtractReports();
+            return reports.First();
+        }
+
         private  XmlDocument LoadXml(string dir)
         {
+            if (!File.Exists(dir))
+            {
+                return null;
+            }
             var xmlString = System.IO.File.ReadAllText(dir);
             var splits = Regex.Split(xmlString, @"(?=(<\?xml))");
             var regExp = Regex.Match(splits[4], "<.*>", RegexOptions.CultureInvariant).Value;
@@ -232,6 +253,10 @@ namespace CD.DLS.Extract.PowerBi
         private List<string> GetEntryValue(XmlDocument inputXml, string entryType)
         {
             List<string> parametersValue = new List<string>();
+            if (inputXml == null)
+            {
+                return parametersValue;
+            }
             var nodes = inputXml.SelectNodes("//Entry[@Type='" + entryType + "']");
             foreach (XmlNode node in nodes)
             {
@@ -256,12 +281,27 @@ namespace CD.DLS.Extract.PowerBi
             var jsonString = System.IO.File.ReadAllText(connectionsPath);
             LiveConnectionDataSource liveConnection = JsonConvert.DeserializeObject<LiveConnectionDataSource>(jsonString);
 
+            if (liveConnection.Connections == null)
+            {
+                return connections;
+            }
+
             for (int i = 0; i<liveConnection.Connections.Length; i++)
             {
                 Connection conn = new Connection(i, null, null, null);
                 conn.Type = liveConnection.Connections[i].ConnectionType;
                 var dataSource = Regex.Match(liveConnection.Connections[i].ConnectionString, "(?<=Source=).+?(?=;)", RegexOptions.CultureInvariant).Value;
                 var catalog = Regex.Match(liveConnection.Connections[i].ConnectionString, "(?<=Catalog=).+?(?=;)", RegexOptions.CultureInvariant).Value;
+                if (catalog == "")
+                {
+                    var connstring = liveConnection.Connections[i].ConnectionString;
+                    var split = connstring.Split(';');
+                    var catalogSplit = split.FirstOrDefault(x => x.Contains("Catalog="));
+                    if (catalogSplit != null)
+                    {
+                        catalog = catalogSplit.Substring(catalogSplit.LastIndexOf("=")+1).Trim();
+                    }
+                }
                 conn.Source = dataSource + "\\" + catalog;
                 conn.Tables = ExtractTableNamesLiveConnection();
                 connections.Add(conn);
@@ -303,11 +343,19 @@ namespace CD.DLS.Extract.PowerBi
         private List<PbiTable> ExtractTableNamesLiveConnection()
         {
             List<PbiTable> tmp = new List<PbiTable>();
+            if (!File.Exists(diagramLayoutPath))
+            {
+                return tmp;
+            }
             var jsonString = System.IO.File.ReadAllText(diagramLayoutPath,Encoding.Unicode);
             jsonString = jsonString.Replace(" ", "");
             Example table = JsonConvert.DeserializeObject<Example>(jsonString);
             foreach (Diagram d in table.diagrams)
             {
+                if (d.tables == null)
+                {
+                    continue;
+                }
                 foreach (string t in d.tables)
                 {
                     PbiTable tbl = new PbiTable(t);
@@ -325,6 +373,7 @@ namespace CD.DLS.Extract.PowerBi
             switch (con.Type)
             {
                 case "Sql.Databases":
+                //case "Sql.Database":
                     var splitDb = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None)[3].Trim(' ');
                     tableName = Regex.Match(splitDb, "(?<=).+?(?= )", RegexOptions.CultureInvariant).Value;
                     break;
@@ -343,6 +392,7 @@ namespace CD.DLS.Extract.PowerBi
                     tableName = System.IO.Path.GetFileNameWithoutExtension(splitPath[splitPath.Length - 2]);
                     break;
                 case "AnalysisServices.Databases":
+                //case "AnalysisServices.Database":
                     var splitAs = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None)[4];
                     tableName = Regex.Match(splitAs, "(?<=Id=).+?(?=])", RegexOptions.Multiline).Value.Trim('\'', '\\'); 
                     break;
@@ -357,15 +407,30 @@ namespace CD.DLS.Extract.PowerBi
             {
                 case "Sql.Databases":
                 case "AnalysisServices.Databases":
+                case "Sql.Database":
+                case "AnalysisServices.Database":
                 case "Excel.Workbook":
                 case "Table.FromColumns":
                     var splits = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None);
                     foreach (string split in splits)
                     {
-                        if (split.Contains("Source"))
+                        if (split.Contains("Source") && connectionString != null)
                         {
-                            var regExp = Regex.Match(split, "(?<=\').+?(?=\\')", RegexOptions.CultureInvariant);
-                            connectionString += regExp.Value;
+                            var regExp = Regex.Matches(split, "(?<=\').+?(?=\\')", RegexOptions.CultureInvariant);
+                            int count = 0;
+                            foreach (Match match in regExp)
+                            {
+                                if (match.Value.Contains(","))
+                                {
+                                    continue;
+                                }
+                                connectionString += match.Value;
+                                count++;
+                                if (count == 2)
+                                {
+                                    break;
+                                }
+                            }
                         }
                     }
                     break;
@@ -453,6 +518,7 @@ namespace CD.DLS.Extract.PowerBi
             switch (con.Type)
             {
                 case "Sql.Databases":
+                //case "Sql.Database":
                 case "Excel.Workbook":
                     var splitsDb = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None);
                     var splitDb = splitsDb[3].Trim(' ');
@@ -460,6 +526,7 @@ namespace CD.DLS.Extract.PowerBi
                     break;
 
                 case "AnalysisServices.Databases":
+                //case "AnalysisServices.Database":
                     var splitsAs = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None);
                     var ssas = Regex.Match(entry, "(= Cube).+?(}\\))", RegexOptions.CultureInvariant).Value;
                     query = Regex.Replace(ssas, @"\\r\\n", String.Empty);
@@ -504,6 +571,10 @@ namespace CD.DLS.Extract.PowerBi
                 var config = vc.GetConfig();
                 Visual visual = new Visual(vc.Id, config.SingleVisual1.VisualType, vc.GetFilters());
                 PropertyInfo[] properties = typeof(VisualContainerConfig.Projections).GetProperties();
+                if (config.SingleVisual1.Projections == null)
+                {
+                    continue;
+                }
                 foreach (PropertyInfo property in properties)
                 {
                     Projection[] projections = (Projection[])property.GetValue(config.SingleVisual1.Projections);
