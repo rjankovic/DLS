@@ -289,6 +289,19 @@ AS
             return res;
         }
 
+        public List<Guid> GetRequestsNotWaiting()
+        {
+            var resDt = NetBridge.ExecuteProcedureTable("[Adm].[sp_GetRequestsNotWaiting]", new Dictionary<string, object>
+            ());
+
+            List<Guid> res = new List<Guid>();
+            foreach (DataRow r in resDt.Rows)
+            {
+                res.Add((Guid)r[0]);
+            }
+            return res;
+        }
+
         public List<Guid> GetCompletedComplexRequests(Guid processedRequestId)
         {
             var resDt = NetBridge.ExecuteProcedureTable("[Adm].[sp_GetCompletedComplexRequests]", new Dictionary<string, object>

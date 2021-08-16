@@ -16,37 +16,42 @@ using System.Threading.Tasks;
 
 namespace CD.DLS.RequestProcessor.ModelUpdate
 {
-    public class UpdateModelRequestProcessor : RequestProcessorBase, IRequestProcessor<UpdateModelRequest, DLSApiProgressResponse>
-    {
-        public DLSApiProgressResponse Process(UpdateModelRequest request, ProjectConfig projectConfig)
-        {
-            // set model unavailable
-            var msgs = RequestManager.GetActiveBroadcastMessages();
-            foreach (var msg in msgs.Where(x => x.Type == DAL.Receiver.BroadcastMessageType.ProjectUpdateFinished))
-            {
-                RequestManager.SetBroadcastMessageInactive(msg);
-            }
+    //public class UpdateModelRequestProcessor : RequestProcessorBase, IRequestProcessor<UpdateModelRequest, DLSApiProgressResponse>
+    //{
+    //    public DLSApiProgressResponse Process(UpdateModelRequest request, ProjectConfig projectConfig)
+    //    {
+    //        // set model unavailable
+    //        var msgs = RequestManager.GetActiveBroadcastMessages();
+    //        foreach (var msg in msgs.Where(x => x.Type == DAL.Receiver.BroadcastMessageType.ProjectUpdateFinished))
+    //        {
+    //            RequestManager.SetBroadcastMessageInactive(msg);
+    //        }
 
-            // TODO revive model unavailable later
-            /*
-            var broadcast = new BroadcastMessage() { Active = true, BroadcastMessageId = Guid.NewGuid(), ProjectConfigId = projectConfig.ProjectConfigId, Type = BroadcastMessageType.ProjectUpdateStarted };
-            RequestManager.SaveBroadcastMessageSingleton(broadcast);
-            ClientSender.PostBroadcastMessageToServiceBus(broadcast, CustomerCode);
-            */
+    //        // TODO revive model unavailable later
+    //        /*
+    //        var broadcast = new BroadcastMessage() { Active = true, BroadcastMessageId = Guid.NewGuid(), ProjectConfigId = projectConfig.ProjectConfigId, Type = BroadcastMessageType.ProjectUpdateStarted };
+    //        RequestManager.SaveBroadcastMessageSingleton(broadcast);
+    //        ClientSender.PostBroadcastMessageToServiceBus(broadcast, CustomerCode);
+    //        */
 
-            //GraphManager.ClearModel(projectConfig.ProjectConfigId, RequestId);
-            RequestManager.CreateProcedureExecution("[BIDoc].[sp_ClearModel]", projectConfig.ProjectConfigId, RequestId);
+    //        //GraphManager.ClearModel(projectConfig.ProjectConfigId, RequestId);
+
+    //        //RequestManager.CreateProcedureExecution("[BIDoc].[sp_ClearModel]", projectConfig.ProjectConfigId, RequestId);
+
+    //        //("[BIDoc].[sp_ClearModel]", projectConfig.ProjectConfigId, RequestId);
+    //        GraphManager.ClearModel(projectConfig.ProjectConfigId, RequestId);
+
+
+    //        return new DLSApiProgressResponse()
+    //        {
+    //            ContinueWith = new ParseSqlDatabasesRequest()
+    //            {
+    //                ExtractId = //Guid.Parse("9fa61938-3792-4aee-9ba2-a8c710ca02e5") // 
+    //                request.ExtractId
+    //            },//,
+    //            ContinuationsWaitForDb = ConfigManager.DeploymentMode == DeploymentModeEnum.Azure ? true : false
+    //        };
             
-            return new DLSApiProgressResponse()
-            {
-                ContinueWith = new ParseSqlDatabasesRequest()
-                {
-                    ExtractId = //Guid.Parse("9fa61938-3792-4aee-9ba2-a8c710ca02e5") // 
-                    request.ExtractId
-                },
-                ContinuationsWaitForDb = true
-            };
-            
-        }
-    }
+    //    }
+    //}
 }

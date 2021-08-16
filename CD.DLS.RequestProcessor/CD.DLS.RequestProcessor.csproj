@@ -179,6 +179,8 @@
     <Compile Include="BusinessObjects\GetPivotTableTemplateRequestProcessor.cs" />
     <Compile Include="BusinessObjects\CreateFolderRequestProcessor.cs" />
     <Compile Include="MessageProcessor.cs" />
+    <Compile Include="ModelUpdate\SqlShallowParser.cs" />
+    <Compile Include="ModelUpdate\UpdateModelRequestDirectProcessor.cs" />
     <Compile Include="ModelUpdate\6_0_0_ParsePbiComponentsRequestProcessor.cs" />
     <Compile Include="ModelUpdate\6_1_0_ParsePbiComponentRequestProcessor.cs" />
     <Compile Include="ModelUpdate\6_1_1_ParsePbiTenantRequestProcessor.cs" />

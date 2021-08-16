@@ -9,7 +9,7 @@ namespace CD.DLS.API.ModelUpdate
     /// <summary>
     /// WF pos: 1
     /// </summary>
-    public class UpdateModelRequest : DLSApiRequest<DLSApiProgressResponse>
+    public class UpdateModelRequest : DLSApiRequest<DLSApiMessage>
     {
         public Guid ExtractId { get; set; }
         

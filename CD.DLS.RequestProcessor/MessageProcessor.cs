@@ -73,13 +73,20 @@ namespace CD.DLS.RequestProcessor
             //_receiver.SetAzureTargetTopicClientBasedOnCustomerCode(message.CustomerCode);
             var rm = GetRequestManager(message);
 
+            var notWaitingRequests = rm.GetRequestsNotWaiting();
+
+            if (!notWaitingRequests.Contains(message.RequestId))
+            {
+                return;
+            }
+
             // new request - wait for response
             if (message.MessageType == MessageTypeEnum.RequestCreated)
             {
                 RequestMessage response = await ProcessNewRequestAsync(message);
                 if (response != null)
                 {
-                    _receiver.PostMessageNoResponse(response);
+                    await _receiver.PostMessageNoResponse(response);
                     if (response.MessageType == MessageTypeEnum.RequestProcessed)
                     {
                         CheckCompletedComplexRequests(message);
@@ -188,8 +195,15 @@ namespace CD.DLS.RequestProcessor
 
             if (message.MessageType == MessageTypeEnum.DbOperationFinished)
             {
-                var progressMessage = rm.GetProgressForRequest(message.RequestId);
-                progressResponse = (DLSApiProgressResponse)DLSApiMessage.Deserialize(progressMessage.Content);
+                if (ConfigManager.DeploymentMode == DeploymentModeEnum.Azure)
+                {
+                    var progressMessage = rm.GetProgressForRequest(message.RequestId);
+                    progressResponse = (DLSApiProgressResponse)DLSApiMessage.Deserialize(progressMessage.Content);
+                }
+                else
+                {
+                    return;
+                }
             }
             else if (message.MessageType == MessageTypeEnum.Progress)
             {
@@ -279,7 +293,20 @@ namespace CD.DLS.RequestProcessor
 
                 var creationMessage = rm.GetCreationForRequest(req.RequestId);
 
-                PostMessageToServiceBusCollector(creationMessage);
+
+                
+
+                if (ConfigManager.DeploymentMode == DeploymentModeEnum.Azure && ConfigManager.ApplicationClass == ApplicationClassEnum.Service)
+                {
+                    PostMessageToServiceBusCollector(creationMessage);
+                }
+                //else if(ConfigManager.DeploymentMode == DeploymentModeEnum.OnPremises) 
+                //{
+                //    ProcessAsync(req);
+                //}
+
+
+                //PostMessageToServiceBusCollector(creationMessage);
                 /*
                 if (ConfigManager.DeploymentMode == DeploymentModeEnum.Azure && ConfigManager.ApplicationClass == ApplicationClassEnum.Service && TopicCollector != null)
                 {
@@ -363,7 +390,11 @@ namespace CD.DLS.RequestProcessor
                 }
                 else
                 {
-                    PostMessageToServiceBusCollector(creationMessage);
+                    if (ConfigManager.ApplicationClass == ApplicationClassEnum.Service && ConfigManager.DeploymentMode == DeploymentModeEnum.Azure && TopicCollector != null)
+                    {
+                        PostMessageToServiceBusCollector(creationMessage);
+                    }
+                    //PostMessageToServiceBusCollector(creationMessage);
                     /*
                     if (ConfigManager.ApplicationClass == ApplicationClassEnum.Service && ConfigManager.DeploymentMode == DeploymentModeEnum.Azure && TopicCollector != null)
                     {
@@ -408,6 +439,7 @@ namespace CD.DLS.RequestProcessor
                 var res = await ProcessRequest(request);
 
                 _log.Important("Request processed");
+                _log.FlushMessages();
                 return res;
             }
             catch (Exception ex)

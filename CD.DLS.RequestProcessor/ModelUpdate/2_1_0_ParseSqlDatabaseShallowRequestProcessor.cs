@@ -129,6 +129,7 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
             }
             catch (Exception ex1)
             {
+
                 LogException(ex1);
                 throw ex1;
             }

@@ -46,6 +46,7 @@ namespace CD.DLS.Extract.Mssql
             var workDirPath = Path.Combine(_outputFolder, workDirName);
             var extractFolder = Directory.CreateDirectory(workDirPath);
             //ConfigManager.ApplicationClass = ApplicationClassEnum.Client;
+            ConfigManager.DeploymentMode = DeploymentModeEnum.OnPremises;
             ConfigManager.ApplicationClass = ApplicationClassEnum.Service;
             ConfigManager.Log = new ConsoleLogger("DLS Extractor");
             // to prevent RefreshBrokerConnection

@@ -333,10 +333,10 @@ namespace CD.DLS.DAL.Configuration
                         {
                             _logByThread[threadId] = new EventLogger();
                         }
-                        else if (ApplicationClass == ApplicationClassEnum.Service)
-                        {
-                            _logByThread[threadId] = new FileLogger("DLS Service", ServiceLogPath);
-                        }
+                        //else if (ApplicationClass == ApplicationClassEnum.Service)
+                        //{
+                        //    _logByThread[threadId] = new FileLogger("DLS Service", ServiceLogPath);
+                        //}
                         else
                         {
                             _logByThread[threadId] = new DbLogger();

@@ -20,11 +20,16 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
         public DLSApiProgressResponse Process(BuildAggregationsRequest request, ProjectConfig projectConfig)
         {
             //GraphManager.BuildAggregations(projectConfig.ProjectConfigId, RequestId);
-            RequestManager.CreateProcedureExecution("[BIDoc].[sp_BuildAggregations]", projectConfig.ProjectConfigId, RequestId);
+            
+            
+            //RequestManager.CreateProcedureExecution("[BIDoc].[sp_BuildAggregations]", projectConfig.ProjectConfigId, RequestId);
+            
+            GraphManager.BuildAggregationsAsync(projectConfig.ProjectConfigId, RequestId);
 
             return new DLSApiProgressResponse()
             {
-                ContinuationsWaitForDb = true,
+                //ContinuationsWaitForDb = true,
+                ContinuationsWaitForDb = ConfigManager.DeploymentMode == DeploymentModeEnum.Azure ? true : false,
                 ContinueWith = new FindAssociationRulesRequest() //SetModelAvailableRequest()
             };
             

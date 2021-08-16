@@ -29,6 +29,11 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
 
                 var urnBuilder = new UrnBuilder();
                 List<Model.Mssql.Ssas.ServerElement> res = new List<Model.Mssql.Ssas.ServerElement>();
+
+                Parse.Mssql.Db.AvailableDatabaseModelIndex adbix = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, GraphManager);
+                SsasModelExtractor extractor = new SsasModelExtractor(projectConfig, request.ExtractId, StageManager, GraphManager, adbix);
+                TabularParser tparser = new TabularParser(adbix, projectConfig, request.ExtractId, StageManager);
+
                 foreach (var ssasComponent in projectConfig.SsasComponents.OrderBy(x => x.ServerName))
                 {
                     ConfigManager.Log.Info("SSAS DB type: " + ssasComponent.Type.ToString());
@@ -99,7 +104,7 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
 
                 return new DLSApiProgressResponse()
                 {
-                    ContinuationsWaitForDb = true,
+                    //ContinuationsWaitForDb = true,
                     ParallelRequests = parseDatabaseRequests,
                     //ContinueWith = new ParseSsrsComponentsRequest()
                     //{

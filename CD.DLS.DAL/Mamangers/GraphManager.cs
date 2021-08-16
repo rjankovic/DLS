@@ -30,7 +30,7 @@ namespace CD.DLS.DAL.Managers
             _netBridge = new NetBridge();
         }
 
-        public void BuildAggregations(Guid projectId, Guid requestId)
+        public void BuildAggregationsAsync(Guid projectId, Guid requestId)
         {
             NetBridge.ExecuteProcedureAsync("[BIDoc].[sp_BuildAggregations]", new Dictionary<string, object>()
             {
@@ -39,6 +39,14 @@ namespace CD.DLS.DAL.Managers
             });
         }
 
+        public void BuildAggregations(Guid projectId, Guid requestId)
+        {
+            NetBridge.ExecuteProcedure("[BIDoc].[sp_BuildAggregations]", new Dictionary<string, object>()
+            {
+                { "projectconfigid", projectId },
+                { "requestId", requestId }
+            });
+        }
         /// <summary>
         /// Returns the first ID in a sequence of {elementCount} IDs reserved
         /// </summary>
@@ -172,7 +180,13 @@ namespace CD.DLS.DAL.Managers
 
         public void ClearModel(Guid projectId, Guid requestId)
         {
-            NetBridge.ExecuteProcedureAsync("BIDoc.sp_ClearModel", new Dictionary<string, object>()
+            //NetBridge.ExecuteProcedureAsync("BIDoc.sp_ClearModel", new Dictionary<string, object>()
+            //{
+            //    { "projectconfigid", projectId },
+            //    { "requestId", requestId }
+            //});
+
+            NetBridge.ExecuteProcedure("BIDoc.sp_ClearModel", new Dictionary<string, object>()
             {
                 { "projectconfigid", projectId },
                 { "requestId", requestId }

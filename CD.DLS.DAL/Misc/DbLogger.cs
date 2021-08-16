@@ -87,7 +87,7 @@ namespace CD.DLS.DAL.Misc
                 }
             }
 
-            if (_buffer.Max(x => x.CreatedDate).ToUnixTimeSeconds() - _buffer.Min(x => x.CreatedDate).ToUnixTimeSeconds() >= 30)
+            if (DateTimeOffset.Now.ToUnixTimeSeconds() - _buffer.Min(x => x.CreatedDate).ToUnixTimeSeconds() >= 0.1)
             {
                 FlushMessages();
             }

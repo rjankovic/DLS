@@ -67,7 +67,7 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
 
                 return new DLSApiProgressResponse()
                 {
-                    ContinuationsWaitForDb = true,
+                    //ContinuationsWaitForDb = true,
                     ParallelRequests = parseComponentRequests,
                     ContinueWith = new ParsePbiComponentsRequest() // BuildAggregationsRequest()
                     {

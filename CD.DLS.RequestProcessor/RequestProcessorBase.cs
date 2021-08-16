@@ -29,7 +29,7 @@ namespace CD.DLS.RequestProcessor
         private LearningManager _learningManger;
         private string _customerCode;
         private Guid _requestId;
-        private IReceiver _receiver;
+        //private IReceiver _receiver;
 
         public ILogger Log { get { return ConfigManager.Log; } }
 
@@ -43,7 +43,6 @@ namespace CD.DLS.RequestProcessor
         public SecurityManager SecurityManager { get { return _securityManager; } }
         public LearningManager LearningManager { get { return _learningManger; } }
         public Guid RequestId { get { return _requestId; } }
-        public IReceiver ClientSender { get { return _receiver; } }
         public string CustomerCode { get { return _customerCode; } }
 
         public RequestProcessorBase()
@@ -71,7 +70,6 @@ namespace CD.DLS.RequestProcessor
             _searchManager = new SearchManager(nb);
             _securityManager = new SecurityManager(nb);
             _learningManger = new LearningManager(nb);
-            _receiver = new HttpReceiver(message.CustomerCode);
         }
 
         protected Dictionary<int, MssqlModelElement> DeserializeElementsForDisplay(Guid projectConfigId, List<int> elementIds)
@@ -117,6 +115,7 @@ namespace CD.DLS.RequestProcessor
                 ConfigManager.Log.Error(e.InnerException.Message);
             }
             ConfigManager.Log.Error(e.StackTrace);
+            ConfigManager.Log.FlushMessages();
         }
     }
 }

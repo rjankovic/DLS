@@ -17,17 +17,17 @@ namespace CD.DLS.Common.Tools
         {
             //try
             //{
-                using (RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(keyPath))
+            using (RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(keyPath))
+            {
+                if (key != null)
                 {
-                    if (key != null)
+                    Object o = key.GetValue(value);
+                    if (o != null)
                     {
-                        Object o = key.GetValue(value);
-                        if (o != null)
-                        {
-                            return o.ToString();
-                        }
+                        return o.ToString();
                     }
                 }
+            }
             //}
             //catch (Exception ex)  //just for demonstration...it's always best to handle specific exceptions
             //{
@@ -40,7 +40,7 @@ namespace CD.DLS.Common.Tools
         private static void SetValueString(string keyPath, string valueName, string value)
         {
             RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(keyPath);
-           
+
             if (key == null)
             {
                 Microsoft.Win32.Registry.LocalMachine.CreateSubKey(keyPath);

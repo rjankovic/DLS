@@ -469,6 +469,7 @@
     <Build Include="Annotate\TableFunctions\f_ProjectDictionaryValues.sql" />
     <Build Include="Inspect\TableFunctions\Inspect.f_GetGraphNodesExtended_ForceSeek.sql" />
     <Build Include="BIDoc\Procedures\BIDoc.sp_SetElementSubtreeContents.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_GetRequestsNotWaiting.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CDFramework_VD.publish.xml" />

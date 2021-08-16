@@ -339,7 +339,15 @@ namespace CD.DLS.Parse.Mssql.Ssis
         public ElementLayoutDesign GetContainerDesign(string containingPackageId, string designRefPath)
         {
             var file = _files[containingPackageId];
-            return file.NodeLayoutDesigns[designRefPath];
+            if (file.NodeLayoutDesigns.ContainsKey(designRefPath))
+            {
+                return file.NodeLayoutDesigns[designRefPath];
+            }
+            else
+            {
+                DAL.Configuration.ConfigManager.Log.Warning($"Could not find the layout info for {designRefPath}");
+                return new ElementLayoutDesign() { TopLeft = new DesignPoint(), Size = new DesignPoint() };
+            }
         }
 
         public XmlElement GetContainerDesignXml(string containingPackageId, string designRefPath)
