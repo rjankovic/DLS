@@ -508,7 +508,7 @@ namespace CD.DLS.Manager
 
                 
                 ConfigManager.Log.Important(string.Format("Upload finished"));
-                MessageBox.Show($"Extract \"{zips[0]}\" successfully uploaded to the server, model update in progress. The model will not be available during this time.", "Extract complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                //MessageBox.Show($"Extract \"{zips[0]}\" successfully uploaded to the server, model update in progress. The model will not be available during this time.", "Extract complete", MessageBoxButton.OK, MessageBoxImage.Information);
                 //MakeProjectButtonsUnavailable();
             });
         }

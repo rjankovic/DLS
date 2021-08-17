@@ -92,6 +92,19 @@ namespace CD.DLS.Clients.Controls.Dialogs
             nr[2] = messageType.ToString();
             _dt.Rows.Add(nr);
 
+            if (grid.Items.Count > 0)
+            {
+                if (VisualTreeHelper.GetChildrenCount(grid) > 0)
+                {
+                    var border = VisualTreeHelper.GetChild(grid, 0) as Decorator;
+                    if (border != null)
+                    {
+                        var scroll = border.Child as ScrollViewer;
+                        if (scroll != null) scroll.ScrollToEnd();
+                    }
+                }
+            }
+
             //if (DateTime.Compare(_lastUIUpdate.AddSeconds(2), DateTime.Now) < 0)
             //{
             //    _lastUIUpdate = DateTime.Now;
@@ -102,7 +115,7 @@ namespace CD.DLS.Clients.Controls.Dialogs
             //    }
             //}
             //_dispatcherStatus = x.Status;
-            
+
         }
 
         public void LogUserAction(UserActionEventType eventType, string frameworkElement, string dataContext, string extendedProperties)
