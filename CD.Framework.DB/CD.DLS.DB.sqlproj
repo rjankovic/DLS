@@ -484,6 +484,7 @@
     <None Include="CD.Framework.DB.Azure.CPI.publish.xml" />
     <Build Include="Adm\Procedures\Adm.sp_GetRolePermissions.sql" />
     <None Include="CD.Framework.DB.Azure.Manpower.publish.xml" />
+    <None Include="DLS.publish.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql">
