@@ -187,6 +187,11 @@ namespace CD.DLS.Parse.Mssql.Db
             environment.SetContextServer(_constextServerName);
             //environment.ContextServerName = _constextServerName;
             DependencySeekingTSqlFragmentVisitor _visitor = new DependencySeekingTSqlFragmentVisitor(dbIdentifier, environment, resolver);
+            if (parent.RefPath.Path == "Server[@Name='TDCHBI01']/Database[@Name='BE']/StoredProcedure[@Name='Upsert_Contract_P' and @Schema='dbo']" 
+                || parent.RefPath.Path == "Server[@Name='TDCHBI01']/Database[@Name='DSA']/StoredProcedure[@Name='p_IdentifyTasksToLoad' and @Schema='servicenow']")
+            { 
+            
+            }
             FragmentTreeNode fragmentTree = _visitor.CleanupAndVisit(script);
             resolver.TryResolveReferences(_visitor);
 

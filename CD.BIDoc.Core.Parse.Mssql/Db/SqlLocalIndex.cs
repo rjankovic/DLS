@@ -199,8 +199,19 @@ namespace CD.DLS.Parse.Mssql.Db
                 }
                 if (localResolution == null && namedTableRef.Alias != null)
                 {
-                    localResolution = _localTableSourcesAvailable.Where(x => x.ValidSpan.Contains(new ScriptSpan(referenceFromObject)))
-                        .OrderBy(x => x.ObjectContent.FirstTokenIndex).FirstOrDefault(x => idComparer.IdentifiersEqual(namedTableRef.Alias, x.Identifier));
+                    var localResolutionCandidates = _localTableSourcesAvailable.Where(x => x.ValidSpan.Contains(new ScriptSpan(referenceFromObject)))
+                        .Where(x => idComparer.IdentifiersEqual(namedTableRef.Alias, x.Identifier));
+                        //.OrderBy(x => x.ObjectContent.FirstTokenIndex)
+                        //.FirstOrDefault();
+                    var precedingCandidates = localResolutionCandidates.Where(c => c.ObjectContent.FirstTokenIndex <= referenceFromObject.FirstTokenIndex);
+                    if (precedingCandidates.Any())
+                    {
+                        localResolution = precedingCandidates.OrderByDescending(x => x.ObjectContent.FirstTokenIndex).FirstOrDefault();
+                    }
+                    else
+                    {
+                        localResolution = localResolutionCandidates.OrderBy(x => x.ObjectContent.FirstTokenIndex).FirstOrDefault();
+                    }
                 }
                 return localResolution;
             }

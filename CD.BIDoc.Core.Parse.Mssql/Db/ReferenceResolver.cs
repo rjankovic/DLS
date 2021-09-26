@@ -446,6 +446,10 @@ namespace CD.DLS.Parse.Mssql.Db
 
                             if (!matchingTable.ReferencedByAliases.Contains(tableSourceResolved))
                             {
+                                if (tableSourceResolved.ObjectContent != null && tableSourceResolved.ObjectContent.GetText() == "#delta_tasks delta")
+                                {
+
+                                }
                                 matchingTable.ReferencedByAliases.Add(tableSourceResolved);
                                 matchingTable.PropagateResolvedColumns();
                             }
@@ -527,7 +531,12 @@ namespace CD.DLS.Parse.Mssql.Db
                             // whenever the matching table gets extended, the columns will be added
                             if (!matchingTable.ReferencedByAliases.Contains(tableSourceResolved))
                             {
+                                if (tableSourceResolved.ObjectContent != null && tableSourceResolved.ObjectContent.GetText() == "#delta_tasks delta")
+                                { 
+                                
+                                }
                                 matchingTable.ReferencedByAliases.Add(tableSourceResolved);
+
                                 matchingTable.PropagateResolvedColumns();
                             }
                         }

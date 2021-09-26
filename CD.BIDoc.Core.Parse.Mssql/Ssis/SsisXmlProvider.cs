@@ -163,6 +163,19 @@ namespace CD.DLS.Parse.Mssql.Ssis
                     return v.OuterXml;
                 }
             }
+
+            var traceUpNode = containerXmlContent.ParentNode;
+            while(traceUpNode != null)
+            {
+                if (traceUpNode.Name == "DTS:Executable" && traceUpNode is XmlElement)
+                {
+                    return GetVariableDefinition(variableId, (XmlElement)traceUpNode);
+                }
+                else
+                {
+                    traceUpNode = traceUpNode.ParentNode;
+                }
+            }
             throw new Exception();
         }
 
@@ -350,11 +363,11 @@ namespace CD.DLS.Parse.Mssql.Ssis
             }
         }
 
-        public XmlElement GetContainerDesignXml(string containingPackageId, string designRefPath)
-        {
-            var file = _files[containingPackageId];
-            return file.NodeLayoutDesignXmls[designRefPath];
-        }
+        //public XmlElement GetContainerDesignXml(string containingPackageId, string designRefPath)
+        //{
+        //    var file = _files[containingPackageId];
+        //    return file.NodeLayoutDesignXmls[designRefPath];
+        //}
 
         public string GetDfComponentDefinition(XmlElement flowXml, string parentLayoutRefPath, string componentIdString, out XmlElement componentDefinitionXml)
         {
@@ -420,6 +433,10 @@ namespace CD.DLS.Parse.Mssql.Ssis
         public ElementLayoutDesign GetPackageNodeLayout(string packageId)
         {
             var file = _files[packageId];
+            if (file.EdgeLayouts.Count == 0)
+            {
+                return new ElementLayoutDesign();
+            }
             var xDim = file.NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.X + x.Size.X);
             var yDim = file.NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.Y + x.Size.Y);
             return new ElementLayoutDesign() { Size = new DesignPoint() { X = xDim, Y = yDim }, TopLeft = new DesignPoint() { X = 0, Y = 0 } };

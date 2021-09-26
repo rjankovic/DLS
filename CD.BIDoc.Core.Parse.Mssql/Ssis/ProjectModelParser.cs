@@ -415,6 +415,11 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
                     var varUrn = _urnBuilder.GetVariableUrn(parent, variable.QualifiedName);
                     variableElement = new VariableElement(varUrn, variable.Name, variableDefinition, parent);
                 }
+                // TODO one or the other - name of expression reference name
+                if (referrables.ContainsName(variableElement.GetExpressionReferenceName()))
+                {
+                    continue;
+                }
                 variableElement.DataType = ((TypeCode)(Enum.Parse(typeof(TypeCode), variable.DataType)));
                 variableElement.Value = variable.Value.ToString();
 
@@ -475,7 +480,7 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
             var definition = _definitionSearcher.GetExecutableDefinition(executable.ID, package.Container.ID, out designRefPath, out definitionElement);
             //string definition = null;
             var nodeLayout = _definitionSearcher.GetContainerDesign(package.Container.ID, designRefPath);
-            var nodeLayoutXml = _definitionSearcher.GetContainerDesignXml(package.Container.ID, designRefPath);
+            //var nodeLayoutXml = _definitionSearcher.GetContainerDesignXml(package.Container.ID, designRefPath);
             var refPath = _urnBuilder.GetExecutableUrn(parentNode, executable.Name, executable.ID);
 
             ExecutableElement resNode = null;
