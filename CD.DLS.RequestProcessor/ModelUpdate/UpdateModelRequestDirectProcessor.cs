@@ -10,6 +10,7 @@ using CD.DLS.Model.Interfaces;
 using CD.DLS.Model.Mssql;
 using CD.DLS.Model.Serialization;
 using CD.DLS.Parse.Mssql;
+using CD.DLS.Parse.Mssql.Db;
 using CD.DLS.Serialization;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,7 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
             var solutionModel = sh.LoadElementModelToChildrenOfType(
                 string.Empty,
                 typeof(Model.Mssql.Db.ServerElement)) as SolutionModelElement;
+
             //var solutionModel = new SolutionModelElement(new RefPath(""), "");
 
             var premappedModel = sh.CreatePremappedModel(solutionModel);
@@ -107,10 +109,71 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                     Model.Mssql.Db.DbModelElement objectElement = sqlShallowParser.ParseSqlObjectShallow(extractItem, schemaElement);
                 }
 
-                Parse.Mssql.Db.ReferrableIndexBuilder rib = new Parse.Mssql.Db.ReferrableIndexBuilder();
-                var ix = rib.BuildIndex(new List<Model.Mssql.Db.ServerElement>() { existentServerElement });
-                ix.SetContextServer(dbComponent.ServerName);
-                ix.PremappedIds = rib.ElementIdMap;
+                //Parse.Mssql.Db.ReferrableIndexBuilder rib = new Parse.Mssql.Db.ReferrableIndexBuilder();
+                //var ix = rib.BuildIndex(new List<Model.Mssql.Db.ServerElement>() { existentServerElement });
+                //ix.SetContextServer(dbComponent.ServerName);
+                //ix.PremappedIds = rib.ElementIdMap;
+
+                //foreach (DAL.Objects.Extract.SmoObject extractObject in extractItems)
+                //{
+                //    ConfigManager.Log.Important(string.Format("Parsing SQL scripts from {0}", extractObject.Urn));
+
+                //    var objectRefPath = Parse.Mssql.Db.DbModelParserBase.RefPathFor(extractObject.Urn).Path;
+
+                //    var schemaModel = dbElement.SchemaByName(extractObject.SchemaName);
+
+                //    var modelElement = schemaModel.Children.First(x => x.RefPath.Path == objectRefPath);
+
+                //    Parse.Mssql.Db.LocalDeepModelParser ldmp = new Parse.Mssql.Db.LocalDeepModelParser(projectConfig, dbComponent.ServerName);
+                //    ldmp.ExtractModel(extractObject, dbComponent.ServerName, ix, modelElement);
+                //}
+
+                //Parse.Mssql.Db.AvailableDatabaseModelIndex tadbix = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, GraphManager);
+                
+                //var premapped = tadbix.GetAllPremappedIds();
+                //foreach (var kv in premapped)
+                //{
+                //    premappedModel.Add(kv.Key, kv.Value);
+                //}
+
+                sh.SaveModelPart(dbElement, sqlServerPremappedModel);
+            }
+
+            var schemasModel = sh.LoadElementModelToChildrenOfType(
+                    string.Empty,
+                    typeof(Model.Mssql.Db.SchemaElement)) as SolutionModelElement;
+
+
+            AvailableDatabaseModelIndex adbIndex = new AvailableDatabaseModelIndex(projectConfig, GraphManager);
+            
+            foreach (var dbComponent in projectConfig.DatabaseComponents)
+            {
+                var referrableIndex = adbIndex.GetDatabaseIndex(dbComponent.ServerName, dbComponent.DbName);
+
+                ConfigManager.Log.Important(string.Format("Parsing MSSQL DB structures {0} from {1}", dbComponent.DbName, dbComponent.ServerName));
+
+                var existentServerElement = schemasModel.DbServers.First(x => x.Caption == dbComponent.ServerName);
+
+                var dbRefPath = Parse.Mssql.Db.UrnBuilder.GetDbUrn(existentServerElement.RefPath, dbComponent.DbName);
+                var dbElement = (CD.DLS.Model.Mssql.Db.DatabaseElement)sh.LoadElementModel(dbRefPath.Path);
+
+                //var dbElement = _componentsToDbElements[dbComponent.MssqlDbProjectComponentId]; //new Model.Mssql.Db.DatabaseElement(Parse.Mssql.Db.UrnBuilder.GetDbUrn(existentServerElement.RefPath, dbComponent.DbName), dbComponent.DbName, existentServerElement);
+                //existentServerElement.AddChild(dbElement);
+
+                //// need to save schemas before the parts due to race conditions
+                //var schemas = StageManager.GetExtractItems(request.ExtractId, dbComponent.MssqlDbProjectComponentId, DAL.Objects.Extract.ExtractTypeEnum.SqlSchema);
+                //foreach (DAL.Objects.Extract.SqlSchema schema in schemas)
+                //{
+                //    var schemaElement = new Model.Mssql.Db.SchemaElement(Parse.Mssql.Db.DbModelParserBase.RefPathFor(schema.Urn), schema.Name, dbElement);
+                //    dbElement.AddChild(schemaElement);
+                //}
+
+                var extractItems = ListDbExtractObjects(request, dbComponent);
+
+                //Parse.Mssql.Db.ReferrableIndexBuilder rib = new Parse.Mssql.Db.ReferrableIndexBuilder();
+                //var ix = rib.BuildIndex(new List<Model.Mssql.Db.ServerElement>() { existentServerElement });
+                //ix.SetContextServer(dbComponent.ServerName);
+                //ix.PremappedIds = rib.ElementIdMap;
 
                 foreach (DAL.Objects.Extract.SmoObject extractObject in extractItems)
                 {
@@ -123,23 +186,99 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                     var modelElement = schemaModel.Children.First(x => x.RefPath.Path == objectRefPath);
 
                     Parse.Mssql.Db.LocalDeepModelParser ldmp = new Parse.Mssql.Db.LocalDeepModelParser(projectConfig, dbComponent.ServerName);
-                    ldmp.ExtractModel(extractObject, dbComponent.ServerName, ix, modelElement);
+                    ldmp.ExtractModel(extractObject, dbComponent.ServerName, referrableIndex, modelElement);
                 }
 
-                Parse.Mssql.Db.AvailableDatabaseModelIndex tadbix = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, GraphManager);
-                
-                var premapped = tadbix.GetAllPremappedIds();
+                //Parse.Mssql.Db.AvailableDatabaseModelIndex tadbix = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, GraphManager);
+
+                //var premapped = tadbix.GetAllPremappedIds();
                 //foreach (var kv in premapped)
                 //{
                 //    premappedModel.Add(kv.Key, kv.Value);
                 //}
 
-                //sh.SaveModelPart(dbElement, sqlServerPremappedModel);
+                var premapped = adbIndex.GetAllPremappedIds();
+                //foreach (var server in schemasModel.DbServers)
+                //{ 
+                //    if(!premapped.ContainsKey(server))
+                //}
+
+                dbElement.Parent = null;
+                sh.SaveModelPart(dbElement, premapped, true);
             }
 
-            sh.SaveModelPart(solutionModel, sqlServerPremappedModel, true);
+            //sh.SaveModelPart(solutionModel, sqlServerPremappedModel, true);
 
             GraphManager.SetRefPathIntervals(projectConfig.ProjectConfigId);
+
+
+
+
+
+            //foreach (var dbComponent in projectConfig.DatabaseComponents)
+            //{
+
+            //    AvailableDatabaseModelIndex adbIndex = new AvailableDatabaseModelIndex(projectConfig, GraphManager);
+            //    var referrableIndex = adbIndex.GetDatabaseIndex(dbComponent.ServerName, dbComponent.DbName);
+
+            //    //adbIndex.GetAllPremappedIds();
+            //    //var extractObject = (SmoObject)StageManager.GetExtractItem(request.ExtractItemId);
+
+            //    //sh = new SerializationHelper(projectConfig, GraphManager);
+
+            //    //var existentServerElement = solutionModel.DbServers.First(x => x.Caption == dbComponent.ServerName);
+
+
+            //    //Model.Mssql.Db.ServerElement serverModel = (Model.Mssql.Db.ServerElement)sh.LoadElementModel(existentServerElement.RefPath.Path); // LoadElementModelToChildrenOfType(request.DatabaseRefPath, typeof(SchemaElement));
+
+            //    //Parse.Mssql.Db.ReferrableIndexBuilder rib = new Parse.Mssql.Db.ReferrableIndexBuilder();
+
+            //    //var ix = rib.BuildIndex(new List<Model.Mssql.Db.ServerElement>() { serverModel });
+            //    //ix.SetContextServer(dbComponent.ServerName);
+            //    //ix.PremappedIds = rib.ElementIdMap;
+
+
+            //    //var schemaModel = dbModel.SchemaByName(extractObject.SchemaName);
+
+            //    //var modelElement = sh.LoadElementModel(objectRefPath);
+
+            //    var premappedElements = sh.CreatePremappedModel(serverModel);
+            //    foreach (var indexObject in referrableIndex.PremappedIds)
+            //    {
+            //        if (!premappedElements.ContainsKey(indexObject.Key))
+            //        {
+            //            premappedElements.Add(indexObject.Key, indexObject.Value);
+            //        }
+            //    }
+
+            //    var extractItems = ListDbExtractObjects(request, dbComponent);
+
+            //    var dbModel = serverModel.Databases.First(x => x.DbName == dbComponent.DbName);
+
+
+            //    foreach (DAL.Objects.Extract.SmoObject extractObject in extractItems)
+            //    {
+            //        ConfigManager.Log.Important(string.Format("Parsing SQL scripts from {0}", extractObject.Urn));
+
+            //        var objectRefPath = Parse.Mssql.Db.DbModelParserBase.RefPathFor(extractObject.Urn).Path;
+
+
+            //        var schemaModel = dbModel.SchemaByName(extractObject.SchemaName);
+
+            //        var modelElement = schemaModel.Children.First(x => x.RefPath.Path == objectRefPath);
+
+            //        Parse.Mssql.Db.LocalDeepModelParser ldmp = new Parse.Mssql.Db.LocalDeepModelParser(projectConfig, dbComponent.ServerName);
+            //        ldmp.ExtractModel(extractObject, dbComponent.ServerName, ix, modelElement);
+            //    }
+
+
+            //    sh.SaveModelPart(dbModel, premappedElements, true);
+
+
+
+            //}
+
+
 
             #endregion
 
@@ -445,6 +584,27 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
 
             return new DLSApiMessage();
             
+        }
+
+        private List<ExtractObject> ListDbExtractObjects(UpdateModelRequest request, MssqlDbProjectComponent dbComponent)
+        {
+            var procedures = StageManager.GetExtractItems(request.ExtractId, dbComponent.MssqlDbProjectComponentId,
+                                DAL.Objects.Extract.ExtractTypeEnum.SqlProcedure);
+            var scalarUdfs = StageManager.GetExtractItems(request.ExtractId, dbComponent.MssqlDbProjectComponentId,
+                            DAL.Objects.Extract.ExtractTypeEnum.SqlScalarUdf);
+            var tables = StageManager.GetExtractItems(request.ExtractId, dbComponent.MssqlDbProjectComponentId,
+                            DAL.Objects.Extract.ExtractTypeEnum.SqlTable);
+            var tableTypes = StageManager.GetExtractItems(request.ExtractId, dbComponent.MssqlDbProjectComponentId,
+                            DAL.Objects.Extract.ExtractTypeEnum.SqlTableType);
+            var tableUdfs = StageManager.GetExtractItems(request.ExtractId, dbComponent.MssqlDbProjectComponentId,
+                            DAL.Objects.Extract.ExtractTypeEnum.SqlTableUdf);
+            var views = StageManager.GetExtractItems(request.ExtractId, dbComponent.MssqlDbProjectComponentId,
+                            DAL.Objects.Extract.ExtractTypeEnum.SqlView);
+
+            var extractItems = procedures.Union(scalarUdfs).Union(tables).Union(tableTypes)
+                .Union(tableUdfs).Union(views);
+
+            return extractItems.ToList();
         }
 
     }

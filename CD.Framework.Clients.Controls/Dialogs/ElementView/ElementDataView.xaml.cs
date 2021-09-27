@@ -200,8 +200,11 @@ namespace CD.DLS.Clients.Controls.Dialogs.ElementView
                     {
                         if (dc.ColumnName == column)
                         {
-                            columnIndex = i;
-                            dataGrid.Columns[columnIndex].CellStyle = cellStyleY;
+                            if (dataGrid.Columns.Count > columnIndex)
+                            {
+                                columnIndex = i;
+                                dataGrid.Columns[columnIndex].CellStyle = cellStyleY;
+                            }
                         }
                         else
                         {
