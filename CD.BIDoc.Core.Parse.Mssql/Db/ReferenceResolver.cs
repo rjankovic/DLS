@@ -484,6 +484,11 @@ namespace CD.DLS.Parse.Mssql.Db
                             
                             tableSourceResolved = _localIndex.TableSourceBeingDefinedByStarObject(reference.ReferenceFromObject);
                         }
+                        // v.TempTablesDefined[5].SelectStars[0] == reference.ReferenceFromObject
+                        if (tableSourceResolved == null)
+                        {
+                            tableSourceResolved = v.TempTablesDefined.FirstOrDefault(x => x.SelectStars.Any(str => new ScriptSpan(reference.ReferenceFromObject).Contains(new ScriptSpan(str))));
+                        }
                         if (tableSourceResolved != null)
                         {
                             if (!(reference.ReferenceFromObject is SelectStarExpression))

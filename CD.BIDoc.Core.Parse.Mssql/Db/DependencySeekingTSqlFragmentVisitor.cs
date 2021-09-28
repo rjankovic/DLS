@@ -718,6 +718,10 @@ namespace CD.DLS.Parse.Mssql.Db
             // dont add - added while visiting TsqlStatement
             //FragmentsOfInterest.Add(selectStatement);
 
+            if (selectStatement.GetText().Contains("INTO #Payment_T"))
+            { 
+            
+            }
             if (selectStatement.Into is SchemaObjectName)
             {
                 var selectIntoSource = new TableSourceColumnList()

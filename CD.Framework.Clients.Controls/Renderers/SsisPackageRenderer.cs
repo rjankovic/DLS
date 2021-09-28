@@ -70,6 +70,10 @@ namespace CD.DLS.Clients.Controls.Renderers
 
         private void DrawDesignBlock(Canvas canvas, DesignPoint offset, DesignBlock designBlock, string selectedrefpath, SsisDiagramColorScheme colorScheme)
         {
+            if (designBlock == null)
+            {
+                return;
+            }
             foreach (var childBlock in designBlock.ChildBlocks)
             {
                 var childRect = new Rectangle();

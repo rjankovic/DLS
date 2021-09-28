@@ -184,6 +184,10 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                     var schemaModel = dbElement.SchemaByName(extractObject.SchemaName);
 
                     var modelElement = schemaModel.Children.First(x => x.RefPath.Path == objectRefPath);
+                    if (extractObject.Urn.Contains("Generate_Contract_Posting_Extra_Internal_P"))
+                    { 
+                    
+                    }
 
                     Parse.Mssql.Db.LocalDeepModelParser ldmp = new Parse.Mssql.Db.LocalDeepModelParser(projectConfig, dbComponent.ServerName);
                     ldmp.ExtractModel(extractObject, dbComponent.ServerName, referrableIndex, modelElement);

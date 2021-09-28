@@ -286,6 +286,10 @@ namespace CD.DLS.RequestProcessor.Query
         private DesignBlock GeneratePackageDesignBlockHierarchy(DesignBlockElement designBlock)
         {
             var res = CreateDesignBlock(designBlock);
+            if (res == null)
+            {
+                return null;
+            }
             List<Model.Mssql.Ssis.DesignBlockElement> childBlocks = new List<Model.Mssql.Ssis.DesignBlockElement>();
             var childLevelElements = designBlock.Children;
             while (childLevelElements.Any() && !childLevelElements.Any(x => x is DesignBlockElement))
@@ -309,6 +313,10 @@ namespace CD.DLS.RequestProcessor.Query
 
         private DesignBlock CreateDesignBlock(DesignBlockElement element)
         {
+            if (element.Position == null || element.Size == null)
+            {
+                return null;
+            }
             var res = new DesignBlock()
             {
                 Arrows = new List<DAL.Objects.SsisDiagram.DesignArrow>(),
