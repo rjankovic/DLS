@@ -110,12 +110,12 @@ AS
 	UPDATE h SET SourceRootElementId = e.ModelElementId
 	FROM BIDoc.LineageGridHistory h
 	INNER JOIN BIDoc.ModelElements e ON h.SourceRootElementPath = e.RefPath
-	WHERE h.ProjectConfigId = @projectconfigid
+	WHERE h.ProjectConfigId = @projectconfigid AND e.ProjectConfigId = @projectconfigid
 
 	UPDATE h SET TargetRootElementId = e.ModelElementId
 	FROM BIDoc.LineageGridHistory h
 	INNER JOIN BIDoc.ModelElements e ON h.TargetRootElementPath = e.RefPath
-	WHERE h.ProjectConfigId  = @projectconfigid
+	WHERE h.ProjectConfigId  = @projectconfigid AND e.ProjectConfigId = @projectconfigid
 
 	DELETE FROM BIDoc.LineageGridHistory
 	WHERE ProjectConfigId = @projectconfigid AND (SourceRootElementId IS NULL OR TargetRootElementId IS NULL)
