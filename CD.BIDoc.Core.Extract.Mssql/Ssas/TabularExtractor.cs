@@ -11,6 +11,7 @@ using CD.DLS.Common.Tools;
 using System.IO;
 using System.Reflection;
 using System.Linq;
+using CD.DLS.DAL.Configuration;
 
 namespace CD.DLS.Extract.Mssql.Ssas
 {
@@ -126,36 +127,66 @@ namespace CD.DLS.Extract.Mssql.Ssas
                         //var connectionString = ds.
                         //var serverName = 
 
-                        var providerDs = ds as ProviderDataSource;
 
-                        if (providerDs == null)
+                        //if (providerDs == null)
+                        //{
+                        //    continue;
+                        //}
+
+                        if (ds is ProviderDataSource)
                         {
-                            continue;
+                            var providerDs = ds as ProviderDataSource;
+
+                            var connectionString = providerDs.ConnectionString;
+                            var dsServerName = ConnectionStringTools.GetServerName(connectionString);
+                            var dsDbName = ConnectionStringTools.GetDbName(connectionString);
+
+                            TabularDataSource tbs = new TabularDataSource();
+
+                            tbs.DSname = ds.Name;
+                            tbs.Description = ds.Description;
+                            tbs.ServerName = dsServerName;
+                            tbs.DatabaseName = dsDbName;
+
+                            //tbs.ServerName = ServerName;
+
+
+                            foreach (Microsoft.AnalysisServices.Tabular.Annotation an in ds.Annotations)
+                            {
+                                TabularAnnotation ta = new TabularAnnotation();
+                                ta.Name = an.Name;
+                                ta.Value = an.Value;
+                                tbs.Annotations.Add(ta);
+                            }
+
+                            tbm.TabularDataSources.Add(tbs);
                         }
-
-                        var connectionString = providerDs.ConnectionString;
-                        var dsServerName = ConnectionStringTools.GetServerName(connectionString);
-                        var dsDbName = ConnectionStringTools.GetDbName(connectionString);
-
-                        TabularDataSource tbs = new TabularDataSource();
-                        
-                        tbs.DSname = ds.Name;
-                        tbs.Description = ds.Description;
-                        tbs.ServerName = dsServerName;
-                        tbs.DatabaseName = dsDbName;
-                        
-                        //tbs.ServerName = ServerName;
-
-
-                        foreach (Microsoft.AnalysisServices.Tabular.Annotation an in ds.Annotations)
+                        else if (ds is StructuredDataSource)
                         {
-                            TabularAnnotation ta = new TabularAnnotation();
-                            ta.Name = an.Name;
-                            ta.Value = an.Value;
-                            tbs.Annotations.Add(ta);
-                        }
+                            var structuredDs = ds as StructuredDataSource;
 
-                        tbm.TabularDataSources.Add(tbs);
+                            TabularDataSource tbs = new TabularDataSource();
+
+                            tbs.DSname = structuredDs.Name;
+                            tbs.ServerName = structuredDs.ConnectionDetails.Address.Server;
+                            tbs.DatabaseName = structuredDs.ConnectionDetails.Address.Database;
+                            tbs.Description = structuredDs.Description;
+
+                            foreach (Microsoft.AnalysisServices.Tabular.Annotation an in ds.Annotations)
+                            {
+                                TabularAnnotation ta = new TabularAnnotation();
+                                ta.Name = an.Name;
+                                ta.Value = an.Value;
+                                tbs.Annotations.Add(ta);
+                            }
+
+                            tbm.TabularDataSources.Add(tbs);
+                        }
+                        else
+                        {
+                            ConfigManager.Log.Warning(string.Format("Unsupported tabular datasource type: {0}", ds.GetType().FullName));
+
+                        }
 
                     }
 
@@ -235,11 +266,17 @@ namespace CD.DLS.Extract.Mssql.Ssas
                                 ttp.PartitionSourceType = TabularPartitionSourceTypeEnum.CalculatedPartitionSource;
                                 ttp.Expression = calculatedPartitionSource.Expression;
                             }
+                            else if (p.SourceType == PartitionSourceType.M)
+                            {
+                                var mPartitionSource = (MPartitionSource)p.Source;
+                                ttp.PartitionSourceType = TabularPartitionSourceTypeEnum.MLanguagePartitionSource;
+                                ttp.Expression = mPartitionSource.Expression;
+                            }
                             else
                             {
                                 // skip the partition
+                                ConfigManager.Log.Warning("Unsupported partition source type: " + p.GetType().FullName);
                                 continue;
-                                //throw new Exception("Unsupported partition source type: " + p.GetType().FullName);
                             }
 
                             foreach (Microsoft.AnalysisServices.Tabular.Annotation an in p.Annotations)

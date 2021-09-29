@@ -325,10 +325,10 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                         var refPath = ssasUrnBuilder.GetServerUrn(ssasComponent.ServerName);
                         ssasServerElement = new Model.Mssql.Ssas.ServerElement(refPath, ssasComponent.ServerName, null, solutionElement);
                         //solutionElement.AddChild(serverElement);
-                        solutionModel.AddChild(ssasServerElement);
+                        solutionElement.AddChild(ssasServerElement);
                         res.Add(ssasServerElement);
 
-                        sh.SaveModelPart(ssasServerElement, premappedModel, true);
+                        //sh.SaveModelPart(ssasServerElement, premappedIds, true);
 
                         //parseDatabaseRequests.Add(new ParseSsasDatabaseRequest()
                         //{
@@ -362,7 +362,7 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                         solutionElement.AddChild(ssasServerElement);
                         res.Add(ssasServerElement);
 
-                        sh.SaveModelPart(ssasServerElement, premappedIds, true);
+                        //sh.SaveModelPart(ssasServerElement, premappedIds, true);
 
                         //parseDatabaseRequests.Add(new ParseSsasDatabaseRequest()
                         //{
@@ -379,19 +379,15 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                     ssasDbElement = extractor.ExtractDatabase(ssasComponent.SsaslDbProjectComponentId, dbExtract, ssasServerElement);
                 }
 
-                var solutionModelUpd = sh.LoadElementModelToChildrenOfType(
-                    string.Empty,
-                    typeof(Model.Mssql.Ssas.ServerElement)) as SolutionModelElement;
-
-                var premappedModelUpd = sh.CreatePremappedModel(solutionModelUpd);
-
                 var dbIdMap = adbix.GetAllPremappedIds();
                 foreach (var kv in dbIdMap)
                 {
-                    premappedModel.Add(kv.Key, kv.Value);
+                    premappedIds.Add(kv.Key, kv.Value);
                 }
 
-                sh.SaveModelPart(ssasDbElement, premappedModel);
+                sh.SaveModelPart(ssasServerElement, premappedIds, true);
+
+                //sh.SaveModelPart(ssasDbElement, premappedIds);
             }
 
             GraphManager.SetRefPathIntervals(projectConfig.ProjectConfigId, RequestId);

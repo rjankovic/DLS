@@ -126,7 +126,7 @@ namespace CD.DLS.DAL.Objects.Extract
         public List<TabularAnnotation> Annotations;
     }
 
-    public enum TabularPartitionSourceTypeEnum { QueryPartitionSource = 1, CalculatedPartitionSource = 2 }
+    public enum TabularPartitionSourceTypeEnum { QueryPartitionSource = 1, CalculatedPartitionSource = 2, MLanguagePartitionSource = 4 }
 
     public class TabularTablePartition
     {

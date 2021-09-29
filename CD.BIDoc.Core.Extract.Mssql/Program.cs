@@ -60,7 +60,7 @@ namespace CD.DLS.Extract.Mssql
                 var mssqlDbDirPath = Path.Combine(_outputFolder, workDirName, sqlDirName);
                 Directory.CreateDirectory(mssqlDbDirPath);
                 relativePathBase = sqlDirName; // Path.Combine(workDirName, sqlDirName);
-
+                /*
                 foreach (var sqlComponent in projectConfig.DatabaseComponents)
                 {
                     string serverName = sqlComponent.ServerName;
@@ -77,7 +77,7 @@ namespace CD.DLS.Extract.Mssql
                         manifest = LoadManifest(workDirPath);
                     }
                 }
-
+                */
                 var ssisDirName = "SSIS";
                 var ssisDirPath = Path.Combine(_outputFolder, workDirName, ssisDirName);
                 Directory.CreateDirectory(ssisDirPath);
