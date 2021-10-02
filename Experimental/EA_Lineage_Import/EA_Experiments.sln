@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connect1", "Connect1\Connect1.csproj", "{6ABF28F7-1FFF-4378-B2F6-21077AFE9D48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRWH_Tools_Addin", "NRWH_Tools_Addin\NRWH_Tools_Addin.csproj", "{F23866AD-8B7D-42B9-94E7-FA4F5CA4D728}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EA_DB_Tools", "EA_DB_Tools\EA_DB_Tools.csproj", "{734B6976-330F-4D29-95AB-FD8CE25D19B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EA_DataDictionaryImport", "EA_DataDictionaryImport\EA_DataDictionaryImport.csproj", "{AA84473D-7087-415C-83C8-9ED5651222B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelTools", "ExcelTools\ExcelTools.csproj", "{CB476CC4-95D7-44CA-AB9E-D714EFE8C2A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6ABF28F7-1FFF-4378-B2F6-21077AFE9D48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ABF28F7-1FFF-4378-B2F6-21077AFE9D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ABF28F7-1FFF-4378-B2F6-21077AFE9D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ABF28F7-1FFF-4378-B2F6-21077AFE9D48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F23866AD-8B7D-42B9-94E7-FA4F5CA4D728}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F23866AD-8B7D-42B9-94E7-FA4F5CA4D728}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F23866AD-8B7D-42B9-94E7-FA4F5CA4D728}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F23866AD-8B7D-42B9-94E7-FA4F5CA4D728}.Release|Any CPU.Build.0 = Release|Any CPU
+		{734B6976-330F-4D29-95AB-FD8CE25D19B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{734B6976-330F-4D29-95AB-FD8CE25D19B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{734B6976-330F-4D29-95AB-FD8CE25D19B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{734B6976-330F-4D29-95AB-FD8CE25D19B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA84473D-7087-415C-83C8-9ED5651222B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA84473D-7087-415C-83C8-9ED5651222B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA84473D-7087-415C-83C8-9ED5651222B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA84473D-7087-415C-83C8-9ED5651222B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB476CC4-95D7-44CA-AB9E-D714EFE8C2A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB476CC4-95D7-44CA-AB9E-D714EFE8C2A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB476CC4-95D7-44CA-AB9E-D714EFE8C2A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB476CC4-95D7-44CA-AB9E-D714EFE8C2A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 6
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://cleverdecision.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Connect1\\Connect1.csproj
+		SccProjectName1 = Connect1
+		SccLocalPath1 = Connect1
+		SccProjectUniqueName2 = NRWH_Tools_Addin\\NRWH_Tools_Addin.csproj
+		SccProjectName2 = NRWH_Tools_Addin
+		SccLocalPath2 = NRWH_Tools_Addin
+		SccProjectUniqueName3 = EA_DB_Tools\\EA_DB_Tools.csproj
+		SccProjectName3 = EA_DB_Tools
+		SccLocalPath3 = EA_DB_Tools
+		SccProjectUniqueName4 = EA_DataDictionaryImport\\EA_DataDictionaryImport.csproj
+		SccProjectName4 = EA_DataDictionaryImport
+		SccLocalPath4 = EA_DataDictionaryImport
+		SccProjectUniqueName5 = ExcelTools\\ExcelTools.csproj
+		SccProjectName5 = ExcelTools
+		SccLocalPath5 = ExcelTools
+	EndGlobalSection
+EndGlobal
