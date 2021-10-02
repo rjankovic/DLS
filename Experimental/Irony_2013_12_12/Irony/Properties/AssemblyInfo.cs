@@ -25,6 +25,7 @@ using System.Security;
 [assembly: AssemblyTitle("Irony")]
 [assembly: AssemblyDescription("Irony Main Assembly")]
 [assembly: AssemblyConfiguration("")]
+[assembly: SecurityRules(SecurityRuleSet.Level1, SkipVerificationInFullTrust = true)]
 #else
 [assembly: Guid("B83C8EBA-E4E5-4761-9C38-F662F56D63D7")]
 [assembly: AssemblyTitle("Irony-SL")]

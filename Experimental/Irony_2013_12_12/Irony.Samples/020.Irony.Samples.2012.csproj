@@ -82,6 +82,7 @@
     <Compile Include="GWBasic\GwBasicGrammar.cs" />
     <Compile Include="MyC\MyCGrammarExtended.cs" />
     <Compile Include="MyC\MyCGrammar.cs" />
+    <Compile Include="M\MGrammar.cs" />
     <Compile Include="Playground_Grammar.cs" />
     <Compile Include="SampleExpressionEvaluator\SampleExpressionEvaluatorGrammar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
