@@ -269,6 +269,15 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         }
     }
 
+    public class SqlDatabaseOperationElement : OperationElement
+    {
+        public SqlDatabaseOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+                : base(refPath, caption, definition, parent) { }
+
+        [ModelLink]
+        public Db.DatabaseElement DatabaseReference { get; set; }
+    }
+
     public class ScalarOperationElement : OperationElement
     {
         public ScalarOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
