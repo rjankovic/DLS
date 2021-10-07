@@ -80,6 +80,8 @@
     <Compile Include="Interfaces\IModelElement.cs" />
     <Compile Include="Interfaces\ModelLink.cs" />
     <Compile Include="Mssql\Pbi\PbiModelElements.cs" />
+    <Compile Include="Mssql\PowerQuery\ArgumentList.cs" />
+    <Compile Include="Mssql\PowerQuery\MModelElements.cs" />
     <Compile Include="Mssql\Ssas\DaxArgumentList.cs" />
     <Compile Include="Mssql\Ssas\DaxFunctionFactory.cs" />
     <Compile Include="Mssql\Ssas\DaxFunctions.cs" />
