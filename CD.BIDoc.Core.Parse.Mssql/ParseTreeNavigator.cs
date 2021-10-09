@@ -45,6 +45,11 @@ namespace CD.DLS.Parse.Mssql
             }
         }
 
+        public ParseTreeNode FindTermByName(ParseTreeNode node, string name)
+        {
+            return DFTraverseInner(node).FirstOrDefault(x => x.Term.Name == name);
+        }
+
         public List<Tuple<string, string>> GetTermsAndContent(ParseTreeNode node, string sourceText)
         {
             return DFTraverseInner(node).Select(x => new Tuple<string, string>(x.Term.Name, x.GetText(sourceText))).ToList();

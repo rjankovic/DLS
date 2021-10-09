@@ -115,6 +115,52 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         public IEnumerable<MFragmentElement> Items { get { return ChildrenOfType<MFragmentElement>(); } }
     }
 
+    public class ListIndexElement : MFragmentElement
+    {
+        public ListIndexElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+                : base(refPath, caption, definition, parent)
+        {
+        }
+
+        public ListIndexElement InnerIndex { get { return ChildrenOfType<ListIndexElement>().FirstOrDefault(); } }
+    }
+
+    public class ListAccessElement : MFragmentElement
+    {
+        public ListAccessElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+            : base(refPath, caption, definition, parent)
+        {
+        }
+
+        [DataMember]
+        public string ListName { get; set; }
+
+        public ListIndexElement Index  { get { return ChildrenOfType<ListIndexElement>().First(); } }
+    }
+
+    public class RecordElement : MFragmentElement
+    {
+        public RecordElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+                : base(refPath, caption, definition, parent)
+        {
+        }
+
+        public IEnumerable<RecordItemElement> Items { get { return ChildrenOfType<RecordItemElement>(); } }
+    }
+
+    public class RecordItemElement : MFragmentElement
+    {
+        public RecordItemElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+                       : base(refPath, caption, definition, parent)
+        {
+        }
+
+        [DataMember]
+        public string ItemName { get; set; }
+
+        public MFragmentElement ItemValue { get => ChildrenOfType<MFragmentElement>().FirstOrDefault(); }
+    }
+
     public abstract class OperationElement : MFragmentElement
     {
         public OperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
@@ -205,7 +251,7 @@ namespace CD.DLS.Model.Mssql.PowerQuery
             return list;
         }
 
-        private List<OperationOutputColumnElement> PassThroughTableColumns(Argument input)
+        public List<OperationOutputColumnElement> PassThroughTableColumns(Argument input)
         {
             if (input.ArgumentType != ArgumentType.Table)
             {
@@ -313,7 +359,13 @@ namespace CD.DLS.Model.Mssql.PowerQuery
     {
         public TableOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
             : base(refPath, caption, definition, parent) { }
-        
+
+        public override void CreateDataFlowLinksAndOutputColumns()
+        {
+            var args = CollectArgumentList();
+            PassThroughTableColumns(args[0]);
+        }
+
         //public DaxDataFlowLinkElement AddDataFlowLink(SsasModelElement source, DaxTableOperationOutputColumnElement targetColumn)
         //{
         //    var linkCount = DataFlowLinks.Count();
@@ -323,7 +375,7 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         //    daxDataFlowLinkElement.Parent = this;
         //    daxDataFlowLinkElement.Source = source;
         //    daxDataFlowLinkElement.Target = targetColumn;
-            
+
         //    // add link to self so that functions that use the table as a whole
         //    var refPathUpper = RefPath.NamedChild("DataFlowLink", string.Format("No_{0}_Upper", linkCount + 1));
         //    DaxDataFlowLinkElement daxDataFlowLinkElementUpper = new DaxDataFlowLinkElement(refPathUpper, string.Format("DataFlowLink {0} [U]", linkCount + 1), null, this);
@@ -335,39 +387,6 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         //    return daxDataFlowLinkElement;
         //}
     }
-    
-    public abstract class ScalarFunctionElement : ScalarOperationElement
-    {
-        public ScalarFunctionElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
-            : base(refPath, caption, definition, parent) { }
 
-    }
-
-    public class GeneralScalarFunctionElement : ScalarFunctionElement
-    {
-        public GeneralScalarFunctionElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
-            : base(refPath, caption, definition, parent) { }
-
-        public override void CreateDataFlowLinksAndOutputColumns()
-        {
-            var arguments = CollectArgumentList();
-            foreach (var argument in arguments.Arguments)
-            {
-                AddDataFlowLink(argument.FragmentElement);
-            }
-        }
-    }
-
-    public abstract class TableFunctionElement : TableOperationElement
-    {
-        public TableFunctionElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
-            : base(refPath, caption, definition, parent) { }
-    }
-
-    public class UnknownDaxTableFunctionElement : TableFunctionElement
-    {
-        public UnknownDaxTableFunctionElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
-            : base(refPath, caption, definition, parent) { }
-    }
 
 }

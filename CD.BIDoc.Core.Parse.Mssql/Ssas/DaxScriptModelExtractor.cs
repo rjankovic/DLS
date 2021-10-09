@@ -419,7 +419,6 @@ namespace CD.DLS.Parse.Mssql.Ssas
             var parsed = _parser.Parse(script);
             if (parsed.Root == null)
             {
-                // TODO log errors
                 foreach (var msg in parsed.ParserMessages)
                 {
                     ConfigManager.Log.Warning(string.Format("Error parsing DAX: {0} | at {1}:{2} | {3} | {4}",

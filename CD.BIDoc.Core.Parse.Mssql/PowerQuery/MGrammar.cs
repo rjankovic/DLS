@@ -32,10 +32,11 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
         public const string NONTERM_COLUMN_ID = "columnId";
         public const string NONTERM_UNARY_EXPRESSION = "unaryArithmenticExpression";
         public const string NONTERM_CONDITIONAL_EXPRESSION = "conditionalExpression";
+        public const string TERM_ID = "id";
         
         private IdentifierTerminal CreateIdentifier()
         {
-            var id = new IdentifierTerminal("id", "@$%^*_'.?-", "@$_");
+            var id = new IdentifierTerminal(TERM_ID, "@$%^*_'.?-", "@$_");
             StringLiteral term = new StringLiteral("id_qouted");
             term.AddStartEnd("#\"", "\"", StringOptions.NoEscapes);
             term.SetOutputTerminal(this, id); //term will be added to NonGrammarTerminals automatically 

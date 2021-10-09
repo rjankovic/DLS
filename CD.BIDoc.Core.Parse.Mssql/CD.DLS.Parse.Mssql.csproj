@@ -97,6 +97,7 @@
     <Compile Include="Pbi\UrnBuilder.cs" />
     <Compile Include="PowerQuery\MParseTreeNavigator.cs" />
     <Compile Include="PowerQuery\MGrammar.cs" />
+    <Compile Include="PowerQuery\PowerQueryExtractor.cs" />
     <Compile Include="ScriptSpan.cs" />
     <Compile Include="Db\Settings.cs" />
     <Compile Include="Db\ShallowModelExtractor.cs" />

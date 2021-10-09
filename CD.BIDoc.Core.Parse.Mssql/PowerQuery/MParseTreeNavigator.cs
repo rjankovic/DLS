@@ -7,6 +7,13 @@ using Irony.Parsing;
 
 namespace CD.DLS.Parse.Mssql.PowerQuery
 {
+    public class Assignment
+    { 
+        public ParseTreeNode AssignmentNode { get; set; }
+        public string Name { get; set; }
+        public ParseTreeNode ExpressionNode { get; set; }
+    }
+
     public class MParseTreeNavigator : ParseTreeNavigator
     {
         public MParseTreeNavigator(ParseTree tree)
@@ -23,12 +30,26 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
         
         public ParseTreeNode FindExpressionNode(ParseTreeNode root)
         {
-            return DFTraverseInner(root).FirstOrDefault(x => x != null && x.Term.Name == DaxGrammar.NONTERM_EXPRESSION);
+            return FindTermByName(root, MGrammar.NONTERM_EXPRESSION);
         }
 
-        public IEnumerable<ParseTreeNode> GetLocalDefinitions()
+        public IEnumerable<Assignment> GetRecordItems(ParseTreeNode root)
         {
-            return DFTraverse(_tree).Where(x => x.Term.Name == DaxGrammar.NONTERM_DEFINE_VAR || x.Term.Name == DaxGrammar.NONTERM_DEFINE_MEASURE);
+            return DFTraverseInner(root).First(x => x.Term.Name == MGrammar.NONTERM_RECORD_ITEMS)
+                .ChildNodes.Where(x => x.Term.Name == MGrammar.NONTERM_ASSIGNMENT)
+                .Select(x => new Assignment() { Name = FindTermByName(x, MGrammar.TERM_ID).GetText(Script), ExpressionNode = x.ChildNodes.Last(), AssignmentNode = x });
+        }
+
+        public IEnumerable<Assignment> GetQuerySteps()
+        {
+            return DFTraverse(_tree).Where(x => x.Term.Name == MGrammar.NONTERM_QUERY_STEPS)
+                .Select(x => FindTermByName(x, MGrammar.NONTERM_ASSIGNMENT))
+                .Select(x => new Assignment() { Name = FindTermByName(x, MGrammar.TERM_ID).GetText(Script), ExpressionNode = x.ChildNodes.Last(), AssignmentNode = x });
+        }
+
+        public ParseTreeNode GetQueryOutputExpression()
+        {
+            return _tree.Root.ChildNodes.Last(x => x.Term.Name == MGrammar.NONTERM_EXPRESSION);
         }
 
         public ParseTreeNode GetBottomCoveringNode(ParseTreeNode parseTreeNode)
@@ -55,74 +76,47 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
 
         public List<ParseTreeNode> ListOperationArguments(ParseTreeNode operation)
         {
-            var parameters = DFTraverseInner(operation).Where(x => x.Term.Name == DaxGrammar.NONTERM_PARAMETERS).FirstOrDefault();
+            var parameters = FindTermByName(operation, MGrammar.NONTERM_PARAMETERS);
             if (parameters == null)
             {
                 return new List<ParseTreeNode>();
             }
-            var arguments = parameters.ChildNodes.Where(x => x.Term.Name == DaxGrammar.NONTERM_EXPRESSION).OrderBy(x => x.Span.EndPosition).ToList();   
+            var arguments = parameters.ChildNodes.Where(x => x.Term.Name == MGrammar.NONTERM_PARAMETER).OrderBy(x => x.Span.EndPosition).ToList();   
             return arguments;
         }
 
-        public LocalDefinitionType GetLocalDefinitionType(ParseTreeNode parseTreeNode)
-        {
-            switch (parseTreeNode.Term.Name)
-            {
-                case DaxGrammar.NONTERM_DEFINE_VAR:
-                    return LocalDefinitionType.Variable;
-                case DaxGrammar.NONTERM_DEFINE_MEASURE:
-                    return LocalDefinitionType.Measure;
-                default:
-                    throw new Exception("Could not resolve local definition type " + parseTreeNode.Term.Name);
-            }
-        }
 
         public string GetDefinition(ParseTreeNode node)
         {
             return node.GetText(_tree.SourceText);
         }
 
+        public List<ParseTreeNode> GetIndices(ParseTreeNode root)
+        {
+            ParseTreeNode indices = null;
+            if (root.Term.Name == MGrammar.NONTERM_INDICES)
+            {
+                indices = root;
+            }
+            else
+            {
+                indices = DFTraverseInner(root).First(x => x.Term.Name == MGrammar.NONTERM_INDICES);
+            }
+
+            return indices.ChildNodes.ToList();
+        }
+
         public string GetFirstIdContent(ParseTreeNode root)
         {
             return DFTraverseInner(root).Where(x => new string[] {
-                DaxGrammar.NONTERM_ID,
-                DaxGrammar.NONTERM_ID_UNQUOTED,
-                DaxGrammar.NONTERM_TABLE_ID,
-                DaxGrammar.NONTERM_TABLE_ID_QUOTED,
-                DaxGrammar.NONTERM_COLUMN_ID,
-                DaxGrammar.NONTERM_COLUMN_ID_QUOTED,
-                DaxGrammar.NONTERM_FULL_ID
+                MGrammar.TERM_ID
             }.Contains(x.Term.Name)).First().GetText(_tree.SourceText);
         }
 
         public ParseTreeNode GetFirstId(ParseTreeNode root)
         {
-            return DFTraverseInner(root).Where(x => x.Term.Name == DaxGrammar.NONTERM_ID).First();
+            return DFTraverseInner(root).Where(x => x.Term.Name == MGrammar.TERM_ID).First();
         }
 
-        public ParseTreeNode GetTopEvaluate()
-        {
-            return DFTraverse(_tree).FirstOrDefault(x => x != null && x.Term.Name == DaxGrammar.NONTERM_EVALUATE);
-        }
-
-        public DaxScriptType FindScriptType(out ParseTreeNode rootNode)
-        {
-            var distItem = DFTraverse(_tree).FirstOrDefault(x => x != null && new string[] { DaxGrammar.NONTERM_FORMULA, DaxGrammar.NONTERM_EXPRESSION, DaxGrammar.NONTERM_QUERY }.Contains(x.Term.Name));
-            switch (distItem.Term.Name)
-            {
-                case DaxGrammar.NONTERM_EXPRESSION:
-                    rootNode = distItem;
-                    return DaxScriptType.Expression;
-                case DaxGrammar.NONTERM_QUERY:
-                    rootNode = distItem;
-                    return DaxScriptType.Query;
-                case DaxGrammar.NONTERM_FORMULA:
-                    var innerExpressionRoot = DFTraverseInner(distItem).First(x => x != null && x.Term.Name == DaxGrammar.NONTERM_EXPRESSION);
-                    rootNode = innerExpressionRoot;
-                    return DaxScriptType.Expression;
-                default:
-                    throw new Exception("Could not find root of query: " + _tree.SourceText);
-            }
-        }
     }
 }
