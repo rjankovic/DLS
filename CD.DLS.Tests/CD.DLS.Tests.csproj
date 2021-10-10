@@ -84,6 +84,7 @@
     <Compile Include="MessagingTests\AzureMessagingTests.cs" />
     <Compile Include="MessagingTests\EncryptionTest.cs" />
     <Compile Include="MessagingTests\OnPremisesMessagingTests.cs" />
+    <Compile Include="ParserTests\PowerQueryParserTests.cs" />
     <Compile Include="ParserTests\DaxParserTests.cs" />
     <Compile Include="ParserTests\TabularParserTests.cs" />
     <Compile Include="ParserTests\ReportParserTests.cs" />

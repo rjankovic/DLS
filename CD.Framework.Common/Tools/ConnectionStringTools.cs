@@ -168,6 +168,7 @@ namespace CD.DLS.Common.Tools
         public static string NormalizeServerName(string serverName, string localhostInterpretation = null)
         {
 
+            //serverName = serverName.Trim('"');
             if (localhostInterpretation == null)
             {
                 localhostInterpretation = System.Environment.MachineName;
@@ -201,7 +202,8 @@ namespace CD.DLS.Common.Tools
             return serverName;
         }
 
-        public static string GetSsasDbRefPath(string connectionString, out string serverName, out string dbName)
+
+            public static string GetSsasDbRefPath(string connectionString, out string serverName, out string dbName)
         {
             var segments = connectionString.Split(';');
             var dataSourceSegment = segments.First(x => x.Trim().ToLower().StartsWith("data source"));

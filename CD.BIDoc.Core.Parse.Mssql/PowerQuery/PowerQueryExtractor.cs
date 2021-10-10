@@ -1,5 +1,6 @@
 ﻿using CD.BIDoc.Core.Parse.Mssql.PowerQuery;
 using CD.DLS.Common.Structures;
+using CD.DLS.Common.Tools;
 using CD.DLS.DAL.Configuration;
 using CD.DLS.DAL.Managers;
 using CD.DLS.Model.Interfaces;
@@ -19,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace CD.DLS.Core.Parse.Mssql.PowerQuery
 {
-    class PowerQueryExtractor
+    public class PowerQueryExtractor
     {
         private Parser _parser;
         private Dictionary<string, MFragmentElement> _localVariables;
@@ -68,8 +69,8 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             {
                 stepCounter++;
 
-                var stepElement = new FormulaStepElement(parent.RefPath.NamedChild("Step", "Step_" + stepCounter.ToString()), $"Step {stepCounter}", step.AssignmentNode.GetText(_navigator.Script), parent);
-                parent.AddChild(stepElement);
+                var stepElement = new FormulaStepElement(queryElement.RefPath.NamedChild("Step", "Step_" + stepCounter.ToString()), $"Step {stepCounter}", step.AssignmentNode.GetText(_navigator.Script), queryElement);
+                queryElement.AddChild(stepElement);
                 stepElement.VariableName = step.Name;
                 SetUpFramgmentNodeSpan(stepElement, step.AssignmentNode);
 
@@ -161,7 +162,8 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                     }
                     operationElement.FunctionName = functionName;
 
-                    CreateDataFlowLinksAndOutputColumns(operationElement);
+                    var actualType = operationElement;
+                    CreateDataFlowLinksAndOutputColumns((dynamic)operationElement);
                     //operationElement.CreateDataFlowLinksAndOutputColumns();
                     fragmentElement = operationElement;
                     break;
@@ -249,9 +251,10 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
         private void CreateDataFlowLinksAndOutputColumns(SqlDatabaseOperationElement sqlDatabaseOperation)
         {
             var args = CollectArgumentList(sqlDatabaseOperation);
-            var serverName = args[0].FragmentElement.Definition;
-            var dbName = args[1].FragmentElement.Definition;
-            var dbElement = _sqlDbIndex.GetDatabaseElement(serverName, dbName);
+            var serverName = TrimLiteral(args[0].FragmentElement.Definition);
+            var serverNameNormalized = ConnectionStringTools.NormalizeServerName(serverName);
+            var dbName = TrimLiteral(args[1].FragmentElement.Definition);
+            var dbElement = _sqlDbIndex.GetDatabaseElement(serverNameNormalized, dbName);
             if (dbElement == null)
             {
                 return;
@@ -276,14 +279,20 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             }
 
             string query = queryItem.ItemValue.Definition;
+            query = TrimLiteral(query);
 
             Dictionary<string, MssqlModelElement> outputColumns;
-            ParseSqlQuery(serverName, dbName, query, sqlDatabaseOperation, out outputColumns);
+            ParseSqlQuery(serverNameNormalized, dbName, query, sqlDatabaseOperation, out outputColumns);
             foreach (var kv in outputColumns)
             {
                 var outputColumn = AddOutputColumn(sqlDatabaseOperation, kv.Key);
                 outputColumn.Reference = kv.Value;
             }
+        }
+
+        private string TrimLiteral(string literal)
+        {
+            return literal.Trim('"');
         }
 
         protected OperationOutputColumnElement AddOutputColumn(OperationElement operationElement, string name)
@@ -392,7 +401,8 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             // lower DF link (input column -> output column)
             var columnName = inputColumn.Caption;
             var outColumn = AddOutputColumn(targetOperation, columnName);
-            AddDataFlowLink(targetOperation, inputColumn, outColumn);
+            outColumn.Reference = inputColumn;
+            //AddDataFlowLink(targetOperation, inputColumn, outColumn);
             return outColumn;
         }
 
@@ -420,6 +430,7 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
         private Model.Mssql.Db.SqlScriptElement ParseSqlQuery(string server, string database, string query, MModelElement parent, out Dictionary<string, MssqlModelElement> outputColumns)
         {
             var sqlParser = new ScriptModelParser();
+            sqlParser.ContextServerName = server;
             var dbEnvironment = _sqlDbIndex.GetDatabaseIndex(server);
             var sqlNode = sqlParser.ExtractScriptModel(query, parent, dbEnvironment, new Microsoft.SqlServer.TransactSql.ScriptDom.Identifier() { Value = database }, out outputColumns);
             parent.AddChild(sqlNode);

@@ -139,6 +139,8 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                 sh.SaveModelPart(dbElement, sqlServerPremappedModel);
             }
 
+            //sh.SaveModelPart(solutionModel, sqlServerPremappedModel);
+
             var schemasModel = sh.LoadElementModelToChildrenOfType(
                     string.Empty,
                     typeof(Model.Mssql.Db.SchemaElement)) as SolutionModelElement;
