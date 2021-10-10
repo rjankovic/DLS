@@ -1,12 +1,13 @@
-﻿using System;
+﻿using CD.DLS.Model.Mssql;
+using CD.DLS.Model.Mssql.PowerQuery;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CD.DLS.Model.Mssql.PowerQuery
+namespace CD.BIDoc.Core.Parse.Mssql.PowerQuery
 {
-
     public class ArgumentList
     {
         public List<Argument> Arguments { get; set; }
@@ -47,5 +48,4 @@ namespace CD.DLS.Model.Mssql.PowerQuery
             Name = DEFAULT_NAME;
         }
     }
-
 }

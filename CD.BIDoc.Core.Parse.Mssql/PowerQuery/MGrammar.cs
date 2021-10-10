@@ -29,7 +29,7 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
         public const string NONTERM_RECORD_EXPRESSION = "recordExpression";
         public const string NONTERM_PRIMARY_EXPRESSION = "primaryExpression";
         public const string NONTERM_UNARY_OPERATOR = "unaryArithmeticOperator";
-        public const string NONTERM_COLUMN_ID = "columnId";
+        public const string NONTERM_RECORD_ITEM_ID = "recordItemId";
         public const string NONTERM_UNARY_EXPRESSION = "unaryArithmenticExpression";
         public const string NONTERM_CONDITIONAL_EXPRESSION = "conditionalExpression";
         public const string TERM_ID = "id";
@@ -149,11 +149,11 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
             var unaryArithmenticOperator = new NonTerminal(NONTERM_UNARY_OPERATOR);
             unaryArithmenticOperator.Rule = MINUS | PLUS | TYPE; //NOT | MINUS | EXCL;
 
-            var columnId = new NonTerminal(NONTERM_COLUMN_ID);
-            columnId.Rule = LSQBR + identifier + RSQBR;
+            var recordItemId = new NonTerminal(NONTERM_RECORD_ITEM_ID);
+            recordItemId.Rule = LSQBR + identifier + RSQBR;
 
             var unaryArithmeticExpression = new NonTerminal(NONTERM_UNARY_EXPRESSION);
-            unaryArithmeticExpression.Rule = unaryArithmenticOperator + unaryArithmeticExpression | primaryExpression | primaryExpression + columnId;
+            unaryArithmeticExpression.Rule = unaryArithmenticOperator + unaryArithmeticExpression | primaryExpression | primaryExpression + recordItemId;
 
             var mulExpression = MakeInfixOperator("mul", MULTIPLY | DIVIDE, unaryArithmeticExpression);
             var addExpression = MakeInfixOperator("add", PLUS | MINUS, mulExpression);
@@ -172,7 +172,7 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
 
             expression.Rule = boolOrExpression | EACH + boolOrExpression | conditionalExpression;
 
-            primaryExpression.Rule = functionCall | number | stringLiteral | recordExpression | listExpression | listAccessExpression | identifier | columnId;
+            primaryExpression.Rule = functionCall | number | stringLiteral | recordExpression | listExpression | listAccessExpression | identifier | recordItemId;
 
 
             Root = query;

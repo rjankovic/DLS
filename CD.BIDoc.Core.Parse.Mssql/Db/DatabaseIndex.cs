@@ -473,7 +473,7 @@ new TableSourceColumnList()
             return res;
         }
 
-        private Model.Mssql.Db.DatabaseElement GetDatabaseElement(string serverName, string dbName)
+        public Model.Mssql.Db.DatabaseElement GetDatabaseElement(string serverName, string dbName)
         {
             if (!_availableDatabasesByServer.ContainsKey(serverName))
             {

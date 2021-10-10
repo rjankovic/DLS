@@ -37,6 +37,8 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         public int OffsetFrom { get; set; }
         [DataMember]
         public int Length { get; set; }
+
+        public RecordItemIdentifierElement RecordItemId { get => ChildrenOfType<RecordItemIdentifierElement>().FirstOrDefault(); }
     }
 
     public class PowerQueryElement : MFragmentElement
@@ -68,7 +70,22 @@ namespace CD.DLS.Model.Mssql.PowerQuery
             : base(refPath, caption, definition, parent) { }
     }
 
-    public class VariableReferenceElement : MFragmentElement
+    public class IdentifierElement : MFragmentElement
+    {
+        public IdentifierElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+            : base(refPath, caption, definition, parent) { }
+    }
+
+    public class RecordItemIdentifierElement : MFragmentElement
+    {
+        public RecordItemIdentifierElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+            : base(refPath, caption, definition, parent) { }
+
+        [DataMember]
+        public string ItemId { get; set; }
+    }
+
+    public class VariableReferenceElement : OperationElement
     {
         public VariableReferenceElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
             : base(refPath, caption, definition, parent) { }
@@ -169,150 +186,18 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         public IEnumerable<OperationArgumentElement> Arguments { get { return ChildrenOfType<OperationArgumentElement>().OrderBy(x => x.OffsetFrom); } }
         public IEnumerable<DataFlowLinkElement> DataFlowLinks { get { return ChildrenOfType<DataFlowLinkElement>(); } }
         
-        public virtual void CreateDataFlowLinksAndOutputColumns()
-        {
-        }
+        [DataMember]
+        public string FunctionName { get; set; }
+
+        //public virtual void CreateDataFlowLinksAndOutputColumns()
+        //{
+        //}
 
         public IEnumerable<OperationOutputColumnElement> OutputColumns
         {
             get { return ChildrenOfType<OperationOutputColumnElement>(); }
         }
 
-        protected OperationOutputColumnElement AddOutputColumn(string name)
-        {
-            var refPath = RefPath.NamedChild("OutputColumn", name);
-            var columnElement = new OperationOutputColumnElement(refPath, name, null, this);
-            this.AddChild(columnElement);
-            return columnElement;
-        }
-        
-        public ArgumentList CollectArgumentList()
-        {
-            ArgumentList list = new ArgumentList();
-            list.Arguments = new List<Argument>();
-
-            foreach (var argument in Arguments)
-            {
-                var argumentWrap = new Argument()
-                {
-                    Columns = new List<ArgumentColumn>(),
-                    FragmentElement = argument.Content
-                };
-
-                if (argument.Content is OperationElement && ((OperationElement)argument.Content).OutputColumns.Any())
-                {
-                    argumentWrap.ArgumentType = ArgumentType.Table;
-
-                    var operation = (OperationElement)(argument.Content);
-
-                    foreach (var column in operation.OutputColumns)
-                    {
-                        argumentWrap.Columns.Add(new ArgumentColumn()
-                        {
-                            Name = column.Caption,
-                            RefereneElement = column
-                        });
-                    }
-                }
-                else if (argument.Content is VariableReferenceElement)
-                {
-                    argumentWrap.ArgumentType = ArgumentType.Table;
-
-                    var variable = argument.Content.Reference as FormulaStepElement;
-
-                    foreach (var column in variable.Operation.OutputColumns)
-                    {
-                        argumentWrap.Columns.Add(new ArgumentColumn()
-                        {
-                            Name = column.Caption,
-                            RefereneElement = column
-                        });
-                    }
-                }
-                else if (argument.Content is ListElement)
-                {
-                    var lst = argument.Content as ListElement;
-                    argumentWrap.ArgumentType = ArgumentType.List;
-                }
-                // scalar
-                else
-                {
-                    argumentWrap.ArgumentType = ArgumentType.ColumnOrScalar;
-
-                    argumentWrap.Columns.Add(new ArgumentColumn()
-                    {
-                        RefereneElement = argument.Content
-                    });
-                }
-
-                list.Arguments.Add(argumentWrap);
-            }
-
-            return list;
-        }
-
-        public List<OperationOutputColumnElement> PassThroughTableColumns(Argument input)
-        {
-            if (input.ArgumentType != ArgumentType.Table)
-            {
-                throw new InvalidOperationException("Only table argument columns can be passed through");
-            }
-
-            List<OperationOutputColumnElement> res = new List<OperationOutputColumnElement>();
-            foreach (var column in input.Columns)
-            {
-                if (column.RefereneElement is OperationOutputColumnElement)
-                {
-                    res.Add(PassThroughOutputColumn((OperationOutputColumnElement)(column.RefereneElement)));
-                }
-            }
-            return res;
-        }
-
-        private OperationOutputColumnElement PassThroughOutputColumn(OperationOutputColumnElement inputColumn)
-        {
-            // lower DF link (input column -> output column)
-            var columnName = inputColumn.Caption;
-            var outColumn = AddOutputColumn(columnName);
-            var linkCount = DataFlowLinks.Count();
-            var refPath = RefPath.NamedChild("DataFlowLink", string.Format("No_{0}", linkCount + 1));
-            DataFlowLinkElement daxDataFlowLinkElement = new DataFlowLinkElement(refPath, string.Format("DataFlowLink {0}", linkCount + 1), null, this);
-            this.AddChild(daxDataFlowLinkElement);
-            daxDataFlowLinkElement.Parent = this;
-            daxDataFlowLinkElement.Source = inputColumn;
-            daxDataFlowLinkElement.Target = outColumn;
-
-            //// upper DF link (input column -> self)
-            //var refPathUpper = RefPath.NamedChild("DataFlowLink", string.Format("No_{0}_Upper", linkCount + 1));
-            //DaxDataFlowLinkElement daxDataFlowLinkElementUpper = new DaxDataFlowLinkElement(refPathUpper, string.Format("DataFlowLink {0} [U]", linkCount + 1), null, this);
-            //this.AddChild(daxDataFlowLinkElementUpper);
-            //daxDataFlowLinkElementUpper.Parent = this;
-            //daxDataFlowLinkElementUpper.Source = inputColumn;
-            //daxDataFlowLinkElementUpper.Target = this;
-
-            return outColumn;
-        }
-
-        public DataFlowLinkElement AddDataFlowLink(MssqlModelElement source, OperationOutputColumnElement targetColumn)
-        {
-            var linkCount = DataFlowLinks.Count();
-            var refPath = RefPath.NamedChild("DataFlowLink", string.Format("No_{0}", linkCount + 1));
-            DataFlowLinkElement daxDataFlowLinkElement = new DataFlowLinkElement(refPath, string.Format("DataFlowLink {0}", linkCount + 1), null, this);
-            this.AddChild(daxDataFlowLinkElement);
-            daxDataFlowLinkElement.Parent = this;
-            daxDataFlowLinkElement.Source = source;
-            daxDataFlowLinkElement.Target = targetColumn;
-
-            //// add link to self so that functions that use the table as a whole
-            //var refPathUpper = RefPath.NamedChild("DataFlowLink", string.Format("No_{0}_Upper", linkCount + 1));
-            //DaxDataFlowLinkElement daxDataFlowLinkElementUpper = new DaxDataFlowLinkElement(refPathUpper, string.Format("DataFlowLink {0} [U]", linkCount + 1), null, this);
-            //this.AddChild(daxDataFlowLinkElementUpper);
-            //daxDataFlowLinkElementUpper.Parent = this;
-            //daxDataFlowLinkElementUpper.Source = source;
-            //daxDataFlowLinkElementUpper.Target = this;
-
-            return daxDataFlowLinkElement;
-        }
     }
 
     public class SqlDatabaseOperationElement : OperationElement
@@ -329,17 +214,17 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         public ScalarOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
             : base(refPath, caption, definition, parent) { }
 
-        public DataFlowLinkElement AddDataFlowLink(MModelElement source)
-        {
-            var linkCount = DataFlowLinks.Count();
-            var refPath = RefPath.NamedChild("DataFlowLink", string.Format("No_{0}", linkCount + 1));
-            DataFlowLinkElement daxDataFlowLinkElement = new DataFlowLinkElement(refPath, string.Format("DataFlowLink {0}", linkCount + 1), null, this);
-            this.AddChild(daxDataFlowLinkElement);
-            daxDataFlowLinkElement.Parent = this;
-            daxDataFlowLinkElement.Source = source;
-            daxDataFlowLinkElement.Target = this;
-            return daxDataFlowLinkElement;
-        }
+        //public DataFlowLinkElement AddDataFlowLink(MModelElement source)
+        //{
+        //    var linkCount = DataFlowLinks.Count();
+        //    var refPath = RefPath.NamedChild("DataFlowLink", string.Format("No_{0}", linkCount + 1));
+        //    DataFlowLinkElement daxDataFlowLinkElement = new DataFlowLinkElement(refPath, string.Format("DataFlowLink {0}", linkCount + 1), null, this);
+        //    this.AddChild(daxDataFlowLinkElement);
+        //    daxDataFlowLinkElement.Parent = this;
+        //    daxDataFlowLinkElement.Source = source;
+        //    daxDataFlowLinkElement.Target = this;
+        //    return daxDataFlowLinkElement;
+        //}
     }
 
     public class OperationOutputColumnElement : MFragmentElement // DaxElement
@@ -360,11 +245,11 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         public TableOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
             : base(refPath, caption, definition, parent) { }
 
-        public override void CreateDataFlowLinksAndOutputColumns()
-        {
-            var args = CollectArgumentList();
-            PassThroughTableColumns(args[0]);
-        }
+        //public override void CreateDataFlowLinksAndOutputColumns()
+        //{
+        //    var args = CollectArgumentList();
+        //    PassThroughTableColumns(args[0]);
+        //}
 
         //public DaxDataFlowLinkElement AddDataFlowLink(SsasModelElement source, DaxTableOperationOutputColumnElement targetColumn)
         //{
