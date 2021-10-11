@@ -119,5 +119,21 @@ namespace CD.DLS.Tests.ParserTests
             Dictionary<string, OperationOutputColumnElement> resultColumns;
             var model = ParsePowerQuery(script, out resultColumns);
         }
+
+        [TestMethod]
+        public void Parse_SqlTableRef()
+        {
+            var script = @"
+let
+    Source = Sql.Database(""localhost"", ""BE""),
+    dbo_GeneralService_T = Source{[Schema= ""dbo"", Item = ""GeneralService_T""]}
+            [Data]
+in
+    dbo_GeneralService_T
+";
+
+            Dictionary<string, OperationOutputColumnElement> resultColumns;
+            var model = ParsePowerQuery(script, out resultColumns);
+        }
     }
 }

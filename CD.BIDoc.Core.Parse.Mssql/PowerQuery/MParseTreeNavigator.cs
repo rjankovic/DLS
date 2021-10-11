@@ -30,7 +30,7 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
         
         public ParseTreeNode FindExpressionNode(ParseTreeNode root)
         {
-            return FindTermByName(root, MGrammar.NONTERM_EXPRESSION);
+            return DFTraverseInner(root).FirstOrDefault(x => x.Term.Name == MGrammar.NONTERM_EXPRESSION || x.Term.Name == MGrammar.NONTERM_PRIMARY_EXPRESSION); // FindTermByName(root, MGrammar.NONTERM_EXPRESSION);
         }
 
         public IEnumerable<Assignment> GetRecordItems(ParseTreeNode root)
@@ -40,11 +40,13 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
                 .Select(x => new Assignment() { Name = FindTermByName(x, MGrammar.TERM_ID).GetText(Script), ExpressionNode = x.ChildNodes.Last(), AssignmentNode = x });
         }
 
-        public IEnumerable<Assignment> GetQuerySteps()
+        public List<Assignment> GetQuerySteps()
         {
-            return DFTraverse(_tree).Where(x => x.Term.Name == MGrammar.NONTERM_QUERY_STEPS)
-                .Select(x => FindTermByName(x, MGrammar.NONTERM_ASSIGNMENT))
-                .Select(x => new Assignment() { Name = FindTermByName(x, MGrammar.TERM_ID).GetText(Script), ExpressionNode = x.ChildNodes.Last(), AssignmentNode = x });
+            var res = DFTraverse(_tree).Where(x => x.Term.Name == MGrammar.NONTERM_QUERY_STEPS).First()
+                .ChildNodes.Where(x => x.Term.Name == MGrammar.NONTERM_ASSIGNMENT)
+                .Select(x => new Assignment() { Name = FindTermByName(x, MGrammar.TERM_ID).GetText(Script), ExpressionNode = x.ChildNodes.Last(), AssignmentNode = x }).ToList();
+
+            return res;
         }
 
         public ParseTreeNode GetQueryOutputExpression()
@@ -64,6 +66,12 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
                 }
 
                 if (res.ChildNodes.Count == 3 && res.ChildNodes[0].Term.Name == "(" && res.ChildNodes[2].Term.Name == ")")
+                {
+                    res = res.ChildNodes[1];
+                    continue;
+                }
+
+                if (res.ChildNodes.Count == 3 && res.ChildNodes[0].Term.Name == "{" && res.ChildNodes[2].Term.Name == "}")
                 {
                     res = res.ChildNodes[1];
                     continue;

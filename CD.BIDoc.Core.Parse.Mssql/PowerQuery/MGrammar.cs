@@ -28,6 +28,7 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
         public const string NONTERM_LIST_ACCESS_EXPRESSION = "listAccessExpression";
         public const string NONTERM_RECORD_EXPRESSION = "recordExpression";
         public const string NONTERM_PRIMARY_EXPRESSION = "primaryExpression";
+        public const string NONTERM_PRIMARY_EXPRESSION_WITH_RECORD_INDEX = "primaryExpressionWithRecordIndex";
         public const string NONTERM_UNARY_OPERATOR = "unaryArithmeticOperator";
         public const string NONTERM_RECORD_ITEM_ID = "recordItemId";
         public const string NONTERM_UNARY_EXPRESSION = "unaryArithmenticExpression";
@@ -152,8 +153,11 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
             var recordItemId = new NonTerminal(NONTERM_RECORD_ITEM_ID);
             recordItemId.Rule = LSQBR + identifier + RSQBR;
 
+            var primaryExpressionWithRecordIndex = new NonTerminal(NONTERM_PRIMARY_EXPRESSION_WITH_RECORD_INDEX);
+            primaryExpressionWithRecordIndex.Rule = primaryExpression + recordItemId;
+
             var unaryArithmeticExpression = new NonTerminal(NONTERM_UNARY_EXPRESSION);
-            unaryArithmeticExpression.Rule = unaryArithmenticOperator + unaryArithmeticExpression | primaryExpression | primaryExpression + recordItemId;
+            unaryArithmeticExpression.Rule = unaryArithmenticOperator + unaryArithmeticExpression | primaryExpression | primaryExpressionWithRecordIndex;
 
             var mulExpression = MakeInfixOperator("mul", MULTIPLY | DIVIDE, unaryArithmeticExpression);
             var addExpression = MakeInfixOperator("add", PLUS | MINUS, mulExpression);

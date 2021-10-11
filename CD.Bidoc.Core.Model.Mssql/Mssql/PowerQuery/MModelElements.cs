@@ -140,9 +140,11 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         }
 
         public ListIndexElement InnerIndex { get { return ChildrenOfType<ListIndexElement>().FirstOrDefault(); } }
+        [ModelLink]
+        public MFragmentElement Content { get; set; }
     }
 
-    public class ListAccessElement : MFragmentElement
+    public class ListAccessElement : OperationElement
     {
         public ListAccessElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
             : base(refPath, caption, definition, parent)
@@ -151,6 +153,9 @@ namespace CD.DLS.Model.Mssql.PowerQuery
 
         [DataMember]
         public string ListName { get; set; }
+
+        [ModelLink]
+        public VariableReferenceElement ListFromVariable { get; set; }
 
         public ListIndexElement Index  { get { return ChildrenOfType<ListIndexElement>().First(); } }
     }

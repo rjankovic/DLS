@@ -128,8 +128,8 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
 
         public MFragmentElement ExtractMExpression(ParseTreeNode parseTreeNode, MFragmentElement parent)
         {
-            var expressionNode = _navigator.FindExpressionNode(parseTreeNode);
-            var specificNode = _navigator.GetBottomCoveringNode(expressionNode);
+            //var expressionNode = _navigator.FindExpressionNode(parseTreeNode);
+            var specificNode = _navigator.GetBottomCoveringNode(parseTreeNode);
             var definition = specificNode.GetText(_navigator.Script);
             MFragmentElement fragmentElement = null;
             var fragmentUrn = parent.RefPath.NamedChild(specificNode.GetTokens().First(), $"No_{parent.Children.Count() + 1}");
@@ -177,10 +177,17 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                     break;
                 case MGrammar.NONTERM_LIST_ACCESS_EXPRESSION:
                     ListAccessElement listAccessElement = new ListAccessElement(fragmentUrn, "List Access", definition, parent);
-                    var firstId = _navigator.GetFirstId(specificNode).GetText(_navigator.Script);
+                    var firstIdNode = _navigator.GetFirstId(specificNode);
+                    var firstId = firstIdNode.GetText(_navigator.Script);
                     listAccessElement.ListName = firstId;
                     fragmentElement = listAccessElement;
                     
+                    var idParsed = ExtractMExpression(firstIdNode, listAccessElement);
+                    if (idParsed is VariableReferenceElement)
+                    {
+                        listAccessElement.ListFromVariable = (VariableReferenceElement)idParsed;
+                    }
+
                     var indices = _navigator.GetIndices(specificNode);
                     MFragmentElement indexParent = listAccessElement;
                     foreach (var index in indices)
@@ -189,9 +196,11 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                         var indexRefPath = indexParent.RefPath.Child("AccessIndex");
                         var indexElement = new ListIndexElement(indexRefPath, "Index", indexDef, indexParent);
                         indexParent.AddChild(indexElement);
-                        ExtractMExpression(index, indexParent);
+                        var indexContent = ExtractMExpression(index, indexParent);
+                        indexElement.Content = indexContent;
                         indexParent = indexElement;
                     }
+                    CreateDataFlowLinksAndOutputColumns((dynamic)listAccessElement);
                     break;
                 case MGrammar.NONTERM_RECORD_EXPRESSION:
                     var recordItems = _navigator.GetRecordItems(specificNode);
@@ -234,6 +243,11 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                     RecordItemIdentifierElement recordItemIdentifierElement = new RecordItemIdentifierElement(fragmentUrn, definition, definition, parent);
                     recordItemIdentifierElement.ItemId = itemId;
                     fragmentElement = recordItemIdentifierElement;
+                    break;
+                    // don't care about the index for now
+                case MGrammar.NONTERM_PRIMARY_EXPRESSION_WITH_RECORD_INDEX:
+                    var primaryExpressionNode = _navigator.FindTermByName(specificNode, MGrammar.NONTERM_PRIMARY_EXPRESSION);
+                    return ExtractMExpression(primaryExpressionNode, parent);
                     break;
 
             }
@@ -290,9 +304,63 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             }
         }
 
+        private void CreateDataFlowLinksAndOutputColumns(ListAccessElement listAccess)
+        {
+            if (listAccess.ListFromVariable == null)
+            {
+                return;
+            }
+
+            var referencedDb = listAccess.ListFromVariable.Reference as SqlDatabaseOperationElement;
+            if (referencedDb == null)
+            {
+                return;
+            }
+
+            var tableRefRecord = listAccess.Index.Content as RecordElement;
+            if (tableRefRecord == null)
+            {
+                return;
+            }
+
+            var schemaItem = tableRefRecord.Items.FirstOrDefault(x => x.ItemName == "Schema");
+            var itemItem = tableRefRecord.Items.FirstOrDefault(x => x.ItemName == "Item");
+            if (schemaItem == null || itemItem == null)
+            {
+                return;
+            }
+
+            var schema = TrimLiteral(schemaItem.ItemValue.Definition);
+            var item = TrimLiteral(itemItem.ItemValue.Definition);
+
+            var dbElement = referencedDb.DatabaseReference;
+            var server = dbElement.Parent as ServerElement;
+            var tableRefQuoted = $"[{schema}].[{item}]";
+
+            Dictionary<string, MssqlModelElement> outputColumns;
+            var resolvedTable = FindSqlTable(server.Caption, dbElement.DbName, tableRefQuoted, out outputColumns);
+
+            foreach (var kv in outputColumns)
+            {
+                var outputColumn = AddOutputColumn(listAccess, kv.Key);
+                outputColumn.Reference = kv.Value;
+            }
+
+        }
+
         private string TrimLiteral(string literal)
         {
             return literal.Trim('"');
+        }
+
+        private MFragmentElement TryResolveVariableReference(string reference)
+        {
+            var refTrim = TrimLiteral(reference);
+            if (_localVariables.ContainsKey(refTrim))
+            {
+                return _localVariables[refTrim];
+            }
+            return null;
         }
 
         protected OperationOutputColumnElement AddOutputColumn(OperationElement operationElement, string name)
