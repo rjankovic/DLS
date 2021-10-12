@@ -132,7 +132,7 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             var specificNode = _navigator.GetBottomCoveringNode(parseTreeNode);
             var definition = specificNode.GetText(_navigator.Script);
             MFragmentElement fragmentElement = null;
-            var fragmentUrn = parent.RefPath.NamedChild(specificNode.GetTokens().First(), $"No_{parent.Children.Count() + 1}");
+            var fragmentUrn = parent.RefPath.NamedChild("Fragment", $"No_{parent.Children.Count() + 1}");
 
 
             switch (specificNode.Term.Name)
@@ -140,14 +140,50 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                 case MGrammar.NONTERM_FUNCTION_CALL:
                     var arguments = _navigator.ListOperationArguments(specificNode);
                     var functionName = _navigator.GetFirstIdContent(specificNode);
-                    var functionUrn = parent.RefPath.NamedChild(functionName, $"No_{parent.Children.Count() + 1}");
+                    var functionUrn = parent.RefPath.NamedChild("FunctionCall", $"{functionName}_{parent.Children.Count() + 1}");
                     OperationElement operationElement = null;
 
                     switch (functionName)
                     {
+                        case "Table.AlternateRows":
+                        case "Table.Combine":
+                        case "Table.FindText":
+                        case "Table.First":
+                        case "Table.FirstN":
+                        case "Table.FirstValue":
+                        case "Table.FromPartitions":
+                        case "Table.InsertRows":
+                        case "Table.Last":
+                        case "Table.LastN":
+                        case "Table.MatchesAllRows":
+                        case "Table.MatchesAnyRows":
+                        case "Table.Partition":
+                        case "Table.PartitionValues":
+                        case "Table.Range":
+                        case "Table.RemoveFirstN":
+                        case "Table.RemoveLastN":
+                        case "Table.RemoveRows":
+                        case "Table.RemoveRowsWithErrors":
+                        case "Table.Repeat":
+                        case "Table.ReplaceRows":
+                        case "Table.ReverseRows":
+                        case "Table.SelectRows":
+                        case "Table.SelectRowsWithErrors":
+                        case "Table.SingleRow":
+                        case "Table.Skip":
+                        case "Table.SplitAt":
+
+                        case "Table.Distinct":
+                        case "Table.RemoveMatchingRows":
+                        case "Table.ReplaceMatchingRows":
+                        case "Table.TransformColumns":
+                        case "Table.TransformColumnTypes":
+                            operationElement = new TableRowOperationElement(functionUrn, functionName, definition, parent);
+                            break;
                         case "Sql.Database":
                             operationElement = new SqlDatabaseOperationElement(functionUrn, functionName, definition, parent);
                             break;
+
                     }
 
                     int argumentCouter = 0;
@@ -166,10 +202,6 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                     CreateDataFlowLinksAndOutputColumns((dynamic)operationElement);
                     //operationElement.CreateDataFlowLinksAndOutputColumns();
                     fragmentElement = operationElement;
-                    break;
-                case MGrammar.TERM_NUMBER:
-                    var numberFragmentElement = new MFragmentElement(fragmentUrn, definition, definition, parent);
-                    fragmentElement = numberFragmentElement;
                     break;
                 case MGrammar.TERM_STRING:
                     var literalElement = new LiteralElement(fragmentUrn, definition, definition, parent);
@@ -227,8 +259,8 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                         variableReferenceElement.Reference = variable;
                         if (variable is OperationElement)
                         {
-                            var op = variable as OperationElement;
-                            PassThroughTableColumns(variableReferenceElement, op);
+                            var inputOperation = variable as OperationElement;
+                            PassThroughTableColumns(variableReferenceElement, inputOperation);
                         }
                         fragmentElement = variableReferenceElement;
                     }
@@ -248,6 +280,12 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                 case MGrammar.NONTERM_PRIMARY_EXPRESSION_WITH_RECORD_INDEX:
                     var primaryExpressionNode = _navigator.FindTermByName(specificNode, MGrammar.NONTERM_PRIMARY_EXPRESSION);
                     return ExtractMExpression(primaryExpressionNode, parent);
+                    break;
+                //case MGrammar.TERM_NUMBER:
+                //case MGrammar.NONTERM_PARAMETERS:
+                default:
+                    var numberFragmentElement = new MFragmentElement(fragmentUrn, definition, definition, parent);
+                    fragmentElement = numberFragmentElement;
                     break;
 
             }
@@ -301,6 +339,31 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             {
                 var outputColumn = AddOutputColumn(sqlDatabaseOperation, kv.Key);
                 outputColumn.Reference = kv.Value;
+            }
+        }
+
+        private void CreateDataFlowLinksAndOutputColumns(TableRowOperationElement operation)
+        {
+            var args = CollectArgumentList(operation);
+            var arg = args[0];
+            if (arg.FragmentElement is OperationElement)
+            {
+                var inputOperation = arg.FragmentElement as OperationElement;
+                if (inputOperation is VariableReferenceElement)
+                {
+                    var varRef = inputOperation as VariableReferenceElement;
+                    
+                    // save 1 extra step through the variable ref. as argument
+                    if (varRef.Reference is OperationElement && varRef.Reference != null)
+                    {
+                        inputOperation = varRef.Reference as OperationElement;
+                    }
+                }
+                PassThroughTableColumns(operation, inputOperation);
+            }
+            else
+            {
+                PassThroughTableColumns(operation, arg);
             }
         }
 

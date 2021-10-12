@@ -135,5 +135,24 @@ in
             Dictionary<string, OperationOutputColumnElement> resultColumns;
             var model = ParsePowerQuery(script, out resultColumns);
         }
+
+        [TestMethod]
+        public void Parse_TableRowOperations()
+        {
+            var script = @"
+let
+    Source = Sql.Database(""localhost"", ""BE""),
+    dbo_GeneralService_T = Source{[Schema= ""dbo"", Item = ""GeneralService_T""]}[Data],
+    #""Trimmed Text"" = Table.TransformColumns(dbo_GeneralService_T,{{""Source_System_Code"", Text.Trim, type text}}),
+    #""Removed Duplicates"" = Table.Distinct(#""Trimmed Text"", {""Main_Service_ID"", ""Service_Description""}),
+    #""Kept Range of Rows"" = Table.Range(#""Removed Duplicates"",0,10),
+    #""Removed Top Rows"" = Table.Skip(#""Kept Range of Rows"",100)
+in
+    #""Removed Top Rows""
+";
+
+            Dictionary<string, OperationOutputColumnElement> resultColumns;
+            var model = ParsePowerQuery(script, out resultColumns);
+        }
     }
 }

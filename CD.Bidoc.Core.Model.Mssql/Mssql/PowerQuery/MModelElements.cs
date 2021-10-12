@@ -245,37 +245,10 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         }
     }
 
-    public class TableOperationElement : OperationElement
+    public class TableRowOperationElement : OperationElement
     {
-        public TableOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+        public TableRowOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
             : base(refPath, caption, definition, parent) { }
-
-        //public override void CreateDataFlowLinksAndOutputColumns()
-        //{
-        //    var args = CollectArgumentList();
-        //    PassThroughTableColumns(args[0]);
-        //}
-
-        //public DaxDataFlowLinkElement AddDataFlowLink(SsasModelElement source, DaxTableOperationOutputColumnElement targetColumn)
-        //{
-        //    var linkCount = DataFlowLinks.Count();
-        //    var refPath = RefPath.NamedChild("DataFlowLink", string.Format("No_{0}", linkCount + 1));
-        //    DaxDataFlowLinkElement daxDataFlowLinkElement = new DaxDataFlowLinkElement(refPath, string.Format("DataFlowLink {0}", linkCount + 1), null, this);
-        //    this.AddChild(daxDataFlowLinkElement);
-        //    daxDataFlowLinkElement.Parent = this;
-        //    daxDataFlowLinkElement.Source = source;
-        //    daxDataFlowLinkElement.Target = targetColumn;
-
-        //    // add link to self so that functions that use the table as a whole
-        //    var refPathUpper = RefPath.NamedChild("DataFlowLink", string.Format("No_{0}_Upper", linkCount + 1));
-        //    DaxDataFlowLinkElement daxDataFlowLinkElementUpper = new DaxDataFlowLinkElement(refPathUpper, string.Format("DataFlowLink {0} [U]", linkCount + 1), null, this);
-        //    this.AddChild(daxDataFlowLinkElementUpper);
-        //    daxDataFlowLinkElementUpper.Parent = this;
-        //    daxDataFlowLinkElementUpper.Source = source;
-        //    daxDataFlowLinkElementUpper.Target = this;
-
-        //    return daxDataFlowLinkElement;
-        //}
     }
 
 
