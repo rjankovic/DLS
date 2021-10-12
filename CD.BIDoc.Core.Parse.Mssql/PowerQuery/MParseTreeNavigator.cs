@@ -71,11 +71,11 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
                     continue;
                 }
 
-                if (res.ChildNodes.Count == 3 && res.ChildNodes[0].Term.Name == "{" && res.ChildNodes[2].Term.Name == "}")
-                {
-                    res = res.ChildNodes[1];
-                    continue;
-                }
+                //if (res.ChildNodes.Count == 3 && res.ChildNodes[0].Term.Name == "{" && res.ChildNodes[2].Term.Name == "}")
+                //{
+                //    res = res.ChildNodes[1];
+                //    continue;
+                //}
 
                 break;
             }
@@ -93,6 +93,16 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
             return arguments;
         }
 
+        public List<ParseTreeNode> FindListItems(ParseTreeNode listExpression)
+        {
+            var parameters = FindTermByName(listExpression, MGrammar.NONTERM_PARAMETERS);
+            if (parameters == null)
+            {
+                return new List<ParseTreeNode>();
+            }
+            var arguments = parameters.ChildNodes.Where(x => x.Term.Name == MGrammar.NONTERM_PARAMETER).OrderBy(x => x.Span.EndPosition).ToList();
+            return arguments;
+        }
 
         public string GetDefinition(ParseTreeNode node)
         {
@@ -108,7 +118,11 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
             }
             else
             {
-                indices = DFTraverseInner(root).First(x => x.Term.Name == MGrammar.NONTERM_INDICES);
+                indices = DFTraverseInner(root).FirstOrDefault(x => x.Term.Name == MGrammar.NONTERM_INDICES);
+            }
+            if (indices == null)
+            {
+                return new List<ParseTreeNode>();
             }
 
             return indices.ChildNodes.ToList();

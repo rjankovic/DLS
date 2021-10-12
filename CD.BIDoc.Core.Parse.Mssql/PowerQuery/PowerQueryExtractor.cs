@@ -221,17 +221,19 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                     }
 
                     var indices = _navigator.GetIndices(specificNode);
-                    MFragmentElement indexParent = listAccessElement;
-                    foreach (var index in indices)
-                    {
-                        var indexDef = index.GetText(_navigator.Script);
-                        var indexRefPath = indexParent.RefPath.Child("AccessIndex");
-                        var indexElement = new ListIndexElement(indexRefPath, "Index", indexDef, indexParent);
-                        indexParent.AddChild(indexElement);
-                        var indexContent = ExtractMExpression(index, indexParent);
-                        indexElement.Content = indexContent;
-                        indexParent = indexElement;
-                    }
+
+                    ParseListAccessIndices(indices, listAccessElement);
+                    //MFragmentElement indexParent = listAccessElement;
+                    //foreach (var index in indices)
+                    //{
+                    //    var indexDef = index.GetText(_navigator.Script);
+                    //    var indexRefPath = indexParent.RefPath.Child("AccessIndex");
+                    //    var indexElement = new ListIndexElement(indexRefPath, "Index", indexDef, indexParent);
+                    //    indexParent.AddChild(indexElement);
+                    //    var indexContent = ExtractMExpression(index, indexParent);
+                    //    indexElement.Content = indexContent;
+                    //    indexParent = indexElement;
+                    //}
                     CreateDataFlowLinksAndOutputColumns((dynamic)listAccessElement);
                     break;
                 case MGrammar.NONTERM_RECORD_EXPRESSION:
@@ -249,6 +251,18 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                         recordItemElement.ItemName = item.Name;
                         ExtractMExpression(item.ExpressionNode, recordItemElement);
                     }
+                    break;
+                case MGrammar.NONTERM_LIST_EXPRESSION:
+                    ListElement listElement = new ListElement(fragmentUrn, "List", definition, parent);
+
+                    var items = _navigator.FindListItems(specificNode);
+                    foreach (var item in items)
+                    {
+                        ExtractMExpression(item, listElement);
+                    }
+                    var indices2 = _navigator.GetIndices(specificNode);
+                    ParseListAccessIndices(indices2, listElement);
+                    fragmentElement = listElement;
                     break;
                 case MGrammar.TERM_ID:
                     var id = definition;
@@ -293,6 +307,21 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             parent.AddChild(fragmentElement);
 
             return fragmentElement;
+        }
+
+        private void ParseListAccessIndices(List<ParseTreeNode> indices, MFragmentElement indexParent)
+        {
+            foreach (var index in indices)
+            {
+                var indexDef = index.GetText(_navigator.Script);
+                var indexRefPath = indexParent.RefPath.Child("AccessIndex");
+                var indexElement = new ListIndexElement(indexRefPath, "Index", indexDef, indexParent);
+                indexParent.AddChild(indexElement);
+                var content = _navigator.FindExpressionNode(index);
+                var indexContent = ExtractMExpression(content, indexParent);
+                indexElement.Content = indexContent;
+                indexParent = indexElement;
+            }
         }
 
         private void CreateDataFlowLinksAndOutputColumns(OperationElement operation)

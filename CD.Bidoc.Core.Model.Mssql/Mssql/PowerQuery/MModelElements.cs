@@ -129,7 +129,9 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         {
         }
 
-        public IEnumerable<MFragmentElement> Items { get { return ChildrenOfType<MFragmentElement>(); } }
+        public IEnumerable<MFragmentElement> Items { get { return ChildrenOfType<MFragmentElement>().Except(ChildrenOfType<ListIndexElement>()); } }
+
+        public ListIndexElement Index { get { return ChildrenOfType<ListIndexElement>().FirstOrDefault(); } }
     }
 
     public class ListIndexElement : MFragmentElement
