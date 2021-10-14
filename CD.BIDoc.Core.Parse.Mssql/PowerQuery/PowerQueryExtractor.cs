@@ -178,12 +178,30 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                         case "Table.ReplaceMatchingRows":
                         case "Table.TransformColumns":
                         case "Table.TransformColumnTypes":
+                        case "Table.ReplaceValue":
                             operationElement = new TableRowOperationElement(functionUrn, functionName, definition, parent);
                             break;
                         case "Sql.Database":
                             operationElement = new SqlDatabaseOperationElement(functionUrn, functionName, definition, parent);
                             break;
-
+                        case "Table.SplitColumn":
+                            operationElement = new TableSplitColumnOperationElement(functionUrn, functionName, definition, parent);
+                            break;
+                        case "Table.DuplicateColumn":
+                            operationElement = new TableDuplicateColumnOperationElement(functionUrn, functionName, definition, parent);
+                            break;
+                        case "Table.RemoveColumns":
+                            operationElement = new TableRemoveColumnsOperationElement(functionUrn, functionName, definition, parent);
+                            break;
+                        case "Table.SelectColumns":
+                            operationElement = new TableSelectColumnsOperationElement(functionUrn, functionName, definition, parent);
+                            break;
+                        case "Table.RenameColumns":
+                            operationElement = new TableRenameColumnsOperationElement(functionUrn, functionName, definition, parent);
+                            break;
+                        default:
+                            operationElement = new GeneralOperationElement(functionUrn, functionName, definition, parent);
+                            break;
                     }
 
                     int argumentCouter = 0;
@@ -324,6 +342,7 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             }
         }
 
+        // for unknown functions
         private void CreateDataFlowLinksAndOutputColumns(OperationElement operation)
         { 
         
@@ -396,6 +415,23 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             }
         }
 
+        // TODO
+        private void CreateDataFlowLinksAndOutputColumns(TableSplitColumnOperationElement operation)
+        {
+        }
+        private void CreateDataFlowLinksAndOutputColumns(TableDuplicateColumnOperationElement operation)
+        {
+        }
+        private void CreateDataFlowLinksAndOutputColumns(TableRemoveColumnsOperationElement operation)
+        {
+        }
+        private void CreateDataFlowLinksAndOutputColumns(TableSelectColumnsOperationElement operation)
+        {
+        }
+        private void CreateDataFlowLinksAndOutputColumns(TableRenameColumnsOperationElement operation)
+        {
+        }
+        
         private void CreateDataFlowLinksAndOutputColumns(ListAccessElement listAccess)
         {
             if (listAccess.ListFromVariable == null)
@@ -564,6 +600,20 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             outColumn.Reference = inputColumn;
             //AddDataFlowLink(targetOperation, inputColumn, outColumn);
             return outColumn;
+        }
+
+        public DataFlowLinkElement AddDataFlowLink(MssqlModelElement source, OperationOutputColumnElement targetColumn)
+        {
+            var targetOperation = (OperationElement)targetColumn.Parent;
+            var linkCount = targetOperation.DataFlowLinks.Count();
+            var refPath = targetOperation.RefPath.NamedChild("DataFlowLink", string.Format("No_{0}", linkCount + 1));
+            DataFlowLinkElement daxDataFlowLinkElement = new DataFlowLinkElement(refPath, string.Format("DataFlowLink {0}", linkCount + 1), null, targetOperation);
+            targetOperation.AddChild(daxDataFlowLinkElement);
+            daxDataFlowLinkElement.Parent = targetOperation;
+            daxDataFlowLinkElement.Source = source;
+            daxDataFlowLinkElement.Target = targetColumn;
+
+            return daxDataFlowLinkElement;
         }
 
         public DataFlowLinkElement AddDataFlowLink(OperationElement targetOperation, MssqlModelElement source, OperationOutputColumnElement targetColumn)

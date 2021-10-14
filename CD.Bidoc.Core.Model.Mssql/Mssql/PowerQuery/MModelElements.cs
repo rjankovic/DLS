@@ -253,5 +253,57 @@ namespace CD.DLS.Model.Mssql.PowerQuery
             : base(refPath, caption, definition, parent) { }
     }
 
+    public class TableSplitColumnOperationElement : OperationElement
+    {
+        public TableSplitColumnOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+            : base(refPath, caption, definition, parent) { }
+    }
+
+    public class TableDuplicateColumnOperationElement : OperationElement
+    {
+        public TableDuplicateColumnOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+            : base(refPath, caption, definition, parent) { }
+    }
+
+    public class TableRemoveColumnsOperationElement : OperationElement
+    {
+        public TableRemoveColumnsOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+            : base(refPath, caption, definition, parent) { }
+    }
+
+    public class TableSelectColumnsOperationElement : OperationElement
+    {
+        public TableSelectColumnsOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+            : base(refPath, caption, definition, parent) { }
+    }
+    public class TableRenameColumnsOperationElement : OperationElement
+    {
+        public TableRenameColumnsOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+            : base(refPath, caption, definition, parent) { }
+    }
+    public class GeneralOperationElement : OperationElement
+    {
+        public GeneralOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+            : base(refPath, caption, definition, parent) { }
+    }
+
+
+    /*
+let
+    Source = Sql.Database("localhost", "BE"),
+    dbo_GeneralService_T = Source{[Schema="dbo",Item="GeneralService_T"]}[Data],
+    #"Split Column by Delimiter" = Table.SplitColumn(Table.TransformColumnTypes(dbo_GeneralService_T, {{"Source_System_Reference_Datetime", type text}}, "en-US"), "Source_System_Reference_Datetime", Splitter.SplitTextByDelimiter(",", QuoteStyle.Csv), {"Source_System_Reference_Datetime.1", "Source_System_Reference_Datetime.2"}),
+    X #"Changed Type" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"Source_System_Reference_Datetime.1", type text}, {"Source_System_Reference_Datetime.2", type text}}),
+    X #"Trimmed Text" = Table.TransformColumns(#"Changed Type",{{"Source_System_Code", Text.Trim, type text}}),
+    #"Duplicated Column" = Table.DuplicateColumn(#"Trimmed Text", "Main_Service_ID", "Main_Service_ID - Copy"),
+    #"Removed Columns" = Table.RemoveColumns(#"Duplicated Column",{"Source_System_Extract_Datetime"}),
+    X #"Replaced Value" = Table.ReplaceValue(#"Removed Columns",10,20,Replacer.ReplaceValue,{"Update_Batch_ID"}),
+    X #"Removed Duplicates" = Table.Distinct(#"Replaced Value", {"Main_Service_ID", "Service_Description"}),
+    X #"Removed Errors" = Table.RemoveRowsWithErrors(#"Removed Duplicates", {"Service_Description"}),
+    #"Removed Other Columns" = Table.SelectColumns(#"Removed Errors",{"Source_System_Reference_Datetime.2", "Source_System_Code", "SOR_GeneralService_ID", "Main_Service_ID", "Service_Description", "Service_Type", "Variable_Type", "Quantity_Unit", "Extra_Service_Configured", "Effective_Datetime", "End_Datetime", "Current_Row", "Insert_Batch_ID", "Update_Batch_ID", "Main_Service_ID - Copy"}),
+    X #"Filtered Rows" = Table.SelectRows(#"Removed Other Columns", each Date.IsInPreviousYear([Effective_Datetime]))
+in
+    #"Filtered Rows"
+     */
 
 }
