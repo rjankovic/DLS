@@ -96,6 +96,7 @@
     <Compile Include="Pbi\PbiModelExtractor.cs" />
     <Compile Include="Pbi\UrnBuilder.cs" />
     <Compile Include="PowerQuery\ArgumentList.cs" />
+    <Compile Include="PowerQuery\DataSource.cs" />
     <Compile Include="PowerQuery\MParseTreeNavigator.cs" />
     <Compile Include="PowerQuery\MGrammar.cs" />
     <Compile Include="PowerQuery\PowerQueryExtractor.cs" />

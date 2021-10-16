@@ -44,7 +44,7 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
         {
             var res = DFTraverse(_tree).Where(x => x.Term.Name == MGrammar.NONTERM_QUERY_STEPS).First()
                 .ChildNodes.Where(x => x.Term.Name == MGrammar.NONTERM_ASSIGNMENT)
-                .Select(x => new Assignment() { Name = FindTermByName(x, MGrammar.TERM_ID).GetText(Script), ExpressionNode = x.ChildNodes.Last(), AssignmentNode = x }).ToList();
+                .Select(x => new Assignment() { Name = FindTermByName(x, MGrammar.TERM_ID).Token.ValueString /* .GetText(Script)*/, ExpressionNode = x.ChildNodes.Last(), AssignmentNode = x }).ToList();
 
             return res;
         }

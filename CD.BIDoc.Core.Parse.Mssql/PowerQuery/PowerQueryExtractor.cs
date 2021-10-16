@@ -26,17 +26,34 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
         private Dictionary<string, MFragmentElement> _localVariables;
         private MParseTreeNavigator _navigator;
         private AvailableDatabaseModelIndex _sqlDbIndex;
+        private List<DataSource> _localDataSources = new List<DataSource>();
 
         public PowerQueryExtractor(ProjectConfig projectConfig, GraphManager graphManager)
         {
             _parser = new Parser(new MGrammar());
         }
 
+        public void AddLocalDataSource(DataSource ds)
+        {
+            _localDataSources.Add(ds);
+        }
 
         public PowerQueryElement ExtractPowerQuery(string script, AvailableDatabaseModelIndex sqlDbIndex, MssqlModelElement parent, out Dictionary<string, OperationOutputColumnElement> resultColumns)
         {
             _sqlDbIndex = sqlDbIndex;
             _localVariables = new Dictionary<string, MFragmentElement>();
+
+            foreach (var ds in _localDataSources)
+            {
+                var fakeServer = new ServerElement(new RefPath(), ds.ServerName);
+                var fakeDb = new DatabaseElement(new RefPath(), ds.DbName, fakeServer);
+                fakeServer.AddChild(fakeDb);
+                fakeDb.DbName = ds.DbName;
+                SqlDatabaseOperationElement fakeOperation = new SqlDatabaseOperationElement(new RefPath(), ds.DataSourceName, string.Empty, null);
+                fakeOperation.DatabaseReference = fakeDb;
+                _localVariables.Add(ds.DataSourceName, fakeOperation);
+            }
+
             resultColumns = new Dictionary<string, OperationOutputColumnElement>(StringComparer.OrdinalIgnoreCase);
             //var originalResultColumns = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
 
@@ -283,7 +300,8 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                     fragmentElement = listElement;
                     break;
                 case MGrammar.TERM_ID:
-                    var id = definition;
+                    var id = specificNode.Token.ValueString; // definition;
+
                     if (_localVariables.ContainsKey(id))
                     {
                         var variable = _localVariables[id];
@@ -565,7 +583,12 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                 return;
             }
 
-            var referencedDb = listAccess.ListFromVariable.Reference as SqlDatabaseOperationElement;
+            VariableReferenceElement sourceDbVariableRef = listAccess.ListFromVariable;
+            while (sourceDbVariableRef.Reference is VariableReferenceElement)
+            {
+                sourceDbVariableRef = (VariableReferenceElement)(sourceDbVariableRef.Reference);
+            }
+            var referencedDb = sourceDbVariableRef.Reference as SqlDatabaseOperationElement;
             if (referencedDb == null)
             {
                 return;

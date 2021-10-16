@@ -20,6 +20,7 @@ using CD.DLS.Parse.Mssql.Ssas;
 using CD.DLS.Model.Mssql.Ssas;
 using CD.DLS.Core.Parse.Mssql.PowerQuery;
 using CD.DLS.Model.Mssql.PowerQuery;
+using CD.BIDoc.Core.Parse.Mssql.PowerQuery;
 
 namespace CD.DLS.Tests.ParserTests
 {
@@ -99,9 +100,17 @@ namespace CD.DLS.Tests.ParserTests
             _sqlIndex = sqlIndex;
         }
 
-        private PowerQueryElement ParsePowerQuery(string script, out Dictionary<string, OperationOutputColumnElement> resultColumns)
+        private PowerQueryElement ParsePowerQuery(string script, out Dictionary<string, OperationOutputColumnElement> resultColumns, List<DataSource> dataSources = null)
         {
+            if (dataSources == null)
+            {
+                dataSources = new List<DataSource>();
+            }
             PowerQueryExtractor extractor = new PowerQueryExtractor(_projectConfig, _graphManager);
+            foreach (var ds in dataSources)
+            {
+                extractor.AddLocalDataSource(ds);
+            }
             Model.SolutionModelElement fakeParent = new Model.SolutionModelElement(new RefPath(), "Root");
             var scriptModel = extractor.ExtractPowerQuery(script, _sqlIndex, fakeParent, out resultColumns);
             return scriptModel;
@@ -134,6 +143,33 @@ in
 
             Dictionary<string, OperationOutputColumnElement> resultColumns;
             var model = ParsePowerQuery(script, out resultColumns);
+        }
+
+        [TestMethod]
+        public void Parse_SsasSqlTableRef()
+        {
+            var script = @"
+let
+    Source = #""SQL / tdchbi01 ita itadel dk; BE"",
+    ConsumptionCube_D_Asset = Source{[Schema= ""dbo"", Item = ""GeneralService_T""]}
+            [Data]
+in
+    ConsumptionCube_D_Asset
+                ";
+
+
+            List<DataSource> sources = new List<DataSource>()
+            {
+                new DataSource()
+                {
+                    DataSourceName = "SQL / tdchbi01 ita itadel dk; BE",
+                    ServerName = "localhost",
+                    DbName = "BE"
+                }
+            };
+
+            Dictionary<string, OperationOutputColumnElement> resultColumns;
+            var model = ParsePowerQuery(script, out resultColumns, sources);
         }
 
         [TestMethod]
