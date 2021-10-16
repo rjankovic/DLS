@@ -418,20 +418,146 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
         // TODO
         private void CreateDataFlowLinksAndOutputColumns(TableSplitColumnOperationElement operation)
         {
+            //#"Split Column by Delimiter" = Table.SplitColumn(Table.TransformColumnTypes(dbo_GeneralService_T, {{"Source_System_Reference_Datetime", type text}}, "en-US"), "Source_System_Reference_Datetime", Splitter.SplitTextByDelimiter(",", QuoteStyle.Csv), {"Source_System_Reference_Datetime.1", "Source_System_Reference_Datetime.2", "Source_System_Reference_Datetime.3"}),
+            var args = CollectArgumentList(operation);
+
+            var inputTable = args[0].FragmentElement as OperationElement;
+            var splitColumn = TrimLiteral(args[1].FragmentElement.Definition);
+            var splitColumnElement = inputTable.OutputColumns.FirstOrDefault(x => x.Caption == splitColumn);
+            var resColumns = args[args.Count - 1].FragmentElement as ListElement;
+
+            if (inputTable == null || resColumns == null)
+            {
+                return;
+            }
+
+            var outColumns = resColumns.Items.Select(x => x as LiteralElement).Where(x => x != null).Select(x => x.Definition).ToList();
+            PassThroughTableColumns(operation, inputTable, new List<string>() { splitColumn });
+
+            foreach (var oc in outColumns)
+            {
+                var splitOutColumn = AddOutputColumn(operation, oc);
+                splitOutColumn.Reference = splitColumnElement;
+            }
         }
+
         private void CreateDataFlowLinksAndOutputColumns(TableDuplicateColumnOperationElement operation)
         {
+            //#"Duplicated Column" = Table.DuplicateColumn(#"Trimmed Text", "Main_Service_ID", "Main_Service_ID - Copy"),
+            var args = CollectArgumentList(operation);
+            var inputTable = args[0].FragmentElement as OperationElement;
+            PassThroughTableColumns(operation, inputTable);
+
+            var inputColumn = TrimLiteral(args[1].FragmentElement.Definition);
+            var inputColumnElement = inputTable.OutputColumns.FirstOrDefault(x => x.Caption == inputColumn);
+            var duplicatedColumn = TrimLiteral(args[2].FragmentElement.Definition);
+            
+            if (inputColumnElement == null)
+            {
+                return;
+            }
+            
+            var duplicatedOutput = AddOutputColumn(operation, duplicatedColumn);
+            duplicatedOutput.Reference = inputColumnElement;
         }
+
         private void CreateDataFlowLinksAndOutputColumns(TableRemoveColumnsOperationElement operation)
         {
+            //#"Removed Columns" = Table.RemoveColumns(#"Duplicated Column",{"Source_System_Extract_Datetime"}),
+            var args = CollectArgumentList(operation);
+
+            var inputTable = args[0].FragmentElement as OperationElement;
+            var removedColumns = args[1].FragmentElement as ListElement;
+            
+            if (inputTable == null)
+            {
+                return;
+            }
+
+            List<string> removedColumnsList;
+            if (removedColumns != null)
+            {
+                removedColumnsList = removedColumns.Items.Select(x => x as LiteralElement).Where(x => x != null).Select(x => TrimLiteral(x.Definition)).ToList();
+            }
+            else
+            {
+                var singleRemovedColumn = args[1].FragmentElement as LiteralElement;
+                if (singleRemovedColumn == null)
+                {
+                    return;
+                }
+                removedColumnsList = new List<string>() { TrimLiteral(singleRemovedColumn.Definition) };
+            }
+            PassThroughTableColumns(operation, inputTable, removedColumnsList);
         }
+
         private void CreateDataFlowLinksAndOutputColumns(TableSelectColumnsOperationElement operation)
         {
+            //#"Removed Other Columns" = Table.SelectColumns(#"Removed Errors",{"Source_System_Reference_Datetime.2", "Source_System_Code", "SOR_GeneralService_ID", "Main_Service_ID", "Service_Description", "Service_Type", "Variable_Type", "Quantity_Unit", "Extra_Service_Configured", "Effective_Datetime", "End_Datetime", "Current_Row", "Insert_Batch_ID", "Update_Batch_ID", "Main_Service_ID - Copy"}),
+            var args = CollectArgumentList(operation);
+            var inputTable = args[0].FragmentElement as OperationElement;
+            
+            var selectColumns = args[1].FragmentElement as ListElement;
+            var singleSelectColumn = args[1].FragmentElement as LiteralElement;
+            List<string> selectedColumnsList = null;
+
+            if (selectColumns != null)
+            {
+                selectedColumnsList = selectColumns.Items.Select(x => x as LiteralElement).Where(x => x != null).Select(x => TrimLiteral(x.Definition)).ToList();
+            }
+            else if (singleSelectColumn != null)
+            {
+                selectedColumnsList = new List<string>() { TrimLiteral(singleSelectColumn.Definition) };
+            }
+            else return;
+
+            var removedColumns = args[0].Columns.Select(x => x.Name).Except(selectedColumnsList).ToList();
+            PassThroughTableColumns(operation, inputTable, removedColumns);
         }
+
         private void CreateDataFlowLinksAndOutputColumns(TableRenameColumnsOperationElement operation)
         {
+            //#"Renamed Columns" = Table.RenameColumns(#"Filtered Rows",{{"Service_Type", "Service_Type_Rename"}})
+            var args = CollectArgumentList(operation);
+            var inputTable = args[0].FragmentElement as OperationElement;
+            var renamesArg = args[1].FragmentElement as ListElement;
+
+            if (renamesArg == null || inputTable == null)
+            {
+                return;
+            }
+
+            List<Tuple<string, string>> renames = new List<Tuple<string, string>>();
+            IEnumerable<ListElement> renameArgTuples = null;
+            if (renamesArg.Items.Any(x => x is ListElement))
+            {
+                renameArgTuples = renamesArg.Items.Select(x => x as ListElement);
+            }
+            else
+            {
+                renameArgTuples = new List<ListElement>() { renamesArg }.AsEnumerable();
+            }
+
+            foreach (var tpl in renameArgTuples)
+            {
+                renames.Add(new Tuple<string, string>(TrimLiteral(tpl.Items.First().Definition), TrimLiteral(tpl.Items.Last().Definition)));
+            }
+
+            var renamesDict = renames.ToDictionary(x => x.Item1, x => x.Item2);
+            foreach (var inputColumn in inputTable.OutputColumns)
+            {
+                if (renamesDict.ContainsKey(inputColumn.Caption))
+                {
+                    var ooc = AddOutputColumn(operation, renamesDict[inputColumn.Caption]);
+                    ooc.Reference = inputColumn;
+                }
+                else
+                {
+                    PassThroughOutputColumn(operation, inputColumn);
+                }
+            }
         }
-        
+
         private void CreateDataFlowLinksAndOutputColumns(ListAccessElement listAccess)
         {
             if (listAccess.ListFromVariable == null)
@@ -493,6 +619,7 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
 
         protected OperationOutputColumnElement AddOutputColumn(OperationElement operationElement, string name)
         {
+            name = TrimLiteral(name);
             var refPath = operationElement.RefPath.NamedChild("OutputColumn", name);
             var columnElement = new OperationOutputColumnElement(refPath, name, null, operationElement);
             operationElement.AddChild(columnElement);
@@ -512,7 +639,7 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                     FragmentElement = argument.Content
                 };
 
-                if (argument.Content is OperationElement && ((OperationElement)argument.Content).OutputColumns.Any())
+                if (argument.Content is OperationElement /*&& ((OperationElement)argument.Content).OutputColumns.Any()*/)
                 {
                     argumentWrap.ArgumentType = ArgumentType.Table;
 
@@ -527,21 +654,21 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                         });
                     }
                 }
-                else if (argument.Content is VariableReferenceElement)
-                {
-                    argumentWrap.ArgumentType = ArgumentType.Table;
+                //else if (argument.Content is VariableReferenceElement)
+                //{
+                //    argumentWrap.ArgumentType = ArgumentType.Table;
 
-                    var variable = argument.Content.Reference as FormulaStepElement;
+                //    var variable = argument.Content.Reference as FormulaStepElement;
 
-                    foreach (var column in variable.Operation.OutputColumns)
-                    {
-                        argumentWrap.Columns.Add(new ArgumentColumn()
-                        {
-                            Name = column.Caption,
-                            RefereneElement = column
-                        });
-                    }
-                }
+                //    foreach (var column in variable.Operation.OutputColumns)
+                //    {
+                //        argumentWrap.Columns.Add(new ArgumentColumn()
+                //        {
+                //            Name = column.Caption,
+                //            RefereneElement = column
+                //        });
+                //    }
+                //}
                 else if (argument.Content is ListElement)
                 {
                     var lst = argument.Content as ListElement;
@@ -564,8 +691,13 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             return list;
         }
 
-        public List<OperationOutputColumnElement> PassThroughTableColumns(OperationElement targetOperation, Argument input)
+        public List<OperationOutputColumnElement> PassThroughTableColumns(OperationElement targetOperation, Argument input, List<string> excludedColumns = null)
         {
+            if (excludedColumns == null)
+            {
+                excludedColumns = new List<string>();
+            }
+
             if (input.ArgumentType != ArgumentType.Table)
             {
                 throw new InvalidOperationException("Only table argument columns can be passed through");
@@ -574,6 +706,11 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             List<OperationOutputColumnElement> res = new List<OperationOutputColumnElement>();
             foreach (var column in input.Columns)
             {
+                if (excludedColumns.Contains(column.Name))
+                {
+                    continue;
+                }
+
                 if (column.RefereneElement is OperationOutputColumnElement)
                 {
                     res.Add(PassThroughOutputColumn(targetOperation, (OperationOutputColumnElement)(column.RefereneElement)));
@@ -582,12 +719,21 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             return res;
         }
 
-        public List<OperationOutputColumnElement> PassThroughTableColumns(OperationElement targetOperation, OperationElement input)
+        public List<OperationOutputColumnElement> PassThroughTableColumns(OperationElement targetOperation, OperationElement input, List<string> excludedColumns = null)
         {
+            if (excludedColumns == null)
+            {
+                excludedColumns = new List<string>();
+            }
             List<OperationOutputColumnElement> res = new List<OperationOutputColumnElement>();
             foreach (var column in input.OutputColumns)
             {
-                    res.Add(PassThroughOutputColumn(targetOperation, column));
+                if (excludedColumns.Contains(column.Caption))
+                {
+                    continue;
+                }
+
+                res.Add(PassThroughOutputColumn(targetOperation, column));
             }
             return res;
         }

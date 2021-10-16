@@ -154,5 +154,32 @@ in
             Dictionary<string, OperationOutputColumnElement> resultColumns;
             var model = ParsePowerQuery(script, out resultColumns);
         }
+
+        [TestMethod]
+        public void Parse_TableColumnOperations()
+        {
+            var script = @"
+let
+    Source = Sql.Database(""localhost"", ""BE""),
+    dbo_GeneralService_T = Source{[Schema= ""dbo"",Item = ""GeneralService_T""]}
+            [Data],
+    #""Split Column by Delimiter"" = Table.SplitColumn(Table.TransformColumnTypes(dbo_GeneralService_T, {{""Source_System_Reference_Datetime"", type text}}, ""en-US""), ""Source_System_Reference_Datetime"", Splitter.SplitTextByDelimiter("","", QuoteStyle.Csv), {""Source_System_Reference_Datetime.1"", ""Source_System_Reference_Datetime.2"", ""Source_System_Reference_Datetime.3""}),
+    #""Changed Type"" = Table.TransformColumnTypes(#""Split Column by Delimiter"",{{""Source_System_Reference_Datetime.1"", type text}, {""Source_System_Reference_Datetime.2"", type text}}),
+    #""Trimmed Text"" = Table.TransformColumns(#""Changed Type"",{{""Source_System_Code"", Text.Trim, type text}}),
+    #""Duplicated Column"" = Table.DuplicateColumn(#""Trimmed Text"", ""Main_Service_ID"", ""Main_Service_ID - Copy""),
+    #""Removed Columns"" = Table.RemoveColumns(#""Duplicated Column"",{""Source_System_Extract_Datetime""}),
+    #""Replaced Value"" = Table.ReplaceValue(#""Removed Columns"",10,20,Replacer.ReplaceValue,{""Update_Batch_ID""}),
+    #""Removed Duplicates"" = Table.Distinct(#""Replaced Value"", {""Main_Service_ID"", ""Service_Description""}),
+    #""Removed Errors"" = Table.RemoveRowsWithErrors(#""Removed Duplicates"", {""Service_Description""}),
+    #""Removed Other Columns"" = Table.SelectColumns(#""Removed Errors"",{""Source_System_Reference_Datetime.2"", ""Source_System_Code"", ""SOR_GeneralService_ID"", ""Main_Service_ID"", ""Service_Description"", ""Service_Type"", ""Variable_Type"", ""Quantity_Unit"", ""Extra_Service_Configured"", ""Effective_Datetime"", ""End_Datetime"", ""Current_Row"", ""Insert_Batch_ID"", ""Update_Batch_ID"", ""Main_Service_ID - Copy"", ""Source_System_Reference_Datetime.1"", ""Source_System_Reference_Datetime.2""}),
+    #""Filtered Rows"" = Table.SelectRows(#""Removed Other Columns"", each Date.IsInPreviousYear([Effective_Datetime])),
+    #""Renamed Columns"" = Table.RenameColumns(#""Filtered Rows"",{{""Service_Type"", ""Service_Type_Rename""}})
+in
+    #""Renamed Columns""
+";
+
+            Dictionary<string, OperationOutputColumnElement> resultColumns;
+            var model = ParsePowerQuery(script, out resultColumns);
+        }
     }
 }
