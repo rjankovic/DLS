@@ -445,10 +445,10 @@ namespace CD.DLS.Extract.Mssql.Ssas
                 }
             }
 
-              makeJsons();
+              MakeJsons();
         }
 
-            private void makeJsons()
+            private void MakeJsons()
         {
             int i = 0;
             foreach (var item in databases)
@@ -456,7 +456,7 @@ namespace CD.DLS.Extract.Mssql.Ssas
                 var structuresSerialized = item.Serialize();
                 var structureFileName = FileTools.NormalizeFileName(item.Name) + "_" + (i++).ToString() + ".json";
                 File.WriteAllText(Path.Combine(_outputDirPath, structureFileName), structuresSerialized);
-                Debug.WriteLine("Extract idem ID " + _tabularProject.SsaslDbProjectComponentId);
+                Debug.WriteLine("Extract item ID " + _tabularProject.SsaslDbProjectComponentId);
                 _manifest.Items.Add(new ManifestItem()
                 {
                     ComponentId = _tabularProject.SsaslDbProjectComponentId,

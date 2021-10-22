@@ -26,7 +26,7 @@ namespace CD.DLS.Extract.Mssql.Ssas
 
         }
 
-        public Boolean isTabular(SsasDbProjectComponent currentProject)
+        public Boolean IsTabular(SsasDbProjectComponent currentProject)
         {
             var serverName = currentProject.ServerName;
             Microsoft.AnalysisServices.Server _server = new Microsoft.AnalysisServices.Server();
@@ -54,15 +54,15 @@ namespace CD.DLS.Extract.Mssql.Ssas
             ConfigManager.Log.Important(string.Format("Extracting SSAS DB {0} from {1}", _ssasComponent.DbName, _ssasComponent.ServerName));
 
           
-            if (isTabular(_ssasComponent))
+            if (IsTabular(_ssasComponent))
             {
-                Debug.WriteLine("Detekovany Tabular");
+                ConfigManager.Log.Important("Tabular detected");
                 var tabularExtractor = new TabularExtractor(_ssasComponent, _outputDirPath, _relativePathBase, _manifest);
                 tabularExtractor.Extract();
             }
             else
             {
-                Debug.WriteLine("Detekovany OLAP");
+                ConfigManager.Log.Important("OLAP detected");
                 var multidimensionalExtractor = new MultidimensionalExtractor(_ssasComponent, _outputDirPath, _relativePathBase, _manifest);
                  multidimensionalExtractor.Extract();
             }

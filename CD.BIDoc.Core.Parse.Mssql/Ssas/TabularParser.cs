@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using CD.DLS.Parse.Mssql.Ssas;
 using CD.DLS.Model.Mssql.Ssas;
+using CD.DLS.Core.Parse.Mssql.PowerQuery;
 
 namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
@@ -24,7 +25,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
         private StageManager _stageManager;
         private AvailableDatabaseModelIndex _availableDatabaseModelIndex;
         private ISqlScriptModelParser _sqlScriptExtractor;
-        
+
         public TabularParser(AvailableDatabaseModelIndex availableDatabaseModelIndex, ProjectConfig projectConfig, Guid extractId, StageManager stageManager)
         {
             _availableDatabaseModelIndex = availableDatabaseModelIndex;
@@ -84,7 +85,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                 SsasTabularAnnotationElement pAnnotation = new SsasTabularAnnotationElement(annotationRefPath, annotation.Name, annotation.Value);
                 tDatabaseElement.AddChild(pAnnotation);
             }
-            
+
             foreach (var annotation in model.Annotations)
             {
                 var annotationRefPath = _urnBuilder.GetUrnAnnotation(annotation.Name, dbRefPath);
@@ -100,7 +101,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
             foreach (var dataSource in model.TabularDataSources)
             {
                 ConfigManager.Log.Important("Tabular parser : Parsing data source  " + dataSource.DSname);
-                
+
                 var dataSourceRefPath = _urnBuilder.GetUrnDataSource(dataSource.DSname, dbRefPath);
                 SsasTabularDataSourceElement dataSourceElement = new SsasTabularDataSourceElement(dataSourceRefPath, dataSource.DSname, dataSource.Description, tDatabaseElement);
 
@@ -115,14 +116,14 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                 tDatabaseElement.AddChild(dataSourceElement);
                 availableDatasources.Add(dataSourceElement.Caption, dataSourceElement);
             }
-            
+
             foreach (var table in model.TabularTables)
             {
                 //ConfigManager.Log.Important("Tabular parser : Parsing table  " + table.Name);
-                
+
                 var tableRefPath = _urnBuilder.GetUrnTable(table.Name, dbRefPath);
                 SsasTabularTableElement tableElement = new SsasTabularTableElement(tableRefPath, table.Name, "Tabular table", tDatabaseElement);
-                
+
                 //Debug.WriteLine("Created table " + pTable.Caption);
                 foreach (var annotation in table.Annotations)
                 {
@@ -184,7 +185,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                             }
                         }
                     }
-                    
+
                     //ConfigManager.Log.Important("Tabular parser, Tabular Probe 9");
                     columnElement.AddChild(pHierarchy);
                     tableElement.AddChild(columnElement);
@@ -207,16 +208,9 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
                 foreach (var partition in table.Partitions)
                 {
-                    if (partition.PartitionSourceType != TabularPartitionSourceTypeEnum.QueryPartitionSource)
-                    {
-                        ConfigManager.Log.Important(string.Format("Skipping partition {0} of type {1} int {2}", partition.Name, partition.PartitionSourceType, table.Name));
-                        // for now
-                        continue;
-                    }
-
                     var partitionRefPath = _urnBuilder.GetUrnPartition(partition.Name, tableRefPath);
                     SsasTabularPartitionElement partitionElement = new SsasTabularPartitionElement(partitionRefPath, partition.Name, partition.DataSourceName, tableElement);
-                    
+
                     foreach (var annotation in partition.Annotations)
                     {
                         var annotationRefPath = _urnBuilder.GetUrnAnnotation(annotation.Name, partitionRefPath);
@@ -226,37 +220,73 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
                     tableElement.AddChild(partitionElement);
 
-                    // datasource not found
-                    if (!availableDatasources.ContainsKey(partition.DataSourceName))
+
+                    Dictionary<string, MssqlModelElement> outputColumnsFromNames = null;
+
+                    if (partition.PartitionSourceType == TabularPartitionSourceTypeEnum.QueryPartitionSource)
                     {
-                        throw new Exception(string.Format("Could not find datasource [{0}] for partition [{1}] in [{2}]", partition.DataSourceName, partition.Name, table.Name));
+                        // datasource not found
+                        if (!availableDatasources.ContainsKey(partition.DataSourceName))
+                        {
+                            throw new Exception(string.Format("Could not find datasource [{0}] for partition [{1}] in [{2}]", partition.DataSourceName, partition.Name, table.Name));
+                        }
+
+                        var dataSource = availableDatasources[partition.DataSourceName];
+                        var sqlServerName = dataSource.ServerName;
+                        var sqlDbName = dataSource.DbName;
+
+                        Identifier dbIdentifier = null;
+
+                        bool relDbAvailable = sqlDbName != null;
+                        if (relDbAvailable)
+                        {
+                            dbIdentifier = new Microsoft.SqlServer.TransactSql.ScriptDom.Identifier() { Value = sqlDbName };
+                        }
+
+                        var query = partition.Query; // partitionQuerySrc.QueryDefinition;
+
+                        //ConfigManager.Log.Info(string.Format("Parsing {0} over [{1}].[{2}]", query, sqlServerName, sqlDbName));
+
+                        var dbIndex = _availableDatabaseModelIndex.GetDatabaseIndex(sqlServerName);
+                        _sqlScriptExtractor.ContextServerName = sqlServerName;
+                        
+                        ConfigManager.Log.Info(string.Format("Parsing SQL partition {0} to table {1}", partitionElement.RefPath.Path, table.Name));
+                        var sqlElement = _sqlScriptExtractor.ExtractScriptModel(query, partitionElement, dbIndex, dbIdentifier, out outputColumnsFromNames);
+                        partitionElement.AddChild(sqlElement);
+
+                        //ConfigManager.Log.Info(string.Format("Parsed {0} over [{1}].[{2}], output columns {3}", query, sqlServerName, sqlDbName, string.Join(", ", outputColumnsFromNames.Select(x => "[" + x.Key + "]"))));
+                    }
+                    else if (partition.PartitionSourceType == TabularPartitionSourceTypeEnum.MLanguagePartitionSource)
+                    {
+                        PowerQueryExtractor extractor = new PowerQueryExtractor();
+                        foreach (var ds in availableDatasources.Values)
+                        {
+                            extractor.AddLocalDataSource(new PowerQuery.DataSource()
+                            {
+                                DataSourceName = ds.Caption,
+                                ServerName = ds.ServerName,
+                                DbName = ds.DbName
+                            });
+                        }
+                        var mScript = partition.Expression;
+                        //Model.SolutionModelElement fakeParent = new Model.SolutionModelElement(new RefPath(), "Root");
+                        Dictionary<string, DLS.Model.Mssql.PowerQuery.OperationOutputColumnElement> powerQueryColumnsFromNames;
+                        
+                        ConfigManager.Log.Info(string.Format("Parsing M partition {0} to table {1}", partitionElement.RefPath.Path, table.Name));
+                        var scriptModel = extractor.ExtractPowerQuery(mScript, _availableDatabaseModelIndex, partitionElement, out powerQueryColumnsFromNames);
+                        outputColumnsFromNames = powerQueryColumnsFromNames.ToDictionary(x => x.Key, x => (MssqlModelElement)(x.Value));
+                    }
+                    else
+                    {
+                        ConfigManager.Log.Important(string.Format("Skipping partition {0} of type {1} in {2}", partition.Name, partition.PartitionSourceType, table.Name));
+                        // for now
+                        continue;
                     }
 
-                    var dataSource = availableDatasources[partition.DataSourceName];
-                    var sqlServerName = dataSource.ServerName;
-                    var sqlDbName = dataSource.DbName;
-
-                    Identifier dbIdentifier = null;
-
-                    bool relDbAvailable = sqlDbName != null;
-                    if (relDbAvailable)
+                    if (outputColumnsFromNames == null)
                     {
-                        dbIdentifier = new Microsoft.SqlServer.TransactSql.ScriptDom.Identifier() { Value = sqlDbName };
+                        continue;
                     }
-
-                    
-                    var query = partition.Query; // partitionQuerySrc.QueryDefinition;
-
-                    //ConfigManager.Log.Info(string.Format("Parsing {0} over [{1}].[{2}]", query, sqlServerName, sqlDbName));
-
-                    Dictionary<string, MssqlModelElement> outputColumnsFromNames;
-                    var dbIndex = _availableDatabaseModelIndex.GetDatabaseIndex(sqlServerName);
-                    _sqlScriptExtractor.ContextServerName = sqlServerName;
-                    //_sqlContext.ContextServerName = serverName;
-                    var sqlElement = _sqlScriptExtractor.ExtractScriptModel(query, partitionElement, dbIndex, dbIdentifier, out outputColumnsFromNames);
-                    partitionElement.AddChild(sqlElement);
-
-                    //ConfigManager.Log.Info(string.Format("Parsed {0} over [{1}].[{2}], output columns {3}", query, sqlServerName, sqlDbName, string.Join(", ", outputColumnsFromNames.Select(x => "[" + x.Key + "]"))));
 
                     foreach (var outputColumnName in outputColumnsFromNames.Keys)
                     {
@@ -264,7 +294,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                         var partitionColumnElement = new SsasTabularPartitionColumnElement(partitionColumnRefPath, outputColumnName, null, partitionElement);
                         partitionElement.AddChild(partitionColumnElement);
                         partitionColumnElement.SourceElement = outputColumnsFromNames[outputColumnName];
-                        
+
                         if (tableSourceColumnsToColumns.ContainsKey(outputColumnName))
                         {
                             partitionColumnElement.TargetTableColumn = tableSourceColumnsToColumns[outputColumnName];
@@ -291,7 +321,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
                     tableElement.AddChild(pHierarchy);
                 }
-                
+
                 //ConfigManager.Log.Important("Tabular parser, Tabular Probe 12");
                 // measures povodne
                 foreach (var measure in table.Measures)
@@ -310,7 +340,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
                     }
 
-                    
+
                 }
 
                 tDatabaseElement.AddChild(tableElement);
@@ -343,7 +373,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
             }
 
             ConfigManager.Log.Important("Tabular parser, DB parsed!");
-            
+
             return tDatabaseElement;
         }
 

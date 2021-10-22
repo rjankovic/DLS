@@ -106,7 +106,7 @@ namespace CD.DLS.Tests.ParserTests
             {
                 dataSources = new List<DataSource>();
             }
-            PowerQueryExtractor extractor = new PowerQueryExtractor(_projectConfig, _graphManager);
+            PowerQueryExtractor extractor = new PowerQueryExtractor();
             foreach (var ds in dataSources)
             {
                 extractor.AddLocalDataSource(ds);

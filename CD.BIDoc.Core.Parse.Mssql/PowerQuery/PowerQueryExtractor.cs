@@ -28,7 +28,7 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
         private AvailableDatabaseModelIndex _sqlDbIndex;
         private List<DataSource> _localDataSources = new List<DataSource>();
 
-        public PowerQueryExtractor(ProjectConfig projectConfig, GraphManager graphManager)
+        public PowerQueryExtractor()
         {
             _parser = new Parser(new MGrammar());
         }
@@ -49,9 +49,10 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                 var fakeDb = new DatabaseElement(new RefPath(), ds.DbName, fakeServer);
                 fakeServer.AddChild(fakeDb);
                 fakeDb.DbName = ds.DbName;
-                SqlDatabaseOperationElement fakeOperation = new SqlDatabaseOperationElement(new RefPath(), ds.DataSourceName, string.Empty, null);
-                fakeOperation.DatabaseReference = fakeDb;
-                _localVariables.Add(ds.DataSourceName, fakeOperation);
+                var sourceRefPath = parent.RefPath.NamedChild("DataSource", ds.DataSourceName);
+                SqlDatabaseOperationElement dsOperation = new SqlDatabaseOperationElement(sourceRefPath, ds.DataSourceName, string.Empty, parent);
+                dsOperation.DatabaseReference = fakeDb;
+                _localVariables.Add(ds.DataSourceName, dsOperation);
             }
 
             resultColumns = new Dictionary<string, OperationOutputColumnElement>(StringComparer.OrdinalIgnoreCase);
@@ -306,7 +307,7 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                     {
                         var variable = _localVariables[id];
                         VariableReferenceElement variableReferenceElement = new VariableReferenceElement(fragmentUrn, definition, definition, parent);
-                        variableReferenceElement.Reference = variable;
+                        
                         if (variable is OperationElement)
                         {
                             var inputOperation = variable as OperationElement;
