@@ -45,8 +45,8 @@ TopologicalOrder
 )
 SELECT
 e.Caption,
-REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(e.Type,
-N'CD.DLS.Model.Mssql', N''), N'.Db.', N''), N'.Ssis.', N''), N'.Ssas.', N''), N'.Ssrs.', N''), N'.Agent.', N''), N'.Tabular.', N''), N'.Pbi.', N'') NodeType,
+REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(e.Type,
+N'CD.DLS.Model.Mssql', N''), N'.Db.', N''), N'.Ssis.', N''), N'.Ssas.', N''), N'.Ssrs.', N''), N'.Agent.', N''), N'.Tabular.', N''), N'.Pbi.', N''), N'.PowerQuery.', N'PowerQuery.')  NodeType,
 NULL,
 @graphKind,
 e.ProjectConfigId,

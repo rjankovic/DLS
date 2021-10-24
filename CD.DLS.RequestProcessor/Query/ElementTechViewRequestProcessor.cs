@@ -155,6 +155,41 @@ namespace CD.DLS.RequestProcessor.Query
 
                     }
                 }
+                else if (visualConvertedModel is Model.Mssql.PowerQuery.MFragmentElement)
+                {
+                    var refPowerQueryFragment = (Model.Mssql.PowerQuery.MFragmentElement)convertedModel;
+                    var visPowerQueryFragment = (Model.Mssql.PowerQuery.MFragmentElement)visualConvertedModel;
+
+                    var deepestFragment = visPowerQueryFragment;
+                    while (true)
+                    {
+                        var fragmentChild = deepestFragment.Children.FirstOrDefault(x => refPowerQueryFragment.RefPath.Path.StartsWith(x.RefPath.Path)
+                            && x is Model.Mssql.PowerQuery.MFragmentElement
+                            && ((Model.Mssql.PowerQuery.MFragmentElement)x).Length > 0);
+                        if (fragmentChild == null)
+                        {
+                            break;
+                        }
+                        deepestFragment = (Model.Mssql.PowerQuery.MFragmentElement)fragmentChild;
+                    }
+
+                    visualNodeDescription.TextDefinitionOffset = 0;
+                    visualNodeDescription.TextDefinitionLength = visPowerQueryFragment.Length;
+                    requestResult.VisualAncestor = visualNodeDescription;
+
+                    var visualPartNode = new VisualPartNodeDescription(nodeDescription);
+                    if (deepestFragment != visPowerQueryFragment)
+                    {
+                        visualPartNode.DefinitionOffset = deepestFragment.OffsetFrom - visPowerQueryFragment.OffsetFrom;
+                        if (deepestFragment.Length < visPowerQueryFragment.Length)
+                        {
+                            visualPartNode.DefinitionLength = deepestFragment.Length/* - visMdxFragment.OffsetFrom*/;
+                        }
+                    }
+                    visualPartNode.VisualNodeId = visualAncestorExtended.Id;
+                    requestResult.NodeDescription = visualPartNode;
+
+                }
                 else if (visualConvertedModel is Model.Mssql.Ssrs.ReportElement)
                 {
                     //var refSsrsFragment = (Model.Mssql.Ssrs.SsrsExpressionFragmentElement)convertedModel;

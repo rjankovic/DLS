@@ -81,6 +81,21 @@ BEGIN
 	FROM ancestors
 	WHERE ancestors.NodeType = N'DaxScriptElement'
 END
+ELSE IF @nodeType LIKE 'PowerQuery.%'
+BEGIN
+	;WITH ancestors AS
+	(
+	SELECT @nodeId NodeId, @parentId ParentId, @refPath RefPath, @nodeType NodeType
+	UNION ALL
+	SELECT n.BasicGraphNodeId NodeId, n.ParentId, e.RefPath, n.NodeType
+	FROM BIDoc.BasicGraphNodes n
+	INNER JOIN ancestors a ON n.BasicGraphNodeId = a.ParentId
+	INNER JOIN BIDoc.ModelElements e ON e.ModelElementId = n.SourceElementId
+	)
+	SELECT NodeId 
+	FROM ancestors
+	WHERE ancestors.NodeType = N'PowerQuery.PowerQueryElement'
+END
 BEGIN
 	SELECT NULL
 END

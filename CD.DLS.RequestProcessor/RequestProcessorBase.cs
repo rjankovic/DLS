@@ -89,9 +89,14 @@ namespace CD.DLS.RequestProcessor
             {
                 var convertedElement = convertedElements[i];
                 //convertedElement is 
-                if (convertedElement is Model.Mssql.Ssis.PackageElement || convertedElement is Model.Mssql.Ssrs.ReportElement)
+                if (convertedElement is Model.Mssql.Ssis.PackageElement || convertedElement is Model.Mssql.Ssrs.ReportElement || convertedElement is Model.Mssql.PowerQuery.PowerQueryElement)
                 {
-                    Serialization.BIDocModelStored deepModelStored = new Serialization.BIDocModelStored(projectConfigId, convertedElement.Id, BIDocModelStored.LoadMethodEnum.SecondLevelAncestor, GraphManager);
+                    var method = BIDocModelStored.LoadMethodEnum.SecondLevelAncestor;
+                    if(convertedElement is Model.Mssql.PowerQuery.PowerQueryElement)
+                    {
+                        method = BIDocModelStored.LoadMethodEnum.Standard;
+                    }
+                    Serialization.BIDocModelStored deepModelStored = new Serialization.BIDocModelStored(projectConfigId, convertedElement.Id, method, GraphManager);
                     Log.Important("Deserializing details of " + convertedElement.Caption);
                     Serialization.FromBIDocModelConverter deepConverterFrom = new Serialization.FromBIDocModelConverter(deepModelStored);
                     MssqlModelElement deepConverted = deepConverterFrom.Convert(converterTo, convertedElement.Id);
