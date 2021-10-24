@@ -322,10 +322,39 @@ VALUES
 ('CD.DLS.Model.Mssql.Ssas.DaxSumFunctionElement', 1),
 ('CD.DLS.Model.Mssql.Ssas.DaxBlankFunctionElement', 1),
 ('CD.DLS.Model.Mssql.Ssas.DaxFormatFunctionElement', 1),
-('CD.DLS.Model.Mssql.Ssas.DaxRightFunctionElement', 1)
+('CD.DLS.Model.Mssql.Ssas.DaxRightFunctionElement', 1),
 
 -- DAX functions end
 
+-- Power Query general start
+
+('CD.DLS.Model.Mssql.PowerQuery.MFragmentElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.PowerQueryElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.DataFlowLinkElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.LiteralElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.IdentifierElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.RecordItemIdentifierElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.VariableReferenceElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.FormulaStepElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.OperationArgumentElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.ListElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.ListIndexElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.ListAccessElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.RecordElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.RecordItemElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.OperationElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.SqlDatabaseOperationElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.ScalarOperationElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.OperationOutputColumnElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.TableRowOperationElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.TableSplitColumnOperationElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.TableDuplicateColumnOperationElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.TableRemoveColumnsOperationElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.TableSelectColumnsOperationElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.TableRenameColumnsOperationElement', 1),
+('CD.DLS.Model.Mssql.PowerQuery.GeneralOperationElement', 1)
+
+-- Power Query general end
 
 
 

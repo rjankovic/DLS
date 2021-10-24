@@ -333,7 +333,37 @@ VALUES
 ('CD.DLS.Model.Mssql.Ssas.DaxSumFunctionElement', N'T'),
 ('CD.DLS.Model.Mssql.Ssas.DaxBlankFunctionElement', N'T'),
 ('CD.DLS.Model.Mssql.Ssas.DaxFormatFunctionElement', N'T'),
-('CD.DLS.Model.Mssql.Ssas.DaxRightFunctionElement', N'T')
+('CD.DLS.Model.Mssql.Ssas.DaxRightFunctionElement', N'T'),
 
 -- DAX functions end
 
+
+-- Power Query general start
+
+('CD.DLS.Model.Mssql.PowerQuery.MFragmentElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.PowerQueryElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.DataFlowLinkElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.LiteralElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.IdentifierElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.RecordItemIdentifierElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.VariableReferenceElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.FormulaStepElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.OperationArgumentElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.ListElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.ListIndexElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.ListAccessElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.RecordElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.RecordItemElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.OperationElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.SqlDatabaseOperationElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.ScalarOperationElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.OperationOutputColumnElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.TableRowOperationElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.TableSplitColumnOperationElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.TableDuplicateColumnOperationElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.TableRemoveColumnsOperationElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.TableSelectColumnsOperationElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.TableRenameColumnsOperationElement', N'T'),
+('CD.DLS.Model.Mssql.PowerQuery.GeneralOperationElement', N'T')
+
+-- Power Query general end

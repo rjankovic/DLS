@@ -177,7 +177,7 @@ INSERT INTO [BIDoc].[HighLevelTypeDescendants]
 VALUES
 (N'CD.DLS.Model.Mssql.Tabular.SsasTabularTableElement', N'CD.DLS.Model.Mssql.Tabular.SsasTabularTableColumnElement', N'SsasTabularTableColumnElement'),
 (N'CD.DLS.Model.Mssql.Tabular.SsasTabularTableElement', N'CD.DLS.Model.Mssql.Tabular.SsasTabularTableElement', N'SsasTabularTableElement'),
-(N'CD.DLS.Model.Mssql.Tabular.SsasTabularTableElement', N'CD.DLS.Model.Mssql.Tabular.SsasTabularTableElement', N'SsasTabularMeasureElement')
+(N'CD.DLS.Model.Mssql.Tabular.SsasTabularTableElement', N'CD.DLS.Model.Mssql.Tabular.SsasTabularMeasureElement', N'SsasTabularMeasureElement')
 
 INSERT INTO [BIDoc].[HighLevelTypeDescendants]
 ([ParentType], [DescendantType], [NodeType])

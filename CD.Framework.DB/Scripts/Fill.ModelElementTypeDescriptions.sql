@@ -321,6 +321,36 @@ VALUES
 ('CD.DLS.Model.Mssql.Ssas.DaxSumFunctionElement', N'DaxSumFunction'),
 ('CD.DLS.Model.Mssql.Ssas.DaxBlankFunctionElement', N'DaxBlankFunction'),
 ('CD.DLS.Model.Mssql.Ssas.DaxFormatFunctionElement', N'DaxFormatFunction'),
-('CD.DLS.Model.Mssql.Ssas.DaxRightFunctionElement', N'DaxRightFunction')
+('CD.DLS.Model.Mssql.Ssas.DaxRightFunctionElement', N'DaxRightFunction'),
 
 -- DAX functions end
+
+-- Power Query general start
+
+('CD.DLS.Model.Mssql.PowerQuery.MFragmentElement', N'PowerQuery Fragment'),
+('CD.DLS.Model.Mssql.PowerQuery.PowerQueryElement', N'PowerQuery Operation'),
+('CD.DLS.Model.Mssql.PowerQuery.DataFlowLinkElement', N'PowerQuery Data Flow'),
+('CD.DLS.Model.Mssql.PowerQuery.LiteralElement', N'PowerQuery Literal'),
+('CD.DLS.Model.Mssql.PowerQuery.IdentifierElement', N'PowerQuery Identifier'),
+('CD.DLS.Model.Mssql.PowerQuery.RecordItemIdentifierElement', N'PowerQuery Record Item'),
+('CD.DLS.Model.Mssql.PowerQuery.VariableReferenceElement', N'PowerQuery Variable Reference'),
+('CD.DLS.Model.Mssql.PowerQuery.FormulaStepElement', N'PowerQuery Formula Step'),
+('CD.DLS.Model.Mssql.PowerQuery.OperationArgumentElement', N'PowerQuery Operation Argument'),
+('CD.DLS.Model.Mssql.PowerQuery.ListElement', N'PowerQuery Literal'),
+('CD.DLS.Model.Mssql.PowerQuery.ListIndexElement', N'PowerQuery List Index'),
+('CD.DLS.Model.Mssql.PowerQuery.ListAccessElement', N'PowerQuery List Access'),
+('CD.DLS.Model.Mssql.PowerQuery.RecordElement', N'PowerQuery  Record'),
+('CD.DLS.Model.Mssql.PowerQuery.RecordItemElement', N'PowerQuery Record Item'),
+('CD.DLS.Model.Mssql.PowerQuery.OperationElement', N'PowerQuery Operation'),
+('CD.DLS.Model.Mssql.PowerQuery.SqlDatabaseOperationElement', N'PowerQuery SQL DB Access'),
+('CD.DLS.Model.Mssql.PowerQuery.ScalarOperationElement', N'PowerQuery Scalar Operation'),
+('CD.DLS.Model.Mssql.PowerQuery.OperationOutputColumnElement', N'PowerQuery Operation Output Column'),
+('CD.DLS.Model.Mssql.PowerQuery.TableRowOperationElement', N'PowerQuery Row Operation'),
+('CD.DLS.Model.Mssql.PowerQuery.TableSplitColumnOperationElement', N'PowerQuery Split Column'),
+('CD.DLS.Model.Mssql.PowerQuery.TableDuplicateColumnOperationElement', N'PowerQuery Dulicate Column'),
+('CD.DLS.Model.Mssql.PowerQuery.TableRemoveColumnsOperationElement', N'PowerQuery Remove Column'),
+('CD.DLS.Model.Mssql.PowerQuery.TableSelectColumnsOperationElement', N'PowerQuery Select Columns'),
+('CD.DLS.Model.Mssql.PowerQuery.TableRenameColumnsOperationElement', N'PowerQuery Rename Columns'),
+('CD.DLS.Model.Mssql.PowerQuery.GeneralOperationElement', N'PowerQuery General Operation')
+
+-- Power Query general end

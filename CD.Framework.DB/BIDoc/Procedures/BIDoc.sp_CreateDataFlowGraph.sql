@@ -432,6 +432,20 @@ INNER JOIN BIDoc.ModelElements re ON re.ModelElementId = l.ElementToId
 AND e.ProjectConfigId = @projectConfigId
 AND e.Type = N'CD.DLS.Model.Mssql.Tabular.SsasTabularPartitionColumnElement'
 
+---------------------------------------------------
+-- 
+
+-- TabularMeasureReferenceRule
+INSERT INTO #dataflowLinks
+(RuleName, ElementFromId, ElementToId)
+
+SELECT DISTINCT N'PowerQueryReferenceRule', re.ModelElementId, e.ModelElementId FROM BIDoc.ModelElements e
+INNER JOIN BIDoc.ModelLinks l ON e.ModelElementId = l.ElementFromId AND l.[Type] = N'Reference'
+INNER JOIN BIDoc.ModelElements re ON re.ModelElementId = l.ElementToId
+AND e.ProjectConfigId = @projectConfigId
+AND e.Type = N'CD.DLS.Model.Mssql.Tabular.SsasTabularMeasureElement'
+
+
 -------------------------
 -- DaxTableReferenceDataFlowRule
 
@@ -507,7 +521,37 @@ INNER JOIN BIDoc.ModelElements re ON re.ModelElementId = l.ElementToId
 AND e.ProjectConfigId = @projectConfigId
 AND e.Type = N'CD.DLS.Model.Business.Excel.PivotTableValuesFilterElement'
 
+
+--------------------------
+-- Power Query Rules
+
+-- PowerQueryDFLinkDataFlowRule
+INSERT INTO #dataflowLinks
+(RuleName, ElementFromId, ElementToId)
+
+SELECT DISTINCT N'PowerQueryDFLinkDataFlowRule', sre.ModelElementId, tre.ModelElementId FROM BIDoc.ModelElements e
+INNER JOIN BIDoc.ModelLinks sl ON e.ModelElementId = sl.ElementFromId AND sl.[Type] = N'Source'
+INNER JOIN BIDoc.ModelElements sre ON sre.ModelElementId = sl.ElementToId
+INNER JOIN BIDoc.ModelLinks tl ON e.ModelElementId = tl.ElementFromId AND tl.[Type] = N'Target'
+INNER JOIN BIDoc.ModelElements tre ON tre.ModelElementId = tl.ElementToId
+AND e.ProjectConfigId = @projectConfigId
+AND e.Type = N'CD.DLS.Model.Mssql.PowerQuery.DataFlowLinkElement'
+
+
+-- PowerQueryReferenceRule
+INSERT INTO #dataflowLinks
+(RuleName, ElementFromId, ElementToId)
+
+SELECT DISTINCT N'PowerQueryReferenceRule', re.ModelElementId, e.ModelElementId FROM BIDoc.ModelElements e
+INNER JOIN BIDoc.ModelLinks l ON e.ModelElementId = l.ElementFromId AND l.[Type] = N'Reference'
+INNER JOIN BIDoc.ModelElements re ON re.ModelElementId = l.ElementToId
+AND e.ProjectConfigId = @projectConfigId
+AND e.Type LIKE N'CD.DLS.Model.Mssql.PowerQuery.%'
+
+
+
 --
+/*
 INSERT INTO #dataflowLinks
 (RuleName, ElementFromId, ElementToId)
 
@@ -522,6 +566,9 @@ OR e.Type = N'CD.DLS.Model.Mssql.Pbi.VisualElement'
 OR e.Type = N'CD.DLS.Model.Mssql.Pbi.ConnectionElement'
 OR e.Type = N'CD.DLS.Model.Mssql.Pbi.PbiTableElement'
 )
+*/
+
+----
 
 
 --- add DF links to the graph
@@ -541,3 +588,5 @@ INNER JOIN BIDoc.BasicGraphNodes nt ON nt.SourceElementId = l.ElementToId
 WHERE nf.GraphKind = @graphKind AND nt.GraphKind = @graphKind
 
 DROP TABLE #dataflowLinks
+
+

@@ -470,6 +470,14 @@ new TableSourceColumnList()
                     res.Add(kv.Key, kv.Value);
                 }
             }
+            foreach (var db in _availableDatabasesByServer.Values.SelectMany(dct => dct.Values))
+            {
+                if (res.ContainsKey(db))
+                {
+                    continue;
+                }
+                res.Add(db, db.Id);
+            }
             return res;
         }
 

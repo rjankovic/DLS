@@ -43,18 +43,7 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             _sqlDbIndex = sqlDbIndex;
             _localVariables = new Dictionary<string, MFragmentElement>();
 
-            foreach (var ds in _localDataSources)
-            {
-                var fakeServer = new ServerElement(new RefPath(), ds.ServerName);
-                var fakeDb = new DatabaseElement(new RefPath(), ds.DbName, fakeServer);
-                fakeServer.AddChild(fakeDb);
-                fakeDb.DbName = ds.DbName;
-                var sourceRefPath = parent.RefPath.NamedChild("DataSource", ds.DataSourceName);
-                SqlDatabaseOperationElement dsOperation = new SqlDatabaseOperationElement(sourceRefPath, ds.DataSourceName, string.Empty, parent);
-                dsOperation.DatabaseReference = fakeDb;
-                _localVariables.Add(ds.DataSourceName, dsOperation);
-            }
-
+            
             resultColumns = new Dictionary<string, OperationOutputColumnElement>(StringComparer.OrdinalIgnoreCase);
             //var originalResultColumns = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
 
@@ -62,6 +51,30 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             var refPath = parent.RefPath.NamedChild("PowerQuery", "No_" + ordinal);
             var queryElement = new PowerQueryElement(refPath, refPath.RefId, script, parent);
             parent.AddChild(queryElement);
+
+            foreach (var ds in _localDataSources)
+            {
+                //var fakeServer = new ServerElement(new RefPath(), ds.ServerName);
+                //var fakeDb = new DatabaseElement(new RefPath(), ds.DbName, fakeServer);
+                //fakeServer.AddChild(fakeDb);
+                //fakeDb.DbName = ds.DbName;
+                var serverNameNormalized = ConnectionStringTools.NormalizeServerName(ds.ServerName);
+                var dbName = TrimLiteral(ds.DbName);
+                var dbElement = _sqlDbIndex.GetDatabaseElement(serverNameNormalized, dbName);
+
+                if (dbElement == null)
+                {
+                    continue;
+                }
+
+                var sourceRefPath = parent.RefPath.NamedChild("DataSource", ds.DataSourceName);
+                SqlDatabaseOperationElement dsOperation = new SqlDatabaseOperationElement(sourceRefPath, ds.DataSourceName, string.Empty, queryElement);
+                queryElement.AddChild(dsOperation);
+
+                
+                dsOperation.DatabaseReference = dbElement;
+                _localVariables.Add(ds.DataSourceName, dsOperation);
+            }
 
             var parsed = _parser.Parse(script);
             if (parsed.Root == null)
@@ -307,7 +320,8 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                     {
                         var variable = _localVariables[id];
                         VariableReferenceElement variableReferenceElement = new VariableReferenceElement(fragmentUrn, definition, definition, parent);
-                        
+                        variableReferenceElement.Reference = variable;
+
                         if (variable is OperationElement)
                         {
                             var inputOperation = variable as OperationElement;

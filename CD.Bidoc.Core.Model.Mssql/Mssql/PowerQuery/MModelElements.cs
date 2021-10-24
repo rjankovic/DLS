@@ -91,15 +91,6 @@ namespace CD.DLS.Model.Mssql.PowerQuery
             : base(refPath, caption, definition, parent) { }
     }
 
-    public class ColumnReferenceElement : MFragmentElement
-    {
-        public ColumnReferenceElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
-            : base(refPath, caption, definition, parent) { }
-
-        [DataMember]
-        public string ColumnName { get; set; }
-    }
-
     public class FormulaStepElement : MFragmentElement
     {
         public FormulaStepElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
@@ -221,29 +212,12 @@ namespace CD.DLS.Model.Mssql.PowerQuery
         public ScalarOperationElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
             : base(refPath, caption, definition, parent) { }
 
-        //public DataFlowLinkElement AddDataFlowLink(MModelElement source)
-        //{
-        //    var linkCount = DataFlowLinks.Count();
-        //    var refPath = RefPath.NamedChild("DataFlowLink", string.Format("No_{0}", linkCount + 1));
-        //    DataFlowLinkElement daxDataFlowLinkElement = new DataFlowLinkElement(refPath, string.Format("DataFlowLink {0}", linkCount + 1), null, this);
-        //    this.AddChild(daxDataFlowLinkElement);
-        //    daxDataFlowLinkElement.Parent = this;
-        //    daxDataFlowLinkElement.Source = source;
-        //    daxDataFlowLinkElement.Target = this;
-        //    return daxDataFlowLinkElement;
-        //}
     }
 
     public class OperationOutputColumnElement : MFragmentElement // DaxElement
     {
         public OperationOutputColumnElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
             : base(refPath, caption, definition, parent) {
-
-            //if (parent is DaxFragmentElement)
-            //{
-            //    OffsetFrom = ((DaxFragmentElement)parent).OffsetFrom;
-            //    Length = ((DaxFragmentElement)parent).Length;
-            //}
         }
     }
 
