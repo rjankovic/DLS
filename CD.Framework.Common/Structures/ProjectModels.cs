@@ -151,9 +151,12 @@ namespace CD.DLS.Common.Structures
         public virtual ProjectConfig ProjectConfig { get; set; }
     }
 
+    public enum PowerBiProjectConfigType { PbiAppDefaultWorkspace, PbiAppCustomWorkspace, ReportServer, DiskFolder }
+
     public class PowerBiProjectComponent
     {
         public int PowerBiProjectComponentId { get; set; }
+        public PowerBiProjectConfigType ConfigType { get; set; }
         public string Tenant { get; set; }
         public string RedirectUri { get; set; }
         public string ApplicationID { get; set; }
@@ -162,6 +165,7 @@ namespace CD.DLS.Common.Structures
         public string Password { get; set; }
         public string ReportServerURL { get; set; }
         public string ReportServerFolder { get; set; }
+        public string DiskFolder { get; set; }
         [IgnoreDataMember]
         public virtual ProjectConfig ProjectConfig { get; set; }
     }
