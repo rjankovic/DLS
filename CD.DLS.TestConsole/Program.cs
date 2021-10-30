@@ -30,7 +30,7 @@ namespace CD.DLS.TestConsole
             List<Report> reports = new List<Report>();
             foreach (var pbix in pbixs)
             {
-                var report = extract.ExtractPbix(pbix);
+                var report = extract.ExtractPbixForTest(pbix);
                 reports.Add(report);
                 foreach (var asc in report.Connections.Where(x => x.Type.Contains("analysisServices")))
                 {

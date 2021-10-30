@@ -8,11 +8,11 @@ namespace CD.DLS.Extract.PowerBi.PowerBiAPI
 {
     class Item
     {
-        private int id;
-        private int resourcePackageId;
-        private int type;
-        private string path;
-        private string name;
+        //private int id;
+        //private int resourcePackageId;
+        //private int type;
+        //private string path;
+        //private string name;
 
         public Item(int id, int resourcePackageId, int type, string path, string name)
         {

@@ -54,9 +54,13 @@ namespace CD.DLS.Extract.PowerBi
 
         public void Extract()
         {
-            if (String.IsNullOrEmpty(powerBiProject.ReportServerURL) && String.IsNullOrEmpty(powerBiProject.ReportServerFolder))
-            {               
+            if (powerBiProject.ConfigType == PowerBiProjectConfigType.ReportServer)
+            {
                 ReportsFromService(outputDirPath);
+            }
+            else if (powerBiProject.ConfigType == PowerBiProjectConfigType.DiskFolder)
+            {
+                ReportsFromDiskFolder(outputDirPath);
             }
             else
             {
@@ -115,6 +119,43 @@ namespace CD.DLS.Extract.PowerBi
 
             string tenantString = tenant.Serialize();
             var fileName = urlSplit[2].Value.Trim('/') + ".json";
+            var path = Path.Combine(outputDirPath, fileName);
+            File.WriteAllText(path, tenantString);
+
+            manifest.Items.Add(new ManifestItem()
+            {
+                ComponentId = powerBiProject.PowerBiProjectComponentId,
+                Name = fileName,
+                ExtractType = "PowerBi",
+                RelativePath = Path.Combine(relativePathBase, fileName)
+            });
+
+            Directory.Delete(Path.Combine(outputDirPath, "dir"), true);
+        }
+
+        public void ReportsFromDiskFolder(string outputDirPath)
+        {
+            var dir = Path.Combine(outputDirPath, "dir");
+            if (Directory.Exists(dir))
+            {
+                Directory.Delete(dir, true);
+            }
+            Directory.CreateDirectory(dir);
+            var pbixFiles = Directory.GetFiles(powerBiProject.DiskFolder, "*.pbix", SearchOption.AllDirectories);
+            foreach (var pbix in pbixFiles)
+            {
+                var name = Path.GetFileNameWithoutExtension(pbix);
+                this.currentReportName = name;
+                //var file = Path.Combine(dir, name + ".zip");
+                var dirExtract = Path.Combine(dir, name);
+                ZipFile.ExtractToDirectory(pbix, dirExtract);
+            }
+
+            List<Report> extractedReports = ExtractReports();
+            Tenant tenant = new Tenant(powerBiProject.DiskFolder, extractedReports);
+
+            string tenantString = tenant.Serialize();
+            var fileName = Path.GetFileName(powerBiProject.DiskFolder) + "_" + powerBiProject.PowerBiProjectComponentId.ToString() + ".json";
             var path = Path.Combine(outputDirPath, fileName);
             File.WriteAllText(path, tenantString);
 
@@ -210,14 +251,14 @@ namespace CD.DLS.Extract.PowerBi
                
                 List<ReportSection> sections = ExtractSections(GetVisualLayout(reportLayoutPath), connections);
                 Filter[] filters = GetVisualLayout(reportLayoutPath).GetFilters();
-                string name = this.currentReportName;
+                string name = Path.GetFileName(inputDirPath); // this.currentReportName;
                 reports.Add(new Report(name, connections, sections, filters));
             }
 
             return reports;
         }
 
-        public Report ExtractPbix(string pbixPath)
+        public Report ExtractPbixForTest(string pbixPath)
         {
             var fileName = Path.GetFileName(pbixPath);
             this.currentReportName = fileName;
