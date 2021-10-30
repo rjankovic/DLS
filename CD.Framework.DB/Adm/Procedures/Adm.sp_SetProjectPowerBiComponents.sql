@@ -9,7 +9,9 @@ INSERT INTO Adm.PowerBiProjectComponents(
 			,[WorkspaceID]
 			,[ReportServerURL]
 			,[ReportServerFolder]
-			,[ProjectConfig_ProjectConfigId]			
+			,[ProjectConfig_ProjectConfigId]
+			,DiskFolder
+			,ConfigType
 		   )
 		   SELECT
 		   RedirectUri
@@ -18,4 +20,6 @@ INSERT INTO Adm.PowerBiProjectComponents(
 		   ,ReportServerURL
 		   ,ReportServerFolder
 		   ,@projectconfigid
+		   ,DiskFolder
+		   ,ConfigType
 		   FROM @components

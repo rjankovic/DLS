@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              >
     <UserControl.Resources>
         <ResourceDictionary>
@@ -32,10 +32,10 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
-                <RadioButton GroupName="modeRadio" x:Name="radioDiskFolder" IsChecked="False" Margin="10,10,10,10.2" Width="152" Content="Disk folder" Checked="radioDiskFolder_Checked" />
-                <RadioButton GroupName="modeRadio" x:Name="radioDefaultWokspace" IsChecked="False" Margin="10,10,10,10.2" Width="152" Content="Power BI app - Default workspace" Checked="radioDefaultWokspace_Checked" />
-                <RadioButton GroupName="modeRadio" x:Name="radioSelectWorkspace" IsChecked="False" Margin="10,10,10,10.2" Width="143" Content="Power BI app - Select workspace" Checked="radioSelectWorkspace_Checked" />
-                <RadioButton GroupName="modeRadio" x:Name="reportServerWorkspace" IsChecked="False" Margin="10,10,10,10.2" Width="143" Content="Report server" Checked="reportServerWorkspace_Checked" />
+                <RadioButton GroupName="modeRadio" x:Name="radioDiskFolder" IsChecked="False" Margin="10,10,10,10" Content="Disk folder" Checked="radioDiskFolder_Checked" />
+                <RadioButton GroupName="modeRadio" x:Name="radioDefaultWokspace" IsChecked="False" Margin="10,10,10,10" Content="Power BI app - Default workspace" Checked="radioDefaultWokspace_Checked" />
+                <RadioButton GroupName="modeRadio" x:Name="radioSelectWorkspace" IsChecked="False" Margin="10,10,10,10" Content="Power BI app - Select workspace" Checked="radioSelectWorkspace_Checked" />
+                <RadioButton GroupName="modeRadio" x:Name="reportServerWorkspace" IsChecked="False" Margin="10,10,10,10" Content="Report server" Checked="reportServerWorkspace_Checked" />
             </StackPanel>
             <Label x:Name="applicationIDLabel" Content="ApplicationID"  Grid.Column="0" Grid.Row="1" />
             <TextBox Style="{StaticResource GreyTextBox}" x:Name="applicationIDTextBox"  Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="1" Text="" />
@@ -52,7 +52,7 @@
             <TextBox x:Name="reportServerFolderTextBox" Style="{StaticResource GreyTextBox}"  Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="7" />
             <Label x:Name="reportServerFolderLabel" Content="Report Server folder" IsEnabled= "True" Grid.Column="0" Grid.Row="7" />
             <Label x:Name="diskFolderLabel" Content="Disk Folder Path"  Grid.Column="0" Grid.Row="8" />
-            <TextBox Style="{StaticResource GreyTextBox}" x:Name="diskFolderTextBox"  Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="8" Text="" />
+            <TextBox Style="{StaticResource GreyTextBox}" GotFocus="diskFolderTextBox_GotFocus" x:Name="diskFolderTextBox"  Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="8" Text="" />
 
             <!--<StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="5"/>-->
 

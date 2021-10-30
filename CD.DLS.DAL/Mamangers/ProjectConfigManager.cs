@@ -175,6 +175,8 @@ namespace CD.DLS.DAL.Managers
                     Tenant = (string)row["ApplicationId"],
                     ReportServerURL = row["ReportServerURL"] == DBNull.Value ? null : (string)row["ReportServerURL"],
                     ReportServerFolder = row["ReportServerFolder"] == DBNull.Value ? null : (string)row["ReportServerFolder"],
+                    DiskFolder = (string)row["DiskFolder"],
+                    ConfigType = (PowerBiProjectConfigType)Enum.Parse(typeof(PowerBiProjectConfigType), (string)row["ConfigType"]),
                     ProjectConfig = res
                 });
 
@@ -311,6 +313,9 @@ namespace CD.DLS.DAL.Managers
             powerBiComponents.Columns.Add("WorkspaceID", typeof(string));
             powerBiComponents.Columns.Add("ReportServerURL", typeof(string));
             powerBiComponents.Columns.Add("ReportServerFolder", typeof(string));
+            powerBiComponents.Columns.Add("DiskFolder", typeof(string));
+            powerBiComponents.Columns.Add("ConfigType", typeof(string));
+
             foreach (var powerBi in config.PowerBiComponents)
             {
                 var nr = powerBiComponents.NewRow();
@@ -319,6 +324,8 @@ namespace CD.DLS.DAL.Managers
                 nr[2] = powerBi.WorkspaceID;
                 nr[3] = powerBi.ReportServerURL;
                 nr[4] = powerBi.ReportServerFolder;
+                nr[5] = powerBi.DiskFolder;
+                nr[6] = powerBi.ConfigType.ToString();
                 powerBiComponents.Rows.Add(nr);
             }
 

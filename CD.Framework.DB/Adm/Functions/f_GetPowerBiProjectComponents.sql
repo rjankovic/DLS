@@ -12,6 +12,8 @@ AS RETURN
 	,[WorkspaceID]
 	,[ReportServerURL]
 	,[ReportServerFolder]
+	,[DiskFolder]
+	,[ConfigType]
 	,[ProjectConfig_ProjectConfigId] 
 	FROM adm.PowerBiProjectComponents WHERE ProjectConfig_ProjectConfigId = @projectconfigid
 )

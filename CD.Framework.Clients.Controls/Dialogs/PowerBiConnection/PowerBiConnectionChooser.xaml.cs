@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -31,7 +32,7 @@ namespace CD.DLS.Clients.Controls.Dialogs.PowerBiConnection
         public string DiskFolder { get; set; }
     }
 
-    public partial class PowerBiConnectionChooser : UserControl
+    public partial class PowerBiConnectionChooser : System.Windows.Controls.UserControl
     {
 
         public PowerBiConnectionChooser()
@@ -54,12 +55,12 @@ namespace CD.DLS.Clients.Controls.Dialogs.PowerBiConnection
                 {
                     ApplicationID = applicationIDTextBox.Text,
                     RedirectUri = redirectUriTextBox.Text,
-                    //WorkspaceID = radioDefaultWokspace.IsChecked.Value ? null : workspaceIDTextBox.Text,
                     WorkspaceID = workspaceIDTextBox.Text,
                     UserName = userNameTextBox.Text,
                     Password = passwordTextBox.Password,
                     ReportServerURL = reportServerURLTextBox.Text,
                     ReportServerFolder = reportServerFolderTextBox.Text,
+                    DiskFolder = diskFolderTextBox.Text
                 };
 
                 if (radioDiskFolder.IsChecked.Value)
@@ -96,12 +97,6 @@ namespace CD.DLS.Clients.Controls.Dialogs.PowerBiConnection
             applicationIDTextBox.Text = defaultProject.ApplicationID;
             redirectUriTextBox.Text = defaultProject.RedirectUri;
             workspaceIDTextBox.Text = defaultProject.WorkspaceID; 
-            /*
-            if (defaultProject.WorkspaceID != null)
-            {    
-                radioSelectWorkspace.IsChecked = true;
-            }
-            */
             userNameTextBox.Text = defaultProject.UserName;
             passwordTextBox.Password = defaultProject.Password;
             reportServerURLTextBox.Text = defaultProject.ReportServerURL;
@@ -111,10 +106,6 @@ namespace CD.DLS.Clients.Controls.Dialogs.PowerBiConnection
 
         private void radioDiskFolder_Checked(object sender, RoutedEventArgs e)
         {
-            //if(!this.IsLoaded)
-            //{
-            //    return;
-            //}
             SetPowerBiAppSettingsVisibility(false);
             var nv = Visibility.Collapsed;
             reportServerFolderLabel.Visibility = nv;
@@ -125,10 +116,6 @@ namespace CD.DLS.Clients.Controls.Dialogs.PowerBiConnection
 
         private void radioDefaultWokspace_Checked(object sender, RoutedEventArgs e)
         {
-            //if (!this.IsLoaded)
-            //{
-            //    return;
-            //}
             SetPowerBiAppSettingsVisibility(true);
             workspaceIDLabel.Visibility = Visibility.Collapsed;
             workspaceIDTextBox.Visibility = Visibility.Collapsed;
@@ -136,19 +123,11 @@ namespace CD.DLS.Clients.Controls.Dialogs.PowerBiConnection
 
         private void radioSelectWorkspace_Checked(object sender, RoutedEventArgs e)
         {
-            //if (!this.IsLoaded)
-            //{
-            //    return;
-            //}
             SetPowerBiAppSettingsVisibility(true);
         }
 
         private void reportServerWorkspace_Checked(object sender, RoutedEventArgs e)
         {
-            //if (!this.IsLoaded)
-            //{
-            //    return;
-            //}
             SetPowerBiAppSettingsVisibility(false);
             var nv = Visibility.Collapsed;
             diskFolderLabel.Visibility = nv;
@@ -157,10 +136,6 @@ namespace CD.DLS.Clients.Controls.Dialogs.PowerBiConnection
 
         public void SetPowerBiAppSettingsVisibility(bool visible)
         {
-            //if (!this.IsLoaded)
-            //{
-            //    return;
-            //}
             var v = visible ? Visibility.Visible : Visibility.Collapsed;
             var nv = visible ? Visibility.Collapsed : Visibility.Visible;
 
@@ -183,25 +158,13 @@ namespace CD.DLS.Clients.Controls.Dialogs.PowerBiConnection
             diskFolderTextBox.Visibility = nv;
         }
 
-        /*
-            <Label x:Name="applicationIDLabel" Content="ApplicationID" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Grid.Column="0" Grid.Row="1" />
-            <TextBox Style="{StaticResource GreyTextBox}" x:Name="applicationIDTextBox" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="1" Text="" />
-            <Label x:Name="redirectUriLabel" Content="Redirect Uri" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Grid.Column="0" Grid.Row="2" />
-            <TextBox Style="{StaticResource GreyTextBox}" x:Name="redirectUriTextBox" IsEnabled="{Binding IsChecked,ElementName=radioNativeMode }" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="2" Text="" />
-            <Label x:Name="workspaceIDLabel" Content="Workspace ID" IsEnabled="{Binding IsChecked,ElementName=radioSelectWorkspace }" Grid.Column="0" Grid.Row="3" />
-            <TextBox x:Name="workspaceIDTextBox" IsEnabled="{Binding IsChecked,ElementName=radioSelectWorkspace }" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="3" />
-            <Label x:Name="userNameLabel" Content="User name" IsEnabled="True" Grid.Column="0" Grid.Row="4" />
-            <TextBox x:Name="userNameTextBox" Style="{StaticResource GreyTextBox}" IsEnabled="True" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="4" />
-            <Label x:Name="passwordLabel" Content="Password" IsEnabled="True" Grid.Column="0" Grid.Row="5" />
-            <PasswordBox x:Name="passwordTextBox" Style="{StaticResource GreyPasswordBox}" IsEnabled="True" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="5" />
-            <TextBox x:Name="reportServerURLTextBox" Style="{StaticResource GreyTextBox}" IsEnabled="{Binding IsChecked,ElementName=reportServerWorkspace}" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="6" />
-            <Label x:Name="reportServerURLLabel" Content="Report Server URL" IsEnabled="True" Grid.Column="0" Grid.Row="6" />
-            <TextBox x:Name="reportServerFolderTextBox" Style="{StaticResource GreyTextBox}" IsEnabled="{Binding IsChecked,ElementName=reportServerWorkspace}" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="7" />
-            <Label x:Name="reportServerFolderLabel" Content="Report Server folder" IsEnabled= "True" Grid.Column="0" Grid.Row="7" />
-            <Label x:Name="diskFolderLabel" Content="Disk Folder Path" IsEnabled="{Binding IsChecked,ElementName=radioDiskFolder }" Grid.Column="0" Grid.Row="8" />
-            <TextBox Style="{StaticResource GreyTextBox}" x:Name="diskFolderTextBox" IsEnabled="{Binding IsChecked,ElementName=radioDiskFolder }" Margin="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="8" Text="" />
-
-         */
+        private void diskFolderTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
+            var result = folderBrowser.ShowDialog();
+            var path = folderBrowser.SelectedPath;
+            diskFolderTextBox.Text = path;
+        }
     }
 
 }

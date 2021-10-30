@@ -188,9 +188,11 @@
                             </Style>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
+                            <DataGridTextColumn Header="Config Type" IsReadOnly="True" Binding="{Binding Path=ConfigType}" Width="*" />
+                            <DataGridTextColumn Header="Disk Folder" IsReadOnly="True" Binding="{Binding Path=DiskFolder}" Width="*" />
                             <DataGridTextColumn Header="Application ID" IsReadOnly="True" Binding="{Binding Path=ApplicationID}" Width="*" />
-                            <DataGridTextColumn Header="Redirect URI" IsReadOnly="True" Binding="{Binding Path=RedirectUri}" Width="*" />
-                            <DataGridTextColumn Header="Workspace ID" IsReadOnly="True" Binding="{Binding Path=WorkspaceID}" Width="*" />
+                            <!--<DataGridTextColumn Header="Redirect URI" IsReadOnly="True" Binding="{Binding Path=RedirectUri}" Width="*" />
+                            <DataGridTextColumn Header="Workspace ID" IsReadOnly="True" Binding="{Binding Path=WorkspaceID}" Width="*" />-->
                             <DataGridTextColumn Header="Report Server URL" IsReadOnly="True" Binding="{Binding Path=ReportServerURL}" Width="*" />
                             <DataGridTextColumn Header="Report Server Folder" IsReadOnly="True" Binding="{Binding Path=ReportServerFolder}" Width="*" />
                             <!--<DataGridTextColumn Header="User Name" IsReadOnly="True" Binding="{Binding Path=UserName}" Width="*" />-->

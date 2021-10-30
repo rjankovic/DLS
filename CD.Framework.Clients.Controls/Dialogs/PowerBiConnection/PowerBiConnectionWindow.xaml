@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CD.DLS.Clients.Controls.Dialogs.PowerBiConnection"
         mc:Ignorable="d"
-        Title="Power BI Connection" Height="300" Width="455">
+        Title="Power BI Connection" MinHeight="400" Height="400" Width="455">
 
     <Window.Resources>
         <ResourceDictionary>

@@ -3,6 +3,8 @@
     [ApplicationID] NVARCHAR (200) NULL,
 	[WorkspaceID] NVARCHAR(200) NULL,
 	[ReportServerURL] NVARCHAR(200) NULL,
-	[ReportServerFolder] NVARCHAR(200) NULL
+	[ReportServerFolder] NVARCHAR(200) NULL,
+	[DiskFolder]		 NVARCHAR(MAX) NULL,
+	[ConfigType]		 NVARCHAR(50) NOT NULL
 	);
 
