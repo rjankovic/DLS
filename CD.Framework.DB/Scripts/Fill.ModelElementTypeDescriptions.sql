@@ -158,14 +158,14 @@ VALUES
 (N'CD.DLS.Model.Mssql.Ssas.CubeDimensionHierarchyElement', N'Cube Dimension Hierarchy'),
 (N'CD.DLS.Model.Mssql.Ssas.CubeDimensionHierarchyLevelElement', N'Cube Dimension Hierarchy Level'),
 
-(N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'Tenant'),
-(N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'Power BI report'),
-(N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'Report page'),
-(N'CD.DLS.Model.Mssql.Pbi.VisualElement', N'Power BI report visual'),
-(N'CD.DLS.Model.Mssql.Pbi.ProjectionElement', N'Visual field'),
+(N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'Power BI Tenant'),
+(N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'Power BI Report'),
+(N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'Report Page'),
+(N'CD.DLS.Model.Mssql.Pbi.VisualElement', N'Power BI Report Visual'),
+(N'CD.DLS.Model.Mssql.Pbi.ProjectionElement', N'Power BI Visual Field'),
 (N'CD.DLS.Model.Mssql.Pbi.ConnectionElement', N'Data Source'),
-(N'CD.DLS.Model.Mssql.Pbi.PbiTableElement', N'Query'),
-(N'CD.DLS.Model.Mssql.Pbi.PbiColumnElement', N'Query column'),
+(N'CD.DLS.Model.Mssql.Pbi.PbiTableElement', N'Power BI Table'),
+(N'CD.DLS.Model.Mssql.Pbi.PbiColumnElement', N'Power BI Table Column'),
 (N'CD.DLS.Model.Mssql.Pbi.FilterElement', N'Filter'),
 
 -- DAX general start

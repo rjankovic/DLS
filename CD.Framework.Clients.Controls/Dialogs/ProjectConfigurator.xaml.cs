@@ -322,13 +322,15 @@ namespace CD.DLS.Clients.Controls.Dialogs
                     WorkspaceID = connection.WorkspaceID,
                     UserName = connection.UserName,
                     Password = connection.Password,
-                    Tenant = connection.ApplicationID,
+                    //Tenant = connection.Tenant,
                     ReportServerURL = connection.ReportServerURL,
                     ReportServerFolder = connection.ReportServerFolder,
                     DiskFolder = connection.DiskFolder,
-                    ConfigType = connection.ConfigType
+                    ConfigType = connection.ConfigType,
                 };
-                                              
+
+
+                           
                 _config.PowerBiComponents.Add(newPBI);
                 
                 gridPowerBi.Items.Refresh();                
@@ -348,7 +350,7 @@ namespace CD.DLS.Clients.Controls.Dialogs
             project.WorkspaceID = item.WorkspaceID;
             project.UserName = item.UserName;
             project.Password = item.Password;
-            project.Tenant = item.ApplicationID;
+            //project.Tenant = item.ApplicationID;
             project.ReportServerURL = item.ReportServerURL;
             project.ReportServerFolder = item.ReportServerFolder;
             project.DiskFolder = item.DiskFolder;
@@ -362,7 +364,7 @@ namespace CD.DLS.Clients.Controls.Dialogs
                 item.WorkspaceID = connection.WorkspaceID;
                 item.UserName = connection.UserName;
                 item.Password = connection.Password;
-                item.Tenant = connection.ApplicationID;
+                //item.Tenant = connection.Tenant;
                 item.ReportServerURL = connection.ReportServerURL;
                 item.ReportServerFolder = connection.ReportServerFolder;
                 item.DiskFolder = connection.DiskFolder;

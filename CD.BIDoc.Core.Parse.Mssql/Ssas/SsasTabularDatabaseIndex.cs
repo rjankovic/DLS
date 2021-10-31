@@ -288,6 +288,16 @@ namespace CD.DLS.Parse.Mssql.Ssas
                     var tableEnclosed = "'" + trimmed.Insert(columnIdStart, "'");
                     return tableEnclosed;
                 }
+                else if (trimmed.Contains("."))
+                {
+                    var split = trimmed.Split('.');
+                    if (split.Length < 2)
+                    {
+                        throw new Exception(string.Format("Could not normalize tabular identifier {0}", input));
+                    }
+                    var formatted = $"'{split[0]}'[{split[1]}]";
+                    return formatted;
+                }
                 else
                 {
                     throw new Exception(string.Format("Could not normalize tabular identifier {0}", input));

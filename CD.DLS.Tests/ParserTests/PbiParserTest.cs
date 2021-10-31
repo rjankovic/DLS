@@ -191,7 +191,7 @@ namespace CD.DLS.Tests.ParserTests
 
                     foreach (var visual in reportSection.Visuals)
                     {
-                        var visualRefPath = _urnBuiler.GetVisualUrn(visual, reportSectionRefPath);
+                        var visualRefPath = _urnBuiler.GetVisualUrn(visual, reportSectionElement);
                         VisualElement visualElement = new VisualElement(visualRefPath, visual.Name, null, reportSectionElement);
                         visualElement.Type = visual.Type;
                         reportSectionElement.AddChild(visualElement);

@@ -160,11 +160,11 @@ VALUES
 
 (N'CD.DLS.Model.Mssql.Pbi.TenantElement', 3),
 (N'CD.DLS.Model.Mssql.Pbi.ReportElement', 2),
-(N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement',2),
-(N'CD.DLS.Model.Mssql.Pbi.VisualElement', 2),
+(N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement',1),
+(N'CD.DLS.Model.Mssql.Pbi.VisualElement', 1),
 (N'CD.DLS.Model.Mssql.Pbi.ProjectionElement', 1),
 (N'CD.DLS.Model.Mssql.Pbi.ConnectionElement', 1),
-(N'CD.DLS.Model.Mssql.Pbi.PbiTableElement', 2),
+(N'CD.DLS.Model.Mssql.Pbi.PbiTableElement', 1),
 (N'CD.DLS.Model.Mssql.Pbi.PbiColumnElement', 1),
 (N'CD.DLS.Model.Mssql.Pbi.FilterElement', 1),
 

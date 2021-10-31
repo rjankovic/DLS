@@ -164,9 +164,36 @@ namespace CD.DLS.DAL.Objects.Extract
 
         public override string Name => FilterName;
 
+        public string Reference
+        {
+            get
+            {
+
+                if (Expression == null)
+                    return null;
+                if (Expression.Column == null)
+                    return null;
+                if (Expression.Column.Property == null)
+                    return null;
+                var r = "[" + Expression.Column.Property + "]";
+                if (Expression.Column.Expression != null)
+                {
+                    if (Expression.Column.Expression.SourceRef != null)
+                    {
+                        if (Expression.Column.Expression.SourceRef.Entity != null)
+                        {
+                            r = "'" + Expression.Column.Expression.SourceRef.Entity + "'" + r;
+                        }
+                    }
+                }
+
+                return r;
+            }
+        }
+
         public override ExtractTypeEnum ExtractType => ExtractTypeEnum.PowerBiFilter;
 
-        
+
 
     }
 
@@ -189,7 +216,7 @@ namespace CD.DLS.DAL.Objects.Extract
 
 
 
-    public class Expression 
+    public class Expression
     {
         public Expression(SourceRef sourceRef)
         {
@@ -206,9 +233,9 @@ namespace CD.DLS.DAL.Objects.Extract
         }
         public string Entity { get; set; }
 
- 
+
     }
-    public class expression 
+    public class expression
     {
         public expression(column column)
         {
@@ -218,7 +245,7 @@ namespace CD.DLS.DAL.Objects.Extract
 
     }
 
-    
+
 
 
 }

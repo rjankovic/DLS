@@ -11,6 +11,7 @@ using CD.DLS.Model.Mssql;
 using CD.DLS.Model.Serialization;
 using CD.DLS.Parse.Mssql;
 using CD.DLS.Parse.Mssql.Db;
+using CD.DLS.Parse.Mssql.Pbi;
 using CD.DLS.Serialization;
 using System;
 using System.Collections.Generic;
@@ -568,6 +569,46 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
 
                 sh.SaveModelPart(ssisServerElement, premappedIds);
             }
+
+            #endregion
+
+            #region POWERBI
+
+            var pbiSolutionElement = (SolutionModelElement)sh.LoadElementModelToChildrenOfType("", typeof(SolutionModelElement));
+            var pbiPremappedIds = sh.CreatePremappedModel(pbiSolutionElement);
+
+            
+            var tenantNames = projectConfig.PowerBiComponents.Select(x => x.Tenant.ToString()).Distinct();
+
+            var pbiUrnBuilder = new Parse.Mssql.Pbi.UrnBuilder();
+
+            foreach (var tenantName in tenantNames)
+            {
+                var tenantUrn = pbiUrnBuilder.GetTenantUrn(tenantName);
+                var tenantElement = new Model.Mssql.Pbi.TenantElement(tenantUrn, tenantName, null, solutionElement);
+                solutionElement.AddChild(tenantElement);
+
+                sh.SaveModelPart(tenantElement, pbiPremappedIds);
+
+                foreach (var pbiComponent in projectConfig.PowerBiComponents.Where(X => X.Tenant == tenantName))
+                {
+                    PbiModelExtractor pbiExtractor = new PbiModelExtractor(projectConfig, StageManager, request.ExtractId, GraphManager, pbiComponent.PowerBiProjectComponentId, tenantElement.RefPath.Path);
+                    pbiExtractor.ParseModel();
+
+                    // TODO!
+
+                    //parseComponentRequests.Add(new ParsePbiComponentRequest()
+                    //{
+                    //    ExtractId = request.ExtractId,
+                    //    PbiComponentId = pbiComponent.PowerBiProjectComponentId,
+                    //    TenantRefPath = tenantUrn.Path
+                    //});
+                }
+
+            }
+
+            GraphManager.SetRefPathIntervals(projectConfig.ProjectConfigId, RequestId);
+
 
             #endregion
 

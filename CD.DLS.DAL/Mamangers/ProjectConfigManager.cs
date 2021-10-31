@@ -172,7 +172,7 @@ namespace CD.DLS.DAL.Managers
                     PowerBiProjectComponentId = (int)row["PowerBiProjectComponentId"],
                     UserName = credentials != null ? credential.Username : "",
                     Password = credentials != null ? credential.Password : "",
-                    Tenant = (string)row["ApplicationId"],
+                    //Tenant = (string)row["ApplicationId"],
                     ReportServerURL = row["ReportServerURL"] == DBNull.Value ? null : (string)row["ReportServerURL"],
                     ReportServerFolder = row["ReportServerFolder"] == DBNull.Value ? null : (string)row["ReportServerFolder"],
                     DiskFolder = (string)row["DiskFolder"],

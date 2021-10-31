@@ -157,7 +157,26 @@ namespace CD.DLS.Common.Structures
     {
         public int PowerBiProjectComponentId { get; set; }
         public PowerBiProjectConfigType ConfigType { get; set; }
-        public string Tenant { get; set; }
+        public string Tenant
+        {
+            get
+            {
+                switch (ConfigType)
+                {
+                    case PowerBiProjectConfigType.PbiAppCustomWorkspace:
+                        return ApplicationID;
+                    case PowerBiProjectConfigType.PbiAppDefaultWorkspace:
+                        return ApplicationID;
+                    case PowerBiProjectConfigType.DiskFolder:
+                        return DiskFolder;
+                    case PowerBiProjectConfigType.ReportServer:
+                        return ReportServerURL;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+        }
+        //public string Tenant { get; set; }
         public string RedirectUri { get; set; }
         public string ApplicationID { get; set; }
         public string WorkspaceID { get; set; }

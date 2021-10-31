@@ -26,6 +26,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
         private SsasServerIndex ssasServerIndex;
         private int _currentComponentId;
         private string _tenantRefPath;
+        private SsasTabularDatabaseIndex _connectLiveDbIndex = null;
 
         public PbiModelExtractor(ProjectConfig projectConfig, StageManager stageManager, Guid extractId, GraphManager graphManager, int currentComponentId, string tenantRefPath)
         {
@@ -73,8 +74,13 @@ namespace CD.DLS.Parse.Mssql.Pbi
                         case "analysisServicesDatabaseLive":
                             var splitConnString = connection.Source.Split('\\');
                             connElement.Database = splitConnString[1];
-                            connElement.Server = splitConnString[0];
+                            connElement.Server = CD.DLS.Common.Tools.ConnectionStringTools.NormalizeServerName(splitConnString[0]);
                             break;
+                    }
+
+                    if (connElement.Type == "analysisServicesDatabaseLive")
+                    {
+                        _connectLiveDbIndex = ssasServerIndex.GetDatabase(connElement.Server, connElement.Database) as SsasTabularDatabaseIndex;
                     }
 
                     reportElement.AddChild(connElement);
@@ -182,7 +188,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
 
                     foreach (var visual in reportSection.Visuals)
                     {
-                        var visualRefPath = _urnBuiler.GetVisualUrn(visual, reportSectionRefPath);
+                        var visualRefPath = _urnBuiler.GetVisualUrn(visual, reportSectionElement);
                         VisualElement visualElement = new VisualElement(visualRefPath, visual.Name, null, reportSectionElement);
                         visualElement.Type = visual.Type;
                         reportSectionElement.AddChild(visualElement);
@@ -190,7 +196,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
                         foreach (var projection in visual.Projections)
                         {
                             var projectionRefPath = _urnBuiler.GetProjectionUrn(projection, visualRefPath);
-                            ProjectionElement projectionElement = new ProjectionElement(projectionRefPath, projection.Type, projection.QueryRef, visualElement);
+                            ProjectionElement projectionElement = new ProjectionElement(projectionRefPath, projection.Type + " - " + projection.Name, projection.QueryRef, visualElement);
                             visualElement.AddChild(projectionElement);
                             MapColumnsToVisual(projectionElement, currentReportAllColumns);
                         }
@@ -200,7 +206,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
                             var visualFilterRefPath = _urnBuiler.GetFilterUrn(visualFilter, reportSectionRefPath);
                             FilterElement visualFilterElement = new FilterElement(visualFilterRefPath, visualFilter.Name, null, reportSectionElement);
                             visualElement.AddChild(visualFilterElement);
-                            MapColumnsToFilter(visualFilter.Expression.Column.Property, visualFilterElement, currentReportAllColumns);
+                            MapColumnsToFilter(visualFilter.Reference, visualFilterElement, currentReportAllColumns);
                         }
                     }
 
@@ -209,7 +215,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
                         var sectionFilterRefPath = _urnBuiler.GetFilterUrn(sectionFilter, reportSectionRefPath);
                         FilterElement sectionFilterElement = new FilterElement(sectionFilterRefPath, sectionFilter.FilterName, null, reportSectionElement);
                         reportSectionElement.AddChild(sectionFilterElement);
-                        MapColumnsToFilter(sectionFilter.Expression.Column.Property, sectionFilterElement, currentReportAllColumns);
+                        MapColumnsToFilter(sectionFilter.Reference, sectionFilterElement, currentReportAllColumns);
                     }
                 }
 
@@ -218,7 +224,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
                     var reportFilterRefPath = _urnBuiler.GetFilterUrn(reportFilter, reportRefPath);
                     FilterElement reportFilterElement = new FilterElement(reportFilterRefPath, reportFilter.FilterName, null, reportElement);
                     reportElement.AddChild(reportFilterElement);
-                    MapColumnsToFilter(reportFilter.Expression.Column.Property, reportFilterElement, currentReportAllColumns);
+                    MapColumnsToFilter(reportFilter.Reference, reportFilterElement, currentReportAllColumns);
                 }
 
                 tenantElement.AddChild(reportElement);
@@ -251,22 +257,39 @@ namespace CD.DLS.Parse.Mssql.Pbi
 
         public void MapColumnsToVisual(ProjectionElement projection, List<PbiColumnElement> columns)
         {
-            foreach (var column in columns)
+            if (_connectLiveDbIndex != null)
             {
-                if (projection.Definition.Contains(column.Caption))
+                var resolution = _connectLiveDbIndex.TryResolveIdentifier(projection.Definition, TabularReferenceType.Column);
+                projection.Column = resolution;
+            }
+            else
+            {
+                foreach (var column in columns)
                 {
-                    projection.Column = column;
+                    if (projection.Definition.Contains(column.Caption))
+                    {
+                        projection.Column = column;
+                        break;
+                    }
                 }
             }
         }
 
         public void MapColumnsToFilter(string property, FilterElement filter, List<PbiColumnElement> columns)
         {
-            foreach (var column in columns)
+            if (_connectLiveDbIndex != null)
             {
-                if (property.Contains(column.Caption))
+                var resolution = _connectLiveDbIndex.TryResolveIdentifier(property, TabularReferenceType.Column);
+                filter.Property = resolution;
+            }
+            else
+            {
+                foreach (var column in columns)
                 {
-                    filter.Property = column;
+                    if (property.Contains(column.Caption))
+                    {
+                        filter.Property = column;
+                    }
                 }
             }
         }

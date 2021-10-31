@@ -137,7 +137,7 @@ namespace CD.DLS.Model.Mssql.Pbi
         public string Type { set; get; }
 
         [ModelLink]
-        public PbiColumnElement Column { get; set; }
+        public MssqlModelElement Column { get; set; }
     }
 
 

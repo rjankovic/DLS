@@ -18,8 +18,11 @@ VALUES
 (N'CD.DLS.Model.Mssql.SolutionModelElement', N'CD.DLS.Model.Mssql.Ssas.PhysicalMeasureElement',N'PhysicalMeasureElement'),
 (N'CD.DLS.Model.Mssql.SolutionModelElement', N'CD.DLS.Model.Mssql.Ssas.CubeCalculatedMeasureElement',N'CubeCalculatedMeasureElement'),
 (N'CD.DLS.Model.Mssql.SolutionModelElement', N'CD.DLS.Model.Mssql.Ssas.ReportCalculatedMeasureElement',N'ReportCalculatedMeasureElement'),
-(N'CD.DLS.Model.Mssql.SolutionModelElement', N'CD.DLS.Model.Mssql.Pbi.TenantElement',N'TenantElement')
-
+(N'CD.DLS.Model.Mssql.SolutionModelElement', N'CD.DLS.Model.Mssql.Pbi.TenantElement',N'TenantElement'),
+(N'CD.DLS.Model.Mssql.SolutionModelElement', N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'ReportElement'),
+(N'CD.DLS.Model.Mssql.SolutionModelElement', N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'ReportSectionElement'),
+(N'CD.DLS.Model.Mssql.SolutionModelElement', N'CD.DLS.Model.Mssql.Pbi.VisualElement', N'VisualElement'),
+(N'CD.DLS.Model.Mssql.SolutionModelElement', N'CD.DLS.Model.Mssql.Pbi.ProjectionElement', N'ProjectionElement')
 
 
 INSERT INTO [BIDoc].[HighLevelTypeDescendants]
@@ -182,15 +185,30 @@ VALUES
 INSERT INTO [BIDoc].[HighLevelTypeDescendants]
 ([ParentType], [DescendantType], [NodeType])
 VALUES
+(N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'ReportElement'),
+(N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'ReportSectionElement'),
+(N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.VisualElement', N'VisualElement'),
+(N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.ProjectionElement', N'ProjectionElement')
+
+
+INSERT INTO [BIDoc].[HighLevelTypeDescendants]
+([ParentType], [DescendantType], [NodeType])
+VALUES
 (N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'ReportSectionElement'),
-(N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'CD.DLS.Model.Mssql.Pbi.ConnectionElement', N'ConnectionElement')
+(N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'ReportElement'),
+(N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'CD.DLS.Model.Mssql.Pbi.VisualElement', N'VisualElement'),
+(N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'CD.DLS.Model.Mssql.Pbi.ProjectionElement', N'ProjectionElement')
+
+--(N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'CD.DLS.Model.Mssql.Pbi.ConnectionElement', N'ConnectionElement')
+
+--INSERT INTO [BIDoc].[HighLevelTypeDescendants]
+--([ParentType], [DescendantType], [NodeType])
+--VALUES
+--(N'CD.DLS.Model.Mssql.Pbi.ConnectionElement', N'CD.DLS.Model.Mssql.Pbi.PbiTableElement', N'TableElement')
 
 INSERT INTO [BIDoc].[HighLevelTypeDescendants]
 ([ParentType], [DescendantType], [NodeType])
 VALUES
-(N'CD.DLS.Model.Mssql.Pbi.ConnectionElement', N'CD.DLS.Model.Mssql.Pbi.PbiTableElement', N'TableElement')
-
-INSERT INTO [BIDoc].[HighLevelTypeDescendants]
-([ParentType], [DescendantType], [NodeType])
-VALUES
-(N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'CD.DLS.Model.Mssql.Pbi.VisualElement', N'VisualElement')
+(N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'ReportSectionElement'),
+(N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'CD.DLS.Model.Mssql.Pbi.VisualElement', N'VisualElement'),
+(N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'CD.DLS.Model.Mssql.Pbi.ProjectionElement', N'ProjectionElement')

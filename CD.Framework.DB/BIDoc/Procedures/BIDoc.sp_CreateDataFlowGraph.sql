@@ -568,6 +568,18 @@ OR e.Type = N'CD.DLS.Model.Mssql.Pbi.PbiTableElement'
 )
 */
 
+INSERT INTO #dataflowLinks
+(RuleName, ElementFromId, ElementToId)
+
+SELECT DISTINCT  N'PowerBIColumnRefRule',se.ModelElementId, e.ModelElementId FROM BIDoc.ModelElements e
+INNER JOIN BIDoc.ModelLinks l ON e.ModelElementId = l.ElementFromId AND l.[Type] = N'Column'
+INNER JOIN BIDoc.ModelElements se ON se.ModelElementId = l.ElementToId
+AND e.ProjectConfigId = @projectConfigId
+AND 
+(
+e.Type = N'CD.DLS.Model.Mssql.Pbi.ProjectionElement'
+)
+
 ----
 
 

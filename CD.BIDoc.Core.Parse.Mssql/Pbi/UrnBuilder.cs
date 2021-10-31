@@ -46,9 +46,16 @@ namespace CD.DLS.Parse.Mssql.Pbi
             return parent.NamedChild("Connection", connection.Type);
         }
 
-        public RefPath GetVisualUrn(Visual visual, RefPath parent)
+        public RefPath GetVisualUrn(Visual visual, MssqlModelElement parent)
         {
-            return parent.NamedChild("Visual", visual.Id+"");
+            if (!string.IsNullOrEmpty(visual.Id))
+            {
+                return parent.RefPath.NamedChild("Visual", visual.Id + "_" + (parent.Children.Count() + 1).ToString());
+            }
+            else
+            {
+                return parent.RefPath.NamedChild("Visual", "No_" + (parent.Children.Count() + 1).ToString());
+            }
         }
 
         public RefPath GetFilterUrn(Filter filter, RefPath parent)

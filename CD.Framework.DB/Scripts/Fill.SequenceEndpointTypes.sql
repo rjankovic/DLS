@@ -85,4 +85,12 @@ VALUES
 
 (N'CD.DLS.Model.Mssql.Tabular.SsasTabularTableColumnElement'),
 (N'CD.DLS.Model.Mssql.Tabular.SsasTabularMeasureElement'),
-(N'CD.DLS.Model.Mssql.Tabular.SsasTabularHierarchyLevelElement')
+(N'CD.DLS.Model.Mssql.Tabular.SsasTabularHierarchyLevelElement'),
+
+(N'CD.DLS.Model.Mssql.Pbi.ProjectionElement'),
+(N'CD.DLS.Model.Mssql.Pbi.VisualElement'),
+(N'CD.DLS.Model.Mssql.Pbi.ReportElement')
+
+
+
+

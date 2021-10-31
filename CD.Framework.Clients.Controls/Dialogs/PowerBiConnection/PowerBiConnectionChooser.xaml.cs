@@ -24,12 +24,27 @@ namespace CD.DLS.Clients.Controls.Dialogs.PowerBiConnection
         public string ApplicationID { get; set; }
         public string RedirectUri { get; set; }
         public string WorkspaceID { get; set; }
-        public string Tenant { get; set; }
+        //public string Tenant { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public string ReportServerURL { get; set; }
         public string ReportServerFolder { get; set; }
         public string DiskFolder { get; set; }
+        public string Tenant { get {
+                switch (ConfigType)
+                {
+                    case PowerBiProjectConfigType.PbiAppCustomWorkspace:
+                        return ApplicationID;
+                    case PowerBiProjectConfigType.PbiAppDefaultWorkspace:
+                        return ApplicationID;
+                    case PowerBiProjectConfigType.DiskFolder:
+                        return DiskFolder;
+                    case PowerBiProjectConfigType.ReportServer:
+                        return ReportServerURL;
+                    default:
+                        throw new NotImplementedException();
+                }
+            } }
     }
 
     public partial class PowerBiConnectionChooser : System.Windows.Controls.UserControl
