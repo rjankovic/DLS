@@ -58,14 +58,14 @@ namespace CD.DLS.Parse.Mssql.Pbi
             }
         }
 
-        public RefPath GetFilterUrn(Filter filter, RefPath parent)
+        public RefPath GetFilterUrn(Filter filter, MssqlModelElement parent)
         {
-            return parent.NamedChild("Filter", filter.FilterName);
+            return parent.RefPath.NamedChild("Filter", $"No_{parent.Children.Count() + 1}");
         }
 
-        public RefPath GetProjectionUrn(Projection projection, RefPath parent)
+        public RefPath GetProjectionUrn(Projection projection, MssqlModelElement parent)
         {
-            return parent.NamedChild("Projection", projection.Name);
+            return parent.RefPath.NamedChild("Projection", projection.Name + $"_{parent.Children.Count() + 1}");
         }
 
         public RefPath GetReportSectionUrn(ReportSection reportSection, RefPath parent)

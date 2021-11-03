@@ -305,7 +305,7 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
             
             foreach (var ssasComponent in projectConfig.SsasComponents.OrderBy(x => x.ServerName))
             {
-                Model.Mssql.Ssas.ServerElement ssasServerElement = solutionModel.SsasServers.FirstOrDefault(x => x.Caption == ssasComponent.ServerName);
+                Model.Mssql.Ssas.ServerElement ssasServerElement = solutionElement.SsasServers.FirstOrDefault(x => x.Caption == ssasComponent.ServerName);
                 Model.Mssql.Ssas.SsasDatabaseElement ssasDbElement = null;
 
 
@@ -385,7 +385,10 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                 var dbIdMap = adbix.GetAllPremappedIds();
                 foreach (var kv in dbIdMap)
                 {
-                    premappedIds.Add(kv.Key, kv.Value);
+                    if (!premappedIds.ContainsKey(kv.Key))
+                    {
+                        premappedIds.Add(kv.Key, kv.Value);
+                    }
                 }
 
                 sh.SaveModelPart(ssasServerElement, premappedIds, true);

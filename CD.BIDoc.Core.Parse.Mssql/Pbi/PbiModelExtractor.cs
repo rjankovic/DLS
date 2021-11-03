@@ -67,6 +67,16 @@ namespace CD.DLS.Parse.Mssql.Pbi
                     var connectionRefPath = _urnBuiler.GetConnectionUrn(connection, reportElement.RefPath);
                     ConnectionElement connElement = new ConnectionElement(connectionRefPath, connection.Source, null, reportElement);
                     connElement.Type = connection.Type;
+                    if (connection.Source == null && 
+                        (
+                           connElement.Type == "Sql.Databases"
+                           || connElement.Type == "AnalysisServices.Databases"
+                           || connElement.Type == "analysisServicesDatabaseLive"
+                        ))
+                    {
+                        DAL.Configuration.ConfigManager.Log.Warning($"Skipping connection {connection.Name} in report {report.Name} - unknown data source");
+                        continue;
+                    }
                     switch (connElement.Type)
                     {
                         case "Sql.Databases":
@@ -87,6 +97,10 @@ namespace CD.DLS.Parse.Mssql.Pbi
 
                     foreach (var table in connection.Tables)
                     {
+                        if (table.Name == null)
+                        {
+                            continue;
+                        }
                         var split = table.Name.Split('_');
                         var tableRefPath = _urnBuiler.GetTableUrn(table, connElement.RefPath);
                         switch (connElement.Type)
@@ -195,7 +209,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
 
                         foreach (var projection in visual.Projections)
                         {
-                            var projectionRefPath = _urnBuiler.GetProjectionUrn(projection, visualRefPath);
+                            var projectionRefPath = _urnBuiler.GetProjectionUrn(projection, visualElement);
                             ProjectionElement projectionElement = new ProjectionElement(projectionRefPath, projection.Type + " - " + projection.Name, projection.QueryRef, visualElement);
                             visualElement.AddChild(projectionElement);
                             MapColumnsToVisual(projectionElement, currentReportAllColumns);
@@ -203,8 +217,8 @@ namespace CD.DLS.Parse.Mssql.Pbi
 
                         foreach (var visualFilter in visual.Filters)
                         {
-                            var visualFilterRefPath = _urnBuiler.GetFilterUrn(visualFilter, reportSectionRefPath);
-                            FilterElement visualFilterElement = new FilterElement(visualFilterRefPath, visualFilter.Name, null, reportSectionElement);
+                            var visualFilterRefPath = _urnBuiler.GetFilterUrn(visualFilter, visualElement);
+                            FilterElement visualFilterElement = new FilterElement(visualFilterRefPath, visualFilter.Name, null, visualElement);
                             visualElement.AddChild(visualFilterElement);
                             MapColumnsToFilter(visualFilter.Reference, visualFilterElement, currentReportAllColumns);
                         }
@@ -212,7 +226,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
 
                     foreach (var sectionFilter in reportSection.Filters)
                     {
-                        var sectionFilterRefPath = _urnBuiler.GetFilterUrn(sectionFilter, reportSectionRefPath);
+                        var sectionFilterRefPath = _urnBuiler.GetFilterUrn(sectionFilter, reportSectionElement);
                         FilterElement sectionFilterElement = new FilterElement(sectionFilterRefPath, sectionFilter.FilterName, null, reportSectionElement);
                         reportSectionElement.AddChild(sectionFilterElement);
                         MapColumnsToFilter(sectionFilter.Reference, sectionFilterElement, currentReportAllColumns);
@@ -221,7 +235,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
 
                 foreach (var reportFilter in report.Filters)
                 {
-                    var reportFilterRefPath = _urnBuiler.GetFilterUrn(reportFilter, reportRefPath);
+                    var reportFilterRefPath = _urnBuiler.GetFilterUrn(reportFilter, reportElement);
                     FilterElement reportFilterElement = new FilterElement(reportFilterRefPath, reportFilter.FilterName, null, reportElement);
                     reportElement.AddChild(reportFilterElement);
                     MapColumnsToFilter(reportFilter.Reference, reportFilterElement, currentReportAllColumns);
@@ -257,6 +271,14 @@ namespace CD.DLS.Parse.Mssql.Pbi
 
         public void MapColumnsToVisual(ProjectionElement projection, List<PbiColumnElement> columns)
         {
+            if (projection == null)
+            {
+                return;
+            }
+            if (projection.Definition == null)
+            {
+                return;
+            }
             if (_connectLiveDbIndex != null)
             {
                 var resolution = _connectLiveDbIndex.TryResolveIdentifier(projection.Definition, TabularReferenceType.Column);
@@ -277,6 +299,10 @@ namespace CD.DLS.Parse.Mssql.Pbi
 
         public void MapColumnsToFilter(string property, FilterElement filter, List<PbiColumnElement> columns)
         {
+            if (property == null)
+            {
+                return;
+            }
             if (_connectLiveDbIndex != null)
             {
                 var resolution = _connectLiveDbIndex.TryResolveIdentifier(property, TabularReferenceType.Column);

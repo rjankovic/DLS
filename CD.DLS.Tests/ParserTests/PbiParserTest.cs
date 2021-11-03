@@ -65,7 +65,7 @@ namespace CD.DLS.Tests.ParserTests
             {
                 List<PbiColumnElement> currentReportAllColumns = new List<PbiColumnElement>();
 
-                var reportRefPath = _urnBuiler.GetReportUrn(report, tenantRefPath);
+                var reportRefPath = _urnBuiler.GetReportUrn(report, tenantElement);
                 ReportElement reportElement = new ReportElement(reportRefPath, report.Name, null, tenantElement);
               
                 foreach (var connection in report.Connections)
@@ -198,7 +198,7 @@ namespace CD.DLS.Tests.ParserTests
 
                         foreach (var projection in visual.Projections)
                         {
-                            var projectionRefPath = _urnBuiler.GetProjectionUrn(projection, visualRefPath);
+                            var projectionRefPath = _urnBuiler.GetProjectionUrn(projection, visualElement);
                             ProjectionElement projectionElement = new ProjectionElement(projectionRefPath, projection.Type, projection.QueryRef, visualElement);
                             visualElement.AddChild(projectionElement);
                             MapColumnsToVisual(projectionElement, currentReportAllColumns);
@@ -206,8 +206,8 @@ namespace CD.DLS.Tests.ParserTests
 
                         foreach (var visualFilter in visual.Filters)
                         {
-                            var visualFilterRefPath = _urnBuiler.GetFilterUrn(visualFilter, reportSectionRefPath);
-                            FilterElement visualFilterElement = new FilterElement(visualFilterRefPath, visualFilter.Name, null, reportSectionElement);
+                            var visualFilterRefPath = _urnBuiler.GetFilterUrn(visualFilter, visualElement);
+                            FilterElement visualFilterElement = new FilterElement(visualFilterRefPath, visualFilter.Name, null, visualElement);
                             visualElement.AddChild(visualFilterElement);
                             MapColumnsToFilter(visualFilter.Expression.Column.Property, visualFilterElement, currentReportAllColumns);
                         }
@@ -215,7 +215,7 @@ namespace CD.DLS.Tests.ParserTests
 
                     foreach (var sectionFilter in reportSection.Filters)
                     {
-                        var sectionFilterRefPath = _urnBuiler.GetFilterUrn(sectionFilter, reportSectionRefPath);
+                        var sectionFilterRefPath = _urnBuiler.GetFilterUrn(sectionFilter, reportSectionElement);
                         FilterElement sectionFilterElement = new FilterElement(sectionFilterRefPath, sectionFilter.FilterName, null, reportSectionElement);
                         reportSectionElement.AddChild(sectionFilterElement);
                         MapColumnsToFilter(sectionFilter.Expression.Column.Property, sectionFilterElement, currentReportAllColumns);
@@ -224,7 +224,7 @@ namespace CD.DLS.Tests.ParserTests
 
                 foreach (var reportFilter in report.Filters)
                 {
-                    var reportFilterRefPath = _urnBuiler.GetFilterUrn(reportFilter, reportRefPath);
+                    var reportFilterRefPath = _urnBuiler.GetFilterUrn(reportFilter, reportElement);
                     FilterElement reportFilterElement = new FilterElement(reportFilterRefPath, reportFilter.FilterName, null, reportElement);
                     reportElement.AddChild(reportFilterElement);
                     MapColumnsToFilter(reportFilter.Expression.Column.Property, reportFilterElement, currentReportAllColumns);
