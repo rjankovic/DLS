@@ -69,7 +69,57 @@ namespace CD.DLS.Extract.PowerBi
 
 
         }
-       
+
+        private string GetUniqueReportItemName(string folder, string itemName)
+        {
+            var dirExtract = Path.Combine(folder, itemName);
+            int count = 1;
+            while (Directory.Exists(dirExtract))
+            {
+                dirExtract = Path.Combine(folder, itemName + $" ({count})");
+                count++;
+            }
+            var resName = Path.GetFileName(dirExtract);
+            return resName;
+        }
+
+        private void ExtractReportZip(string pbixPath, string dirExtract)
+        {
+            
+            using (ZipArchive archive = ZipFile.OpenRead(pbixPath))
+            {
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    if (!entry.FullName.Contains("/") || entry.Name == "Layout")
+                    {
+                        string destinationPath = Path.GetFullPath(Path.Combine(dirExtract, entry.FullName));
+                        var destinationDir = Path.GetDirectoryName(destinationPath);
+                        if (!Directory.Exists(destinationDir))
+                        {
+                            Directory.CreateDirectory(destinationDir);
+                        }
+
+                        entry.ExtractToFile(destinationPath);
+                    }
+                    else
+                    { 
+                    
+                    }
+                    //if (entry.Name .FullName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+                    //{
+                    //    // Gets the full path to ensure that relative segments are removed.
+                    //    string destinationPath = Path.GetFullPath(Path.Combine(extractPath, entry.FullName));
+
+                    //    // Ordinal match is safest, case-sensitive volumes can be mounted within volumes that
+                    //    // are case-insensitive.
+                    //    if (destinationPath.StartsWith(extractPath, StringComparison.Ordinal))
+                    //        entry.ExtractToFile(destinationPath);
+                    //}
+                }
+            }
+
+        }
+
         public void ReportsFromReportServer(string outputDirPath)
         {
             var dir = Path.Combine(outputDirPath, "dir");
@@ -103,12 +153,14 @@ namespace CD.DLS.Extract.PowerBi
                     {
                         if (item.TypeName == "PowerBIReport")
                         {
+                            var uniqueItemName = GetUniqueReportItemName(dir, item.Name);
                             this.currentReportName = item.Name;
-                            var file = Path.Combine(dir, item.Name + ".zip");                          
+                            var file = Path.Combine(dir, uniqueItemName /*item.Name*/ + ".zip");                          
                             url = String.Format("{0}/api/v2.0/catalogitems({1})/Content/$value", powerBiProject.ReportServerURL, item.ID);
                             client.DownloadFile(url, file);
-                            var dirExtract = Path.Combine(dir, item.Name);
-                            ZipFile.ExtractToDirectory(file, dirExtract);
+                            var dirExtract = Path.Combine(dir, uniqueItemName /*item.Name*/);
+                            ExtractReportZip(file, dirExtract);
+                            //ZipFile.ExtractToDirectory(file, dirExtract);
                         }
                     }
                 }
@@ -142,13 +194,30 @@ namespace CD.DLS.Extract.PowerBi
             }
             Directory.CreateDirectory(dir);
             var pbixFiles = Directory.GetFiles(powerBiProject.DiskFolder, "*.pbix", SearchOption.AllDirectories);
+            ConfigManager.Log.Important($"Loading Power BI reports from {powerBiProject.DiskFolder}");
             foreach (var pbix in pbixFiles)
             {
                 var name = Path.GetFileNameWithoutExtension(pbix);
+                name = GetUniqueReportItemName(dir, name);
+                
                 this.currentReportName = name;
                 //var file = Path.Combine(dir, name + ".zip");
+
                 var dirExtract = Path.Combine(dir, name);
-                ZipFile.ExtractToDirectory(pbix, dirExtract);
+                ConfigManager.Log.Important(pbix);
+                ExtractReportZip(pbix, dirExtract);
+                //ZipFile.ExtractToDirectory(pbix, dirExtract);
+                /*
+                try
+                {
+                    ZipFile.ExtractToDirectory(pbix, dirExtract);
+                }
+                catch (Exception ex)
+                {
+                    ConfigManager.Log.Important($"{pbix} had to be skipped - {ex.Message}");
+                    Directory.Delete(dirExtract, true);
+                }
+                */
             }
 
             List<Report> extractedReports = ExtractReports();
@@ -190,7 +259,8 @@ namespace CD.DLS.Extract.PowerBi
             Directory.CreateDirectory(dir);
             foreach (PBIReport r in reports)
             {
-                var file = Path.Combine(dir, r.Name + ".zip");
+                var uniqueItemName = GetUniqueReportItemName(dir, r.Name);
+                var file = Path.Combine(dir, uniqueItemName /*r.Name*/ + ".zip");
                 try
                 {                  
                     r.Export(file);
@@ -202,8 +272,9 @@ namespace CD.DLS.Extract.PowerBi
                 }
                 
 
-                var dirExtract = Path.Combine(dir, r.Name);
-                ZipFile.ExtractToDirectory(file, dirExtract);
+                var dirExtract = Path.Combine(dir, uniqueItemName /*r.Name*/);
+                ExtractReportZip(file, dirExtract);
+                //ZipFile.ExtractToDirectory(file, dirExtract);
             }
 
             List<Report> extractedReports = ExtractReports();

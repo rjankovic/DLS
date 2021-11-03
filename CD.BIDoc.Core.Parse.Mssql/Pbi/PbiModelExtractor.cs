@@ -60,7 +60,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
             {
                 List<PbiColumnElement> currentReportAllColumns = new List<PbiColumnElement>();
 
-                var reportRefPath = _urnBuiler.GetReportUrn(report, tenantElement.RefPath);
+                var reportRefPath = _urnBuiler.GetReportUrn(report, tenantElement);
                 ReportElement reportElement = new ReportElement(reportRefPath, report.Name, null, tenantElement);
                 foreach (var connection in report.Connections)
                 {

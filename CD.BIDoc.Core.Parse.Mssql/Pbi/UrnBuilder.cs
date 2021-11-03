@@ -21,9 +21,9 @@ namespace CD.DLS.Parse.Mssql.Pbi
             return new RefPath().NamedChild("PowerBI", tenant.TenantID.ToString());
         }
 
-        public RefPath GetReportUrn(Report report, RefPath parent)
+        public RefPath GetReportUrn(Report report, MssqlModelElement parent)
         {
-            return parent.NamedChild("PowerBI Report", report.ReportName);
+            return parent.RefPath.NamedChild("PowerBI Report", report.ReportName + "_" + (parent.Children.Count() + 1).ToString());
         }
 
         public RefPath GetColumnUrn(PbiColumn column, RefPath parent)
