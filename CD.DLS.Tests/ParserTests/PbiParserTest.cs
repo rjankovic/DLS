@@ -71,7 +71,7 @@ namespace CD.DLS.Tests.ParserTests
                 foreach (var connection in report.Connections)
                 {
                     var connectionRefPath = _urnBuiler.GetConnectionUrn(connection, reportElement.RefPath);
-                    ConnectionElement connElement = new ConnectionElement(connectionRefPath, connection.Source, null, reportElement);
+                    ConnectionElement connElement = new ConnectionElement(connectionRefPath, connection.Source == null ? "Connection" : connection.Source, null, reportElement);
                     connElement.Type = connection.Type;
                     switch (connElement.Type)
                     {
@@ -207,7 +207,7 @@ namespace CD.DLS.Tests.ParserTests
                         foreach (var visualFilter in visual.Filters)
                         {
                             var visualFilterRefPath = _urnBuiler.GetFilterUrn(visualFilter, visualElement);
-                            FilterElement visualFilterElement = new FilterElement(visualFilterRefPath, visualFilter.Name, null, visualElement);
+                            FilterElement visualFilterElement = new FilterElement(visualFilterRefPath, visualFilter.FilterName == null ? "Filter" : visualFilter.FilterName, null, visualElement);
                             visualElement.AddChild(visualFilterElement);
                             MapColumnsToFilter(visualFilter.Expression.Column.Property, visualFilterElement, currentReportAllColumns);
                         }
@@ -216,7 +216,7 @@ namespace CD.DLS.Tests.ParserTests
                     foreach (var sectionFilter in reportSection.Filters)
                     {
                         var sectionFilterRefPath = _urnBuiler.GetFilterUrn(sectionFilter, reportSectionElement);
-                        FilterElement sectionFilterElement = new FilterElement(sectionFilterRefPath, sectionFilter.FilterName, null, reportSectionElement);
+                        FilterElement sectionFilterElement = new FilterElement(sectionFilterRefPath, sectionFilter.FilterName == null ? "Filter" : sectionFilter.FilterName, null, reportSectionElement);
                         reportSectionElement.AddChild(sectionFilterElement);
                         MapColumnsToFilter(sectionFilter.Expression.Column.Property, sectionFilterElement, currentReportAllColumns);
                     }
@@ -225,7 +225,7 @@ namespace CD.DLS.Tests.ParserTests
                 foreach (var reportFilter in report.Filters)
                 {
                     var reportFilterRefPath = _urnBuiler.GetFilterUrn(reportFilter, reportElement);
-                    FilterElement reportFilterElement = new FilterElement(reportFilterRefPath, reportFilter.FilterName, null, reportElement);
+                    FilterElement reportFilterElement = new FilterElement(reportFilterRefPath, reportFilter.FilterName == null ? "Filter" : reportFilter.FilterName, null, reportElement);
                     reportElement.AddChild(reportFilterElement);
                     MapColumnsToFilter(reportFilter.Expression.Column.Property, reportFilterElement, currentReportAllColumns);
                 }

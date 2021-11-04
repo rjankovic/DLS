@@ -1,7 +1,6 @@
 ﻿using CD.DLS.Common.Structures;
 using CD.DLS.DAL.Managers;
 using CD.DLS.DAL.Objects.Extract;
-using CD.DLS.Model.Interfaces;
 using CD.DLS.Model.Mssql;
 using CD.DLS.Model.Mssql.Pbi;
 using CD.DLS.Model.Serialization;
@@ -11,8 +10,6 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CD.DLS.Parse.Mssql.Pbi
 {
@@ -65,7 +62,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
                 foreach (var connection in report.Connections)
                 {
                     var connectionRefPath = _urnBuiler.GetConnectionUrn(connection, reportElement.RefPath);
-                    ConnectionElement connElement = new ConnectionElement(connectionRefPath, connection.Source, null, reportElement);
+                    ConnectionElement connElement = new ConnectionElement(connectionRefPath, connection.Source == null ? "Connection" : connection.Source, null, reportElement);
                     connElement.Type = connection.Type;
                     if (connection.Source == null && 
                         (
@@ -218,7 +215,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
                         foreach (var visualFilter in visual.Filters)
                         {
                             var visualFilterRefPath = _urnBuiler.GetFilterUrn(visualFilter, visualElement);
-                            FilterElement visualFilterElement = new FilterElement(visualFilterRefPath, visualFilter.Name, null, visualElement);
+                            FilterElement visualFilterElement = new FilterElement(visualFilterRefPath, visualFilter.FilterName == null ? "Filter" : visualFilter.FilterName, null, visualElement);
                             visualElement.AddChild(visualFilterElement);
                             MapColumnsToFilter(visualFilter.Reference, visualFilterElement, currentReportAllColumns);
                         }
@@ -227,7 +224,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
                     foreach (var sectionFilter in reportSection.Filters)
                     {
                         var sectionFilterRefPath = _urnBuiler.GetFilterUrn(sectionFilter, reportSectionElement);
-                        FilterElement sectionFilterElement = new FilterElement(sectionFilterRefPath, sectionFilter.FilterName, null, reportSectionElement);
+                        FilterElement sectionFilterElement = new FilterElement(sectionFilterRefPath, sectionFilter.FilterName == null ? "Filter" : sectionFilter.FilterName, null, reportSectionElement);
                         reportSectionElement.AddChild(sectionFilterElement);
                         MapColumnsToFilter(sectionFilter.Reference, sectionFilterElement, currentReportAllColumns);
                     }
@@ -236,7 +233,7 @@ namespace CD.DLS.Parse.Mssql.Pbi
                 foreach (var reportFilter in report.Filters)
                 {
                     var reportFilterRefPath = _urnBuiler.GetFilterUrn(reportFilter, reportElement);
-                    FilterElement reportFilterElement = new FilterElement(reportFilterRefPath, reportFilter.FilterName, null, reportElement);
+                    FilterElement reportFilterElement = new FilterElement(reportFilterRefPath, reportFilter.FilterName == null ? "Filter" : reportFilter.FilterName, null, reportElement);
                     reportElement.AddChild(reportFilterElement);
                     MapColumnsToFilter(reportFilter.Reference, reportFilterElement, currentReportAllColumns);
                 }

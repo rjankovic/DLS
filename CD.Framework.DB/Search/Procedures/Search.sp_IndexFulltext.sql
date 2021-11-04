@@ -42,11 +42,11 @@ VALUES
 	(N'CD.DLS.Model.Mssql.Tabular.SsasTabularTableElement', 9),
 	(N'CD.DLS.Model.Mssql.Tabular.SsasTabularTableColumnElement', 8),
 
-	(N'CD.DLS.Model.Mssql.Pbi.TenantElement', 10),
+	--(N'CD.DLS.Model.Mssql.Pbi.TenantElement', 10),
 	(N'CD.DLS.Model.Mssql.Pbi.ReportElement', 10),
 	(N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement',8),
 	(N'CD.DLS.Model.Mssql.Pbi.VisualElement', 5),
-	(N'CD.DLS.Model.Mssql.Pbi.ConnectionElement', 5),
+	--(N'CD.DLS.Model.Mssql.Pbi.ConnectionElement', 5),
 	(N'CD.DLS.Model.Mssql.Pbi.PbiTableElement', 7),
 	(N'CD.DLS.Model.Mssql.Pbi.PbiColumnElement', 7)
 
