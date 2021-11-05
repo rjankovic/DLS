@@ -330,6 +330,22 @@ namespace CD.DLS.Serialization
             _loadMethod = loadMethod;
         }
 
+        public BIDocModelStored(Guid projectConfigId, string refPathPrefix, int elementId, LoadMethodEnum loadMethod, GraphManager graphManager = null)
+        {
+            _graphManager = graphManager;
+            if (_graphManager == null)
+            {
+                _graphManager = new GraphManager();
+            }
+
+            //_context = dbContext;
+            _projectConfigId = projectConfigId;
+
+            _rootId = elementId;
+            _loadMethod = loadMethod;
+            _refPathPrefix = refPathPrefix;
+        }
+
         public BIDocModelStored(Guid projectConfigId, string refPathPrefix, Type leafElementType, GraphManager graphManager)
         {
             _graphManager = graphManager;

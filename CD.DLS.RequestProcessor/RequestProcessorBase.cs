@@ -96,7 +96,7 @@ namespace CD.DLS.RequestProcessor
                     {
                         method = BIDocModelStored.LoadMethodEnum.Standard;
                     }
-                    Serialization.BIDocModelStored deepModelStored = new Serialization.BIDocModelStored(projectConfigId, convertedElement.Id, method, GraphManager);
+                    Serialization.BIDocModelStored deepModelStored = new Serialization.BIDocModelStored(projectConfigId, convertedElement.RefPath.Path, convertedElement.Id, method, GraphManager);
                     Log.Important("Deserializing details of " + convertedElement.Caption);
                     Serialization.FromBIDocModelConverter deepConverterFrom = new Serialization.FromBIDocModelConverter(deepModelStored);
                     MssqlModelElement deepConverted = deepConverterFrom.Convert(converterTo, convertedElement.Id);
