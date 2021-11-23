@@ -163,6 +163,10 @@ namespace CD.DLS.DAL.Managers
             foreach (DataRow row in powerBiTable.Rows)
             {                              
                 Credential credential = credentials != null ? credentials.FindCredential((int)row["PowerBiProjectComponentId"], "PowerBi") : null;
+                if (credential == null)
+                {
+                    credential = new Credential();
+                }
 
                 res.PowerBiComponents.Add(new PowerBiProjectComponent()
                 {
