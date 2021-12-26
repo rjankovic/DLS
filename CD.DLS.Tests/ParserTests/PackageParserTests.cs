@@ -14,6 +14,7 @@ using CD.DLS.Parse.Mssql.Ssis;
 using CD.DLS.DAL.Configuration;
 using CD.DLS.DAL.Engine;
 using CD.DLS.DAL.Misc;
+using CD.DLS.RequestProcessor.ModelUpdate;
 
 namespace CD.DLS.Tests.ParserTests
 {
@@ -69,6 +70,31 @@ namespace CD.DLS.Tests.ParserTests
         // public void MyTestCleanup() { }
         //
         #endregion
+
+
+        [TestMethod]
+        public void Parse_SampleDWH_XML()
+        {
+            NetBridge nb = new NetBridge(true, false);
+            nb.SetConnectionString("Data Source=localhost;Initial Catalog=DLS;Integrated Security=True;Pooling=False");
+            GraphManager graphManager = new GraphManager(nb);
+            StageManager stageManager = new StageManager(nb);
+            ProjectConfigManager pcm = new ProjectConfigManager(nb);
+            ConfigManager.Log = new ConsoleLogger("DLS test");
+            var projectConfig = pcm.GetProjectConfig(new Guid("A4D16D79-497C-4F6B-B816-D7AABB17A67B"));
+            var sh = new Model.Serialization.SerializationHelper(projectConfig, graphManager);
+            Parse.Mssql.Db.AvailableDatabaseModelIndex adbix = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, graphManager);
+
+            UpdateModelRequest request = new UpdateModelRequest()
+            {
+                ExtractId = new Guid("EF920A55-0D03-49C4-83C3-F9CB638585C5")
+            };
+
+            UpdateModelRequestDirectProcessor processor = new UpdateModelRequestDirectProcessor();
+            processor.InitWithNb(nb);
+            processor.ParseSsis(projectConfig, sh, adbix, request);
+
+        }
 
         [TestMethod]
         public void Parse_SampleDWH_FactGeneralLedger()

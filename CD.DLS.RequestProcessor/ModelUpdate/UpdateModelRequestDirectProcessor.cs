@@ -403,8 +403,243 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
 
             #region SSIS
 
+            ParseSsis(projectConfig, sh, adbix, request);
+
+
+            
+            //var ssisSolutionElement = (SolutionModelElement)sh.LoadElementModelToChildrenOfType("", typeof(SolutionModelElement));
+            //var ssisPremappedIds = sh.CreatePremappedModel(ssisSolutionElement);
+
+            //var groupByServer = projectConfig.SsisComponents.GroupBy(x => x.ServerName);
+            //foreach (var serverGrp in groupByServer)
+            //{
+            //    var serverName = serverGrp.Key;
+            //    var rp = new RefPath(string.Format("IntegrationServices[@Name='{0}']", serverName));
+            //    var ssisServerElement = new CD.DLS.Model.Mssql.Ssis.ServerElement(rp, serverName, rp.Path);
+            //    //res.Add(serverElement);
+
+            //    ssisServerElement.Parent = ssisSolutionElement;
+            //    ssisSolutionElement.AddChild(ssisServerElement);
+
+            //    var catalogRp = rp.Child("Catalog");
+
+            //    var catalogElement = new Model.Mssql.Ssis.CatalogElement(catalogRp, "SSIS Catalog", catalogRp.Path, ssisServerElement);
+            //    ssisServerElement.AddChild(catalogElement);
+
+            //    var grpByFolder = serverGrp.GroupBy(x => x.FolderName);
+            //    foreach (var folderGrp in grpByFolder)
+            //    {
+            //        var folderName = folderGrp.Key;
+            //        //var folder = catalog.Folders[folderName];
+            //        var folderRp = catalogRp.NamedChild("Folder", folderName);
+            //        var folderElement = new Model.Mssql.Ssis.FolderElement(folderRp, folderName, folderRp.Path, catalogElement);
+            //        catalogElement.AddChild(folderElement);
+            //        var ssisUrnBuilder = new CD.DLS.Parse.Mssql.Ssis.UrnBuilder();
+
+            //        foreach (var projectComponent in folderGrp)
+            //        {
+            //            //parseProjectRequests.Add(new ParseSsisProjectShallowRequest()
+            //            //{
+            //            //    ExtractId = request.ExtractId,
+            //            //    SsisComponentId = projectComponent.SsisProjectComponentId,
+            //            //    FolderRefPath = folderElement.RefPath.Path,
+            //            //    ServerRefPath = serverElement.RefPath.Path
+            //            //});
+
+            //            //        var xmlProvider = new Parse.Mssql.Ssis.SsisXmlProvider(request.ExtractId, projectComponent.SsisProjectComponentId, // request.SsisComponentId,
+            //            //StageManager, null, false);
+            //            var xmlProvider = new Parse.Mssql.Ssis.SsisXmlProvider(request.ExtractId, projectComponent.SsisProjectComponentId, // request.SsisComponentId,
+            //            StageManager, null, true);
+            //            var dbIndex = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, GraphManager);
+            //            Parse.Mssql.Ssis.ProjectModelParser modelParser = new Parse.Mssql.Ssis.ProjectModelParser(xmlProvider, dbIndex, projectConfig,
+            //                request.ExtractId, StageManager);
+
+            //            var projectModel = modelParser.ParseProjectShallow(projectComponent.SsisProjectComponentId, folderElement);
+
+
+            //            var packages = StageManager.GetExtractItems(request.ExtractId, projectComponent.SsisProjectComponentId, DAL.Objects.Extract.ExtractTypeEnum.SsisPackage);
+
+            //            foreach (DAL.Objects.Extract.SsisPackage package in packages)
+            //            {
+            //                ConfigManager.Log.Important("Parsing " + package.Urn + " shallow");
+
+            //                var refPath = ssisUrnBuilder.GetPackageUrn(projectModel, package.Name);// packageInfo.Urn;
+            //                Model.Mssql.Ssis.PackageElement packageElement = new Model.Mssql.Ssis.PackageElement(refPath, package.Name, null /* definition*/, projectModel);
+            //                projectModel.AddChild(packageElement);
+
+            //                //serializationHelper.SaveModelPart(packageElement, premappedIds);
+            //            }
+
+            //            var xmlFiles = StageManager.GetExtractItems(request.ExtractId, projectComponent.SsisProjectComponentId, ExtractTypeEnum.SsisPackageFile);
+
+            //            var joins = packages.Join(xmlFiles, x => x.Name, y => HttpUtility.UrlDecode(y.Name), (pkg, xml) => new Tuple<SsisPackage, SsisPackageFile>((SsisPackage)pkg, (SsisPackageFile)xml))
+            //                .Join(projectModel.Packages, x => x.Item1.Name, me => me.Caption, (j, p) => new Tuple<SsisPackage, SsisPackageFile, Model.Mssql.Ssis.PackageElement>(j.Item1, j.Item2, p));
+            //            if (joins.Count() != packages.Count)
+            //            {
+            //                var missingPacakges = packages.Where(p => !joins.Any(x => x.Item1 == p)).ToList();
+            //                var missingXmls = xmlFiles.Where(xml => !joins.Any(x => x.Item2 == xml)).ToList();
+
+            //                throw new Exception();
+            //            }
+
+            //            //Parse.Mssql.Db.AvailableDatabaseModelIndex adbix = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, GraphManager);
+
+            //            List<ParseSsisPackageItem> items = new List<ParseSsisPackageItem>();
+
+            //            foreach (var jn in joins)
+            //            {
+
+            //                var packageExractItemId = jn.Item1.ExtractItemId;
+            //                var xmlExtractItemId = jn.Item2.ExtractItemId;
+            //                var packageRefPath = jn.Item3.RefPath.Path;
+
+            //                //var projectElementWithCMs =  (ProjectElement)serializationHelper.LoadElementModelToChildrenOfType(request.ProjectRefPath, typeof(ConnectionManagerElement));
+            //                //var projectCMs = new List<ConnectionManagerElement>();
+
+            //                //if (projectElementWithCMs != null)
+            //                //{
+            //                //    projectElementWithCMs.ConnectionManagers.ToList();
+            //                //    foreach (var projectCM in projectCMs)
+            //                //    {
+            //                //        var map = serializationHelper.CreatePremappedModel(projectCM);
+            //                //        foreach (var mapItem in map)
+            //                //        {
+            //                //            premappedIds.Add(mapItem.Key, mapItem.Value);
+            //                //        }
+            //                //    }
+            //                //}
+
+
+            //                //var cms = new List<ConnectionManagerElement>();
+            //                //if (projectElementWithCMs != null)
+            //                //{
+            //                //    cms = projectElementWithCMs.ConnectionManagers.ToList();
+            //                //}
+
+            //                //AvailableDatabaseModelIndex adbix = new AvailableDatabaseModelIndex(projectConfig, GraphManager);
+
+            //                //var itemIdx = 0;
+
+            //                //do
+            //                //{
+                                
+            //                    //projectElement.Parent = folderElement;
+
+            //                    var packageExtract = (SsisPackage)StageManager.GetExtractItem(packageExractItemId);
+            //                    var xmlExtract = (SsisPackageFile)StageManager.GetExtractItem(xmlExtractItemId);
+            //                    var packageElement = projectModel.Packages.First(x => x.RefPath.Path == packageRefPath);
+
+            //                    ConfigManager.Log.Important("Parsing " + packageExtract.Urn + " deep");
+
+            //                    //Parse.Mssql.Ssis.SsisXmlProvider xmlProvider = new Parse.Mssql.Ssis.SsisXmlProvider(request.ExtractId, projectComponent.SsisProjectComponentId, StageManager, xmlExtract);
+            //                    Parse.Mssql.Ssis.ProjectModelParser projectModelParser = new Parse.Mssql.Ssis.ProjectModelParser(xmlProvider, adbix, projectConfig, request.ExtractId, StageManager);
+
+            //                    projectModelParser.ParsePackage(projectComponent.SsisProjectComponentId, projectModel, packageElement,
+            //                        packageExtract, projectModel.ConnectionManagers.ToList());
+
+            //                    //projectElement.Parent = null;
+
+
+                                
+            //                //    itemIdx++;
+
+            //                //} while (itemIdx < joins.Count());
+
+            //                var dbIdMap = adbix.GetAllPremappedIds();
+            //                foreach (var kv in dbIdMap)
+            //                {
+            //                    if (!premappedIds.ContainsKey(kv.Key))
+            //                    {
+            //                        premappedIds.Add(kv.Key, kv.Value);
+            //                    }
+            //                }
+
+            //                //serializationHelper.SaveModelPart(packageElement, premappedIds, true);
+
+            //            }
+
+            //            //joins = joins.Take(100);
+
+            //            //foreach (var jn in joins)
+            //            //{
+
+            //            //    items.Add(new ParseSsisPackageItem()
+            //            //    {
+            //            //        PackageExractItemId = jn.Item1.ExtractItemId,
+            //            //        XmlExtractItemId = jn.Item2.ExtractItemId,
+            //            //        PackageRefPath = jn.Item3.RefPath.Path
+            //            //    });
+
+            //            //}
+            //        }
+            //        }
+
+            //    sh.SaveModelPart(ssisServerElement, premappedIds);
+            //}
+
+            #endregion
+
+            #region POWERBI
+
+            var pbiSolutionElement = (SolutionModelElement)sh.LoadElementModelToChildrenOfType("", typeof(SolutionModelElement));
+            var pbiPremappedIds = sh.CreatePremappedModel(pbiSolutionElement);
+
+            
+            var tenantNames = projectConfig.PowerBiComponents.Select(x => x.Tenant.ToString()).Distinct();
+
+            var pbiUrnBuilder = new Parse.Mssql.Pbi.UrnBuilder();
+
+            foreach (var tenantName in tenantNames)
+            {
+                var tenantUrn = pbiUrnBuilder.GetTenantUrn(tenantName);
+                var tenantElement = new Model.Mssql.Pbi.TenantElement(tenantUrn, tenantName, null, solutionElement);
+                solutionElement.AddChild(tenantElement);
+
+                sh.SaveModelPart(tenantElement, pbiPremappedIds);
+
+                foreach (var pbiComponent in projectConfig.PowerBiComponents.Where(X => X.Tenant == tenantName))
+                {
+                    PbiModelExtractor pbiExtractor = new PbiModelExtractor(projectConfig, StageManager, request.ExtractId, GraphManager, pbiComponent.PowerBiProjectComponentId, tenantElement.RefPath.Path);
+                    pbiExtractor.ParseModel();
+
+                    // TODO!
+
+                    //parseComponentRequests.Add(new ParsePbiComponentRequest()
+                    //{
+                    //    ExtractId = request.ExtractId,
+                    //    PbiComponentId = pbiComponent.PowerBiProjectComponentId,
+                    //    TenantRefPath = tenantUrn.Path
+                    //});
+                }
+
+            }
+
+            GraphManager.SetRefPathIntervals(projectConfig.ProjectConfigId, RequestId);
+
+
+            #endregion
+
+            #region AGGREGATIONS
+
+            GraphManager.BuildAggregations(projectConfig.ProjectConfigId, RequestId);
+            
+            #endregion
+
+
+            msgs = RequestManager.GetActiveBroadcastMessages();
+            foreach (var msg in msgs.Where(x => x.Type == BroadcastMessageType.ProjectUpdateStarted))
+            {
+                RequestManager.SetBroadcastMessageInactive(msg);
+            }
+
+            return new DLSApiMessage();
+            
+        }
+
+        public void ParseSsis(ProjectConfig projectConfig, SerializationHelper sh, AvailableDatabaseModelIndex adbix, UpdateModelRequest request)
+        {
             var ssisSolutionElement = (SolutionModelElement)sh.LoadElementModelToChildrenOfType("", typeof(SolutionModelElement));
-            var ssisPremappedIds = sh.CreatePremappedModel(solutionElement);
+            var ssisPremappedIds = sh.CreatePremappedModel(ssisSolutionElement);
 
             var groupByServer = projectConfig.SsisComponents.GroupBy(x => x.ServerName);
             foreach (var serverGrp in groupByServer)
@@ -414,8 +649,8 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                 var ssisServerElement = new CD.DLS.Model.Mssql.Ssis.ServerElement(rp, serverName, rp.Path);
                 //res.Add(serverElement);
 
-                ssisServerElement.Parent = solutionElement;
-                solutionElement.AddChild(ssisServerElement);
+                ssisServerElement.Parent = ssisSolutionElement;
+                ssisSolutionElement.AddChild(ssisServerElement);
 
                 var catalogRp = rp.Child("Catalog");
 
@@ -478,8 +713,7 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                             throw new Exception();
                         }
 
-                        //Parse.Mssql.Db.AvailableDatabaseModelIndex adbix = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, GraphManager);
-
+                        
                         List<ParseSsisPackageItem> items = new List<ParseSsisPackageItem>();
 
                         foreach (var jn in joins)
@@ -489,54 +723,22 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                             var xmlExtractItemId = jn.Item2.ExtractItemId;
                             var packageRefPath = jn.Item3.RefPath.Path;
 
-                            //var projectElementWithCMs =  (ProjectElement)serializationHelper.LoadElementModelToChildrenOfType(request.ProjectRefPath, typeof(ConnectionManagerElement));
-                            //var projectCMs = new List<ConnectionManagerElement>();
+                            var packageExtract = (SsisPackage)StageManager.GetExtractItem(packageExractItemId);
+                            var xmlExtract = (SsisPackageFile)StageManager.GetExtractItem(xmlExtractItemId);
+                            var packageElement = projectModel.Packages.First(x => x.RefPath.Path == packageRefPath);
 
-                            //if (projectElementWithCMs != null)
-                            //{
-                            //    projectElementWithCMs.ConnectionManagers.ToList();
-                            //    foreach (var projectCM in projectCMs)
-                            //    {
-                            //        var map = serializationHelper.CreatePremappedModel(projectCM);
-                            //        foreach (var mapItem in map)
-                            //        {
-                            //            premappedIds.Add(mapItem.Key, mapItem.Value);
-                            //        }
-                            //    }
-                            //}
+                            ConfigManager.Log.Important("Parsing " + packageExtract.Urn + " deep");
+
+                            //Parse.Mssql.Ssis.SsisXmlProvider xmlProvider = new Parse.Mssql.Ssis.SsisXmlProvider(request.ExtractId, projectComponent.SsisProjectComponentId, StageManager, xmlExtract);
+                            Parse.Mssql.Ssis.ProjectModelParser projectModelParser = new Parse.Mssql.Ssis.ProjectModelParser(xmlProvider, adbix, projectConfig, request.ExtractId, StageManager);
+
+                            projectModelParser.ParsePackage(projectComponent.SsisProjectComponentId, projectModel, packageElement,
+                                packageExtract, projectModel.ConnectionManagers.ToList());
+
+                            //projectElement.Parent = null;
 
 
-                            //var cms = new List<ConnectionManagerElement>();
-                            //if (projectElementWithCMs != null)
-                            //{
-                            //    cms = projectElementWithCMs.ConnectionManagers.ToList();
-                            //}
 
-                            //AvailableDatabaseModelIndex adbix = new AvailableDatabaseModelIndex(projectConfig, GraphManager);
-
-                            //var itemIdx = 0;
-
-                            //do
-                            //{
-                                
-                                //projectElement.Parent = folderElement;
-
-                                var packageExtract = (SsisPackage)StageManager.GetExtractItem(packageExractItemId);
-                                var xmlExtract = (SsisPackageFile)StageManager.GetExtractItem(xmlExtractItemId);
-                                var packageElement = projectModel.Packages.First(x => x.RefPath.Path == packageRefPath);
-
-                                ConfigManager.Log.Important("Parsing " + packageExtract.Urn + " deep");
-
-                                //Parse.Mssql.Ssis.SsisXmlProvider xmlProvider = new Parse.Mssql.Ssis.SsisXmlProvider(request.ExtractId, projectComponent.SsisProjectComponentId, StageManager, xmlExtract);
-                                Parse.Mssql.Ssis.ProjectModelParser projectModelParser = new Parse.Mssql.Ssis.ProjectModelParser(xmlProvider, adbix, projectConfig, request.ExtractId, StageManager);
-
-                                projectModelParser.ParsePackage(projectComponent.SsisProjectComponentId, projectModel, packageElement,
-                                    packageExtract, projectModel.ConnectionManagers.ToList());
-
-                                //projectElement.Parent = null;
-
-
-                                
                             //    itemIdx++;
 
                             //} while (itemIdx < joins.Count());
@@ -544,92 +746,21 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                             var dbIdMap = adbix.GetAllPremappedIds();
                             foreach (var kv in dbIdMap)
                             {
-                                if (!premappedIds.ContainsKey(kv.Key))
+                                if (!ssisPremappedIds.ContainsKey(kv.Key))
                                 {
-                                    premappedIds.Add(kv.Key, kv.Value);
+                                    ssisPremappedIds.Add(kv.Key, kv.Value);
                                 }
                             }
 
-                            //serializationHelper.SaveModelPart(packageElement, premappedIds, true);
+                            
 
                         }
 
-                        //joins = joins.Take(100);
-
-                        //foreach (var jn in joins)
-                        //{
-
-                        //    items.Add(new ParseSsisPackageItem()
-                        //    {
-                        //        PackageExractItemId = jn.Item1.ExtractItemId,
-                        //        XmlExtractItemId = jn.Item2.ExtractItemId,
-                        //        PackageRefPath = jn.Item3.RefPath.Path
-                        //    });
-
-                        //}
                     }
-                    }
-
-                sh.SaveModelPart(ssisServerElement, premappedIds);
-            }
-
-            #endregion
-
-            #region POWERBI
-
-            var pbiSolutionElement = (SolutionModelElement)sh.LoadElementModelToChildrenOfType("", typeof(SolutionModelElement));
-            var pbiPremappedIds = sh.CreatePremappedModel(pbiSolutionElement);
-
-            
-            var tenantNames = projectConfig.PowerBiComponents.Select(x => x.Tenant.ToString()).Distinct();
-
-            var pbiUrnBuilder = new Parse.Mssql.Pbi.UrnBuilder();
-
-            foreach (var tenantName in tenantNames)
-            {
-                var tenantUrn = pbiUrnBuilder.GetTenantUrn(tenantName);
-                var tenantElement = new Model.Mssql.Pbi.TenantElement(tenantUrn, tenantName, null, solutionElement);
-                solutionElement.AddChild(tenantElement);
-
-                sh.SaveModelPart(tenantElement, pbiPremappedIds);
-
-                foreach (var pbiComponent in projectConfig.PowerBiComponents.Where(X => X.Tenant == tenantName))
-                {
-                    PbiModelExtractor pbiExtractor = new PbiModelExtractor(projectConfig, StageManager, request.ExtractId, GraphManager, pbiComponent.PowerBiProjectComponentId, tenantElement.RefPath.Path);
-                    pbiExtractor.ParseModel();
-
-                    // TODO!
-
-                    //parseComponentRequests.Add(new ParsePbiComponentRequest()
-                    //{
-                    //    ExtractId = request.ExtractId,
-                    //    PbiComponentId = pbiComponent.PowerBiProjectComponentId,
-                    //    TenantRefPath = tenantUrn.Path
-                    //});
                 }
 
+                sh.SaveModelPart(ssisServerElement, ssisPremappedIds);
             }
-
-            GraphManager.SetRefPathIntervals(projectConfig.ProjectConfigId, RequestId);
-
-
-            #endregion
-
-            #region AGGREGATIONS
-
-            GraphManager.BuildAggregations(projectConfig.ProjectConfigId, RequestId);
-            
-            #endregion
-
-
-            msgs = RequestManager.GetActiveBroadcastMessages();
-            foreach (var msg in msgs.Where(x => x.Type == BroadcastMessageType.ProjectUpdateStarted))
-            {
-                RequestManager.SetBroadcastMessageInactive(msg);
-            }
-
-            return new DLSApiMessage();
-            
         }
 
         private List<ExtractObject> ListDbExtractObjects(UpdateModelRequest request, MssqlDbProjectComponent dbComponent)

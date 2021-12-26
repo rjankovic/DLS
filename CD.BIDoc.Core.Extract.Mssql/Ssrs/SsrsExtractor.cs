@@ -1,20 +1,12 @@
 ﻿using CD.DLS.Common.Structures;
 using CD.DLS.Common.Tools;
 using CD.DLS.DAL.Configuration;
-using CD.DLS.DAL.Engine;
-using CD.DLS.DAL.Managers;
 using CD.DLS.DAL.Objects.Extract;
-using Ionic.Zip;
-using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
-using Microsoft.SqlServer.Dts.Runtime;
 using Microsoft.SqlServer.ReportingServices2010;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace CD.DLS.Extract.Mssql.Ssrs

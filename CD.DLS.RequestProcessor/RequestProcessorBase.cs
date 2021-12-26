@@ -72,6 +72,20 @@ namespace CD.DLS.RequestProcessor
             _learningManger = new LearningManager(nb);
         }
 
+        public void InitWithNb(NetBridge nb)
+        {
+            _stageManager = new StageManager(nb);
+            _annotationManager = new AnnotationManager(nb);
+            _graphManager = new GraphManager(nb);
+            _inspectManager = new InspectManager(nb);
+            _projectConfigManager = new ProjectConfigManager(nb);
+            _requestManager = new RequestManager(nb);
+            _searchManager = new SearchManager(nb);
+            _searchManager = new SearchManager(nb);
+            _securityManager = new SecurityManager(nb);
+            _learningManger = new LearningManager(nb);
+        }
+
         protected Dictionary<int, MssqlModelElement> DeserializeElementsForDisplay(Guid projectConfigId, List<int> elementIds)
         {
             Dictionary<int, MssqlModelElement> modelElementsById = new Dictionary<int, MssqlModelElement>();

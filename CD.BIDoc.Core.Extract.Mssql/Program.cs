@@ -56,21 +56,7 @@ namespace CD.DLS.Extract.Mssql
                 string relativePathBase;
 
 
-                //var powerBiDirName = "PBI";
-                //var powerBiDirPath = Path.Combine(_outputFolder, workDirName, powerBiDirName);
-                //Directory.CreateDirectory(powerBiDirPath);
-                //relativePathBase = powerBiDirName; // Path.Combine(workDirName, powerBiDirName);
-
-                //for (int i = 0; i < projectConfig.PowerBiComponents.Count; i++)
-                //{
-                //    //MessageBox.Show(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),projectConfig.ProjectConfigId.ToString(),powerBicomponent.ApplicationID));
-                //    var credentialsFilePath = Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "config", projectConfig.ProjectConfigId.ToString() + ".credentials");
-                //    Credentials credentials = JsonConvert.DeserializeObject<Credentials>(File.ReadAllText(credentialsFilePath));
-                //    Credential credential = credentials.FindCredential(projectConfig.PowerBiComponents[i].PowerBiProjectComponentId, "PowerBi");
-                //    var extractor = new PowerBi.PowerBiExtractor(projectConfig.PowerBiComponents[i], relativePathBase, powerBiDirPath, manifest, credential.Username, credential.Password);
-                //    extractor.Extract();
-                //}
-
+                
 
                 /**/
                 var sqlDirName = "MSSQLDB";
@@ -80,6 +66,9 @@ namespace CD.DLS.Extract.Mssql
                 
                 foreach (var sqlComponent in projectConfig.DatabaseComponents)
                 {
+                    // remove later
+                    //continue;
+
                     string serverName = sqlComponent.ServerName;
                     int serverVersion = FindServerVersion(serverName);
                     if (serverVersion >= 13)
