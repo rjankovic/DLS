@@ -445,7 +445,7 @@ new TableSourceColumnList()
                         UrnBuilder.GetServerUrn(dbComponent.ServerName).Path,
                         typeof(Model.Mssql.Db.DatabaseElement)) as Model.Mssql.Db.ServerElement;
 
-                    _availableDatabasesByServer.Add(dbComponent.ServerName, new Dictionary<string, Model.Mssql.Db.DatabaseElement>());
+                    _availableDatabasesByServer.Add(dbComponent.ServerName, new Dictionary<string, Model.Mssql.Db.DatabaseElement>(StringComparer.InvariantCultureIgnoreCase));
 
                     foreach (var db in serverModel.Databases)
                     {

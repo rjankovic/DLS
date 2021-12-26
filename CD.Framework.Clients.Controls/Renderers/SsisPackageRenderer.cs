@@ -36,9 +36,17 @@ namespace CD.DLS.Clients.Controls.Renderers
             if (selectedRefPath.Contains("/Input") || selectedRefPath.Contains("/Output"))
             {
                 var dfWrapBlock = packageVisualisation;
+                if (dfWrapBlock == null)
+                {
+                    return tc;
+                }
                 while (dfWrapBlock.ElementType != "CD.DLS.Model.Mssql.Ssis.DfInnerElement")
                 {
-                    dfWrapBlock = dfWrapBlock.ChildBlocks.First(x => selectedRefPath.StartsWith(x.RefPath) || x.RefPath.EndsWith("/DataFlow"));
+                    dfWrapBlock = dfWrapBlock.ChildBlocks.FirstOrDefault(x => selectedRefPath.StartsWith(x.RefPath) || x.RefPath.EndsWith("/DataFlow"));
+                    if (dfWrapBlock == null)
+                    {
+                        return tc;
+                    }
                 }
 
                 TabItem dfTab = new TabItem() { Header = "Data Flow" };
