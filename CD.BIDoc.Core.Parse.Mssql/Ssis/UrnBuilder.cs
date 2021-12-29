@@ -2,6 +2,7 @@
 using CD.DLS.Model.Mssql;
 using CD.DLS.DAL.Objects.Extract;
 using CD.DLS.Model.Interfaces;
+using System.Linq;
 
 namespace CD.DLS.Parse.Mssql.Ssis
 {
@@ -33,7 +34,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             return parent.RefPath.NamedChild("Package", name);
         }
 
-        public RefPath GetParameterUrn(SsisModelElement parent, SsisParameter parameter)
+        public RefPath GetParameterUrn(SsisModelElement parent, BIDoc.Core.Parse.Mssql.Ssis.SsisParameter parameter)
         {
             return parent.RefPath.NamedChild("Parameter", parameter.Name);
         }
@@ -88,9 +89,9 @@ namespace CD.DLS.Parse.Mssql.Ssis
         {
             return parent.RefPath.NamedChild("Output", outputName);
         }
-        public RefPath GetDfOutputColumnUrn(SsisModelElement parent, string outputColumnName, int columnId)
+        public RefPath GetDfOutputColumnUrn(SsisModelElement parent, string outputColumnName)
         {
-            return parent.RefPath.NamedChild("Column", outputColumnName + "_" + columnId.ToString());
+            return parent.RefPath.NamedChild("Column", outputColumnName + "_" + parent.Children.Count().ToString());
         }
 
         public RefPath DfColumnAggregationLinkElement(SsisModelElement parent, string SourceColumnName, string TargetColumnName, string SourceColumnLineageId, int index)
@@ -102,9 +103,9 @@ namespace CD.DLS.Parse.Mssql.Ssis
         {
             return parent.RefPath.NamedChild("Input", inputName);
         }
-        public RefPath GetDfInputColumnUrn(SsisModelElement parent, string inputColumnName, int columnId)
+        public RefPath GetDfInputColumnUrn(SsisModelElement parent, string inputColumnName)
         {
-            return parent.RefPath.NamedChild("Column", inputColumnName + "_" + columnId.ToString());
+            return parent.RefPath.NamedChild("Column", inputColumnName + "_" + parent.Children.Count().ToString());
         }
         public RefPath GetDfLookupColumnUrn(SsisModelElement parent, string inputColumnName, string joinToColumn)
         {

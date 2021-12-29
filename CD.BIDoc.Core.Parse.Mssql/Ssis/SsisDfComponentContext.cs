@@ -4,6 +4,7 @@ using CD.DLS.DAL.Objects.Extract;
 using System.Collections.Generic;
 using System.Xml;
 using CD.DLS.Model.Interfaces;
+using CD.BIDoc.Core.Parse.Mssql.Ssis;
 
 namespace CD.DLS.Parse.Mssql.Ssis
 {

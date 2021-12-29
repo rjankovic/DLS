@@ -8,6 +8,7 @@ using CD.DLS.Model.Mssql;
 using CD.DLS.Model.Mssql.Db;
 using CD.DLS.Model.Mssql.Ssis;
 using CD.DLS.DAL.Objects.Extract;
+using CD.BIDoc.Core.Parse.Mssql.Ssis;
 
 namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 {
@@ -40,7 +41,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             }
 
             /*create model component*/
-            Dictionary<int, DfColumnElement> inputColumnsByLineageId = new Dictionary<int, DfColumnElement>();
+            Dictionary<string, DfColumnElement> inputColumnsByLineageId = new Dictionary<string, DfColumnElement>();
             foreach (var input in context.Component.Inputs)
             {
                 XmlElement inputDefinitionXml = null;
@@ -60,9 +61,9 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     var componentIdString = inputCol.IdentificationString;
                     var externalId = inputCol.ExternalColumnID;
 
-                    int inputeColId = inputCol.LineageID;
+                    var inputeColId = inputCol.LineageID;
 
-                    DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name, inputCol.ID), inputCol.Name,
+                    DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name /*, inputCol.ID*/), inputCol.Name,
                         context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.IdentificationString), inputNode);
 
                     colNode.Precision = inputCol.Precision;
@@ -87,10 +88,10 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             foreach (var outputCol in pivotOutput.Columns)
             {
-                int inputColId = int.Parse(outputCol.GetPropertyValue("SourceColumn"));
+                var inputColId = outputCol.GetPropertyValue("SourceColumn"); //int.Parse(outputCol.GetPropertyValue("SourceColumn"));
                 var inputColElement = inputColumnsByLineageId[inputColId];
 
-                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name, outputCol.ID), outputCol.Name,
+                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name /*, outputCol.ID*/), outputCol.Name,
                     context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.IdentificationString), outputNode);
                 colNode.SourceDfColumn = inputColElement;
 

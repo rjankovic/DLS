@@ -8,6 +8,7 @@ using CD.DLS.Model.Mssql;
 using CD.DLS.Model.Mssql.Db;
 using CD.DLS.Model.Mssql.Ssis;
 using CD.DLS.DAL.Objects.Extract;
+using CD.BIDoc.Core.Parse.Mssql.Ssis;
 
 namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 {
@@ -38,7 +39,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                 conMagId = context.Component.Connections[0].ConnectionManagerID;
             }
 
-            Dictionary<int, MssqlModelElement> outputColumnsFromExtMetadata = new Dictionary<int, MssqlModelElement>();
+            Dictionary<string, MssqlModelElement> outputColumnsFromExtMetadata = new Dictionary<string, MssqlModelElement>();
             var sourceOutput = context.Component.Outputs[0];
             if (sourceOutput.IsErrorOutput)
             {
@@ -190,7 +191,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                             var colName = outputColumn.Name;
                             if (outputColumnsFromNames.ContainsKey(colName))
                             {
-                                outputColumnsFromExtMetadata[outputColumn.ID] = outputColumnsFromNames[colName];
+                                outputColumnsFromExtMetadata[outputColumn.LineageID] = outputColumnsFromNames[colName];
                             }
                         }
                     }
@@ -276,7 +277,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                         foreach (var outputColumn in sourceOutput.ExternalColumns)
                         {
                             var colName = outputColumn.Name;
-                            outputColumnsFromExtMetadata[outputColumn.ID] = foreignSource;
+                            outputColumnsFromExtMetadata[outputColumn.LineageID] = foreignSource;
                         }
                     }
                 }
@@ -302,7 +303,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             foreach (var outputColumn in sourceOutput.Columns)
             {
-                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputColumn.Name, outputColumn.ID), outputColumn.Name,
+                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputColumn.Name/*, outputColumn.ID*/), outputColumn.Name,
                     context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputColumn.IdentificationString), outputNode);
 
                 colNode.Precision = outputColumn.Precision;

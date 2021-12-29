@@ -97,6 +97,31 @@ namespace CD.DLS.Tests.ParserTests
         }
 
         [TestMethod]
+        public void Parse_BE_XML()
+        {
+            ConfigManager.DeploymentMode = DeploymentModeEnum.OnPremises;
+            NetBridge nb = new NetBridge(true, false);
+            nb.SetConnectionString("Data Source=localhost;Initial Catalog=DLS;Integrated Security=True;Pooling=False");
+            GraphManager graphManager = new GraphManager(nb);
+            StageManager stageManager = new StageManager(nb);
+            ProjectConfigManager pcm = new ProjectConfigManager(nb);
+            ConfigManager.Log = new ConsoleLogger("DLS test");
+            var projectConfig = pcm.GetProjectConfig(new Guid("9640AE14-1C5A-473E-88E6-2D0D231556B9"));
+            var sh = new Model.Serialization.SerializationHelper(projectConfig, graphManager);
+            Parse.Mssql.Db.AvailableDatabaseModelIndex adbix = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, graphManager);
+
+            UpdateModelRequest request = new UpdateModelRequest()
+            {
+                ExtractId = new Guid("4A4BF35A-8602-4B09-B3B7-77FC312E4B47")
+            };
+
+            UpdateModelRequestDirectProcessor processor = new UpdateModelRequestDirectProcessor();
+            processor.InitWithNb(nb);
+            processor.ParseSsis(projectConfig, sh, adbix, request);
+
+        }
+
+        [TestMethod]
         public void Parse_SampleDWH_FactGeneralLedger()
         {
             NetBridge nb = new NetBridge(true, false);
@@ -555,17 +580,18 @@ namespace CD.DLS.Tests.ParserTests
 
             projectElement.Parent = folderElement;
 
-            var packageExtract = (SsisPackage)stageManager.GetExtractItem(item.PackageExractItemId);
+            //var packageExtract = (SsisPackage)stageManager.GetExtractItem(item.PackageExractItemId);
             var xmlExtract = (SsisPackageFile)stageManager.GetExtractItem(item.XmlExtractItemId);
-            var packageElement = projectElement.Packages.First(x => x.RefPath.Path == item.PackageRefPath);
+            var packageElement = projectElement.Packages.First(x => xmlExtract.Name.Contains(x.Caption));
 
-            ConfigManager.Log.Important("Parsing " + packageExtract.Urn + " deep");
+            //ConfigManager.Log.Important("Parsing " + packageExtract.Urn + " deep");
 
             SsisXmlProvider xmlProvider = new SsisXmlProvider(request.ExtractId, request.SsisComponentId, stageManager, xmlExtract);
             ProjectModelParser projectModelParser = new ProjectModelParser(xmlProvider, adbix, projectConfig, request.ExtractId, stageManager);
+            var packageXml = xmlProvider.Project.Packages.First(x => x.PackageName == xmlExtract.Name);
 
             projectModelParser.ParsePackage(request.SsisComponentId, projectElement, packageElement,
-                packageExtract, cms);
+                packageXml, cms);
 
             projectElement.Parent = null;
 

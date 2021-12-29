@@ -8,6 +8,7 @@ using CD.DLS.Model.Mssql;
 using CD.DLS.Model.Mssql.Db;
 using CD.DLS.Model.Mssql.Ssis;
 using CD.DLS.DAL.Objects.Extract;
+using CD.BIDoc.Core.Parse.Mssql.Ssis;
 
 namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 {
@@ -116,7 +117,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                         var lookupIdString = inputCol.IdentificationString;
                         var lokkupExternalId = inputCol.ExternalColumnID;
                         
-                        DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name, inputCol.ID), inputCol.Name,
+                        DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name /*, inputCol.ID*/), inputCol.Name,
                             context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.IdentificationString), inputNode);
 
                         colNode.Precision = inputCol.Precision;
@@ -149,7 +150,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                         // no output matches this input column - send it directly out
                         if (!matchOutput.Columns.Any(x => x.Name == inputCol.Name))
                         {
-                            DfColumnElement outputColNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, inputCol.Name, inputCol.ID), inputCol.Name,
+                            DfColumnElement outputColNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, inputCol.Name /*, inputCol.ID*/), inputCol.Name,
                             /*context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, inputCol.IdentificationString),*/ null, outputNode);
 
                             outputColNode.Precision = inputCol.Precision;
@@ -178,7 +179,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     
                     foreach (var outputCol in matchOutput.Columns)
                     {
-                        DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name, outputCol.ID), outputCol.Name, 
+                        DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name /*, outputCol.ID*/), outputCol.Name, 
                             context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.IdentificationString), outputNode);
 
                         colNode.Precision = outputCol.Precision;

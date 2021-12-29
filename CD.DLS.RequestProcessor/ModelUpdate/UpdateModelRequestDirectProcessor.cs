@@ -12,6 +12,7 @@ using CD.DLS.Model.Serialization;
 using CD.DLS.Parse.Mssql;
 using CD.DLS.Parse.Mssql.Db;
 using CD.DLS.Parse.Mssql.Pbi;
+using CD.DLS.Parse.Mssql.Ssis;
 using CD.DLS.Serialization;
 using System;
 using System.Collections.Generic;
@@ -685,14 +686,16 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                         Parse.Mssql.Ssis.ProjectModelParser modelParser = new Parse.Mssql.Ssis.ProjectModelParser(xmlProvider, dbIndex, projectConfig,
                             request.ExtractId, StageManager);
 
-                        var projectModel = modelParser.ParseProjectShallow(projectComponent.SsisProjectComponentId, folderElement);
+                        var projectModel = modelParser.ParseProjectShallow(projectComponent.SsisProjectComponentId, folderElement, xmlProvider);
 
 
-                        var packages = StageManager.GetExtractItems(request.ExtractId, projectComponent.SsisProjectComponentId, DAL.Objects.Extract.ExtractTypeEnum.SsisPackage);
+                        var packages = StageManager.GetExtractItems(request.ExtractId, projectComponent.SsisProjectComponentId, DAL.Objects.Extract.ExtractTypeEnum.SsisPackageFile);
 
-                        foreach (DAL.Objects.Extract.SsisPackage package in packages)
+                        
+
+                        foreach (var package in packages)
                         {
-                            ConfigManager.Log.Important("Parsing " + package.Urn + " shallow");
+                            ConfigManager.Log.Important("Parsing " + package.Name + " shallow");
 
                             var refPath = ssisUrnBuilder.GetPackageUrn(projectModel, package.Name);// packageInfo.Urn;
                             Model.Mssql.Ssis.PackageElement packageElement = new Model.Mssql.Ssis.PackageElement(refPath, package.Name, null /* definition*/, projectModel);
@@ -701,39 +704,41 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                             //serializationHelper.SaveModelPart(packageElement, premappedIds);
                         }
 
-                        var xmlFiles = StageManager.GetExtractItems(request.ExtractId, projectComponent.SsisProjectComponentId, ExtractTypeEnum.SsisPackageFile);
 
-                        var joins = packages.Join(xmlFiles, x => x.Name, y => HttpUtility.UrlDecode(y.Name), (pkg, xml) => new Tuple<SsisPackage, SsisPackageFile>((SsisPackage)pkg, (SsisPackageFile)xml))
-                            .Join(projectModel.Packages, x => x.Item1.Name, me => me.Caption, (j, p) => new Tuple<SsisPackage, SsisPackageFile, Model.Mssql.Ssis.PackageElement>(j.Item1, j.Item2, p));
-                        if (joins.Count() != packages.Count)
-                        {
-                            var missingPacakges = packages.Where(p => !joins.Any(x => x.Item1 == p)).ToList();
-                            var missingXmls = xmlFiles.Where(xml => !joins.Any(x => x.Item2 == xml)).ToList();
+                        //var xmlFiles = StageManager.GetExtractItems(request.ExtractId, projectComponent.SsisProjectComponentId, ExtractTypeEnum.SsisPackageFile);
 
-                            throw new Exception();
-                        }
+                        //var joins = packages.Join(xmlFiles, x => x.Name, y => HttpUtility.UrlDecode(y.Name), (pkg, xml) => new Tuple<SsisPackage, SsisPackageFile>((SsisPackage)pkg, (SsisPackageFile)xml))
+                        //    .Join(projectModel.Packages, x => x.Item1.Name, me => me.Caption, (j, p) => new Tuple<SsisPackage, SsisPackageFile, Model.Mssql.Ssis.PackageElement>(j.Item1, j.Item2, p));
+                        //if (joins.Count() != packages.Count)
+                        //{
+                        //    var missingPacakges = packages.Where(p => !joins.Any(x => x.Item1 == p)).ToList();
+                        //    var missingXmls = xmlFiles.Where(xml => !joins.Any(x => x.Item2 == xml)).ToList();
+
+                        //    throw new Exception();
+                        //}
 
                         
-                        List<ParseSsisPackageItem> items = new List<ParseSsisPackageItem>();
+                        //List<ParseSsisPackageItem> items = new List<ParseSsisPackageItem>();
 
-                        foreach (var jn in joins)
+                        foreach (var package in packages)
                         {
 
-                            var packageExractItemId = jn.Item1.ExtractItemId;
-                            var xmlExtractItemId = jn.Item2.ExtractItemId;
-                            var packageRefPath = jn.Item3.RefPath.Path;
+                            var xmlItem = xmlProvider.Project.Packages.First(x => x.FileName == package.Name);
+                            var packageElement = projectModel.Packages.First(x => x.Caption == xmlItem.PackageName);
+                            //var packageExractItemId = jn.Item1.ExtractItemId;
+                            //var xmlExtractItemId = jn.Item2.ExtractItemId;
+                            //var packageRefPath = jn.Item3.RefPath.Path;
 
-                            var packageExtract = (SsisPackage)StageManager.GetExtractItem(packageExractItemId);
-                            var xmlExtract = (SsisPackageFile)StageManager.GetExtractItem(xmlExtractItemId);
-                            var packageElement = projectModel.Packages.First(x => x.RefPath.Path == packageRefPath);
-
-                            ConfigManager.Log.Important("Parsing " + packageExtract.Urn + " deep");
+                            //var packageExtract = (SsisPackage)StageManager.GetExtractItem(packageExractItemId);
+                            //var xmlExtract = (SsisPackageFile)StageManager.GetExtractItem(xmlExtractItemId);
+                            
+                            ConfigManager.Log.Important("Parsing " + packageElement.RefPath.Path + " deep");
 
                             //Parse.Mssql.Ssis.SsisXmlProvider xmlProvider = new Parse.Mssql.Ssis.SsisXmlProvider(request.ExtractId, projectComponent.SsisProjectComponentId, StageManager, xmlExtract);
                             Parse.Mssql.Ssis.ProjectModelParser projectModelParser = new Parse.Mssql.Ssis.ProjectModelParser(xmlProvider, adbix, projectConfig, request.ExtractId, StageManager);
 
                             projectModelParser.ParsePackage(projectComponent.SsisProjectComponentId, projectModel, packageElement,
-                                packageExtract, projectModel.ConnectionManagers.ToList());
+                                xmlItem, projectModel.ConnectionManagers.ToList());
 
                             //projectElement.Parent = null;
 

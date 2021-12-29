@@ -9,6 +9,7 @@ using CD.DLS.DAL.Objects.Extract;
 using CD.DLS.Parse.Mssql.Ssis;
 using System.Text.RegularExpressions;
 using CD.DLS.DAL.Configuration;
+using CD.BIDoc.Core.Parse.Mssql.Ssis;
 
 namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 {
@@ -26,8 +27,8 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             var componentElement = new DfDerivedColumnElement(context.ComponentRefPath, context.Component.Name, context.ComponentDefinitionXml.OuterXml, context.DfElement);
             context.DfElement.AddChild(componentElement);
 
-            Dictionary<int, DfColumnElement> inputColumnsById = new Dictionary<int, DfColumnElement>();
-            Dictionary<int, DfColumnElement> inputColumnsByLineageId = new Dictionary<int, DfColumnElement>();
+            Dictionary<string, DfColumnElement> inputColumnsByName = new Dictionary<string, DfColumnElement>();
+            Dictionary<string, DfColumnElement> inputColumnsByLineageId = new Dictionary<string, DfColumnElement>();
 
             //create local SsisIndex which will later be used for expression extractor
             SsisIndex localIndex = new SsisIndex();
@@ -54,7 +55,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     var lineageID = inputCol.LineageID;
                     //DfColumnElement outputColElement = null;
 
-                    DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name, inputCol.ID),
+                    DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name /*, inputCol.ID*/),
                         inputCol.Name, context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.IdentificationString), inputNode);
 
                     colNode.Precision = inputCol.Precision;
@@ -65,7 +66,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     inputNode.AddChild(colNode);
 
                     derivedColumnInputMapping[inputCol.Name] = colNode;
-                    inputColumnsById[inputCol.ID] = colNode;
+                    inputColumnsByName[inputCol.Name] = colNode;
                     inputColumnsByLineageId[lineageID] = colNode;
 
                     //add input column nodes into local SsisIndex
@@ -106,7 +107,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             foreach (var outputCol in derivedColumnOutput.Columns)
             {
-                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name, outputCol.ID), outputCol.Name,
+                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name /*, outputCol.ID*/), outputCol.Name,
                     context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.IdentificationString), outputNode);
 
                 colNode.Precision = outputCol.Precision;
@@ -131,7 +132,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     if (lineageIdstr.StartsWith("#"))
                     {
                         String lineageIdCut = lineageIdstr.Substring(1, lineageIdstr.Length - 1);
-                        int lineageId = Int32.Parse(lineageIdCut /*str*/);
+                        var lineageId = lineageIdCut; // /*str*/);
 
                         if (inputColumnsByLineageId.Keys.Contains(lineageId))
                         {

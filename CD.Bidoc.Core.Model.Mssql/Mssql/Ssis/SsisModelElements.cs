@@ -1,4 +1,5 @@
-﻿using CD.DLS.Model.Interfaces;
+﻿using CD.DLS.DAL.Objects.SsisDiagram;
+using CD.DLS.Model.Interfaces;
 using CD.DLS.Model.Mssql.Db;
 using System;
 using System.Collections.Generic;
@@ -8,52 +9,52 @@ using System.Runtime.Serialization;
 namespace CD.DLS.Model.Mssql.Ssis
 {
 
-    /// <summary>
-    /// Relative or absolute (for sizes and arrow segments) position
-    /// </summary>
-    public class DesignPoint
-    {
-        public float X { get; set; }
-        public float Y { get; set; }
-    }
+    ///// <summary>
+    ///// Relative or absolute (for sizes and arrow segments) position
+    ///// </summary>
+    //public class DesignPoint
+    //{
+    //    public float X { get; set; }
+    //    public float Y { get; set; }
+    //}
 
-    /// <summary>
-    /// An arrow connecting two DF or CF components
-    /// </summary>
-    public class DesignArrow
-    {
-        public DesignPoint Start { get; set; }
-        public DesignPoint End { get; set; }
-        public DesignPoint TopLeft { get; set; }
-        /// <summary>
-        /// Brush moves
-        /// </summary>
-        public List<DesignPoint> Shifts { get; set; }
-        public enum PointOrientationEnum { Left, Up, Right, Down }
-        public PointOrientationEnum PointOrientation
-        {
-            get
-            {
-                if (Shifts.Count == 0)
-                {
-                    // nasty cover-up
-                    return PointOrientationEnum.Down;
-                }
-                var finSeg = Shifts[Shifts.Count - 1];
-                if (finSeg.X < 0)
-                    return PointOrientationEnum.Left;
-                if (finSeg.Y < 0)
-                    return PointOrientationEnum.Up;
-                if (finSeg.X > 0)
-                    return PointOrientationEnum.Right;
-                if (finSeg.Y > 0)
-                    return PointOrientationEnum.Down;
+    ///// <summary>
+    ///// An arrow connecting two DF or CF components
+    ///// </summary>
+    //public class DesignArrow
+    //{
+    //    public DesignPoint Start { get; set; }
+    //    public DesignPoint End { get; set; }
+    //    public DesignPoint TopLeft { get; set; }
+    //    /// <summary>
+    //    /// Brush moves
+    //    /// </summary>
+    //    public List<DesignPoint> Shifts { get; set; }
+    //    public enum PointOrientationEnum { Left, Up, Right, Down }
+    //    public PointOrientationEnum PointOrientation
+    //    {
+    //        get
+    //        {
+    //            if (Shifts.Count == 0)
+    //            {
+    //                // nasty cover-up
+    //                return PointOrientationEnum.Down;
+    //            }
+    //            var finSeg = Shifts[Shifts.Count - 1];
+    //            if (finSeg.X < 0)
+    //                return PointOrientationEnum.Left;
+    //            if (finSeg.Y < 0)
+    //                return PointOrientationEnum.Up;
+    //            if (finSeg.X > 0)
+    //                return PointOrientationEnum.Right;
+    //            if (finSeg.Y > 0)
+    //                return PointOrientationEnum.Down;
 
-                // dtto
-                return PointOrientationEnum.Down;
-            }
-        }
-    }
+    //            // dtto
+    //            return PointOrientationEnum.Down;
+    //        }
+    //    }
+    //}
 
     abstract public class SsisModelElement : MssqlModelElement
     {

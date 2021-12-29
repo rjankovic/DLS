@@ -1,4 +1,5 @@
-﻿using CD.DLS.Model.Interfaces;
+﻿using CD.DLS.DAL.Objects.SsisDiagram;
+using CD.DLS.Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

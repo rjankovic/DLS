@@ -8,6 +8,8 @@ using System.Xml;
 using CD.DLS.DAL.Configuration;
 using System.Reflection;
 using CD.DLS.Parse.Mssql.Db;
+using CD.BIDoc.Core.Parse.Mssql.Ssis;
+using CD.DLS.DAL.Objects.SsisDiagram;
 
 namespace CD.DLS.Parse.Mssql.Ssis
 {
@@ -90,8 +92,8 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 var classId = component.ClassId;
                 var properties = component.Properties;
                 //PropertyCollection props = new PropertyCollection(properties);
-                var componentId = component.ID;
-                var layout = _definitionSearcher.GetContainerDesign(package.Container.ID, parentLayoutRefPath + "\\" + idString);
+                //var componentId = component.ID;
+                var layout = _definitionSearcher.GetContainerDesign(package.Executable.ID, parentLayoutRefPath + "\\" + idString);
                 var isSource = contractBase.EndsWith("Source");
 
                 var componentUrn = isSource ? _urnBuilder.GetDfSourceComponentUrn(dfElement, component.IdString) : _urnBuilder.GetDfComponentUrn(dfElement, component.IdString);
@@ -151,7 +153,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
 
                     foreach (var inputCol in input.Columns)
                     {
-                        var inputColUrn = _urnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name, inputCol.ID);
+                        var inputColUrn = _urnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name);
                         var inputColDef = _definitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.IdentificationString);
                         var inputColNode = new DfColumnElement(inputColUrn, inputCol.Name, inputColDef, inputNode);
                         
@@ -196,7 +198,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
 
                     foreach (var outputCol in output.Columns)
                     {
-                        var outputColUrn = _urnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name, outputCol.ID);
+                        var outputColUrn = _urnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name /*, outputCol.ID*/);
                         var outputColDef = _definitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.IdentificationString);
                         var outputColNode = new DfColumnElement(outputColUrn, outputCol.Name, outputColDef, outputNode);
                         
@@ -321,7 +323,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                         var pathDef = _definitionSearcher.GetDfPathDefinition(flowXml, x_startIdString, x_endIdString, out fullLayoutPath);
                         var pathUrn = _urnBuilder.GetDfPathUrn(dfElement, path.IdString);
                         DesignArrow pathArrow;
-                        pathArrow = _definitionSearcher.GetDfPathArrow(package.Container.ID, fullLayoutPath);
+                        pathArrow = _definitionSearcher.GetDfPathArrow(package.Executable.ID, fullLayoutPath);
 
                         DfPathElement pathNode = new DfPathElement(pathUrn, path.Name, pathDef, dfElement);
                         dfElement.AddChild(pathNode);

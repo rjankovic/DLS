@@ -12,6 +12,8 @@ namespace CD.DLS.DAL.Objects.Extract
         SsisProjectConnectionManager = 2,
         SsisProjectsParameters = 3,
         SsisProjectFile = 4,
+        SsisParametersFile = 5,
+        SsisConnectionManagerFile = 6,
         SsisPackageFile = 8,
         //SsrsFile = 5,
         TabularDB = 6,

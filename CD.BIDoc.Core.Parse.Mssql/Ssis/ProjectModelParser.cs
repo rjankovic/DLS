@@ -9,6 +9,7 @@ using CD.DLS.DAL.Objects.Extract;
 using CD.DLS.Common.Structures;
 using CD.DLS.DAL.Configuration;
 using CD.DLS.Parse.Mssql.Db;
+using CD.BIDoc.Core.Parse.Mssql.Ssis;
 
 namespace CD.DLS.Parse.Mssql.Ssis
 {
@@ -43,82 +44,82 @@ namespace CD.DLS.Parse.Mssql.Ssis
             _stageManager = stageManager;
         }
 
-        /// <summary>
-        /// Creates a model of the SSIS project and stores it in the FolderElement
-        /// </summary>
-        /// <param name="extractRequestId"></param>
-        /// <param name="configComponentId"></param>
-        /// <param name="folder"></param>
-        public void ParseProject(int configComponentId, FolderElement folder)
-        {
-            _configComponentId = configComponentId;
-            var component = _projectConfig.SsisComponents.First(x => x.SsisProjectComponentId == configComponentId);
-            var projectUrn = _urnBuilder.GetProjectUrn(folder, component.ProjectName);
-            var projectElement = new ProjectElement(projectUrn, component.ProjectName, projectUrn.Path, folder);
-            folder.AddChild(projectElement);
+        ///// <summary>
+        ///// Creates a model of the SSIS project and stores it in the FolderElement
+        ///// </summary>
+        ///// <param name="extractRequestId"></param>
+        ///// <param name="configComponentId"></param>
+        ///// <param name="folder"></param>
+        //public void ParseProject(int configComponentId, FolderElement folder)
+        //{
+        //    _configComponentId = configComponentId;
+        //    var component = _projectConfig.SsisComponents.First(x => x.SsisProjectComponentId == configComponentId);
+        //    var projectUrn = _urnBuilder.GetProjectUrn(folder, component.ProjectName);
+        //    var projectElement = new ProjectElement(projectUrn, component.ProjectName, projectUrn.Path, folder);
+        //    folder.AddChild(projectElement);
 
-            SsisIndex referrables = new SsisIndex();
+        //    SsisIndex referrables = new SsisIndex();
 
-            var parametersFiles = _stageManager.GetExtractItems(_extractId, _configComponentId, DLS.DAL.Objects.Extract.ExtractTypeEnum.SsisProjectsParameters);
-            var parametersFile = (SsisProjectParameters)(parametersFiles[0]);
+        //    var parametersFiles = _stageManager.GetExtractItems(_extractId, _configComponentId, DLS.DAL.Objects.Extract.ExtractTypeEnum.SsisProjectsParameters);
+        //    var parametersFile = (SsisProjectParameters)(parametersFiles[0]);
 
-            foreach (var parameter in parametersFile.Parameters)
-            {
-                var parameterElement = AddProjectParameter(parameter, projectElement);
+        //    foreach (var parameter in parametersFile.Parameters)
+        //    {
+        //        var parameterElement = AddProjectParameter(parameter, projectElement);
 
-                var parameterReferenceName = parameterElement.GetExpressionReferenceName();
-                referrables.Add(parameterReferenceName, parameterReferenceName, parameterElement, projectElement);
-            }
+        //        var parameterReferenceName = parameterElement.GetExpressionReferenceName();
+        //        referrables.Add(parameterReferenceName, parameterReferenceName, parameterElement, projectElement);
+        //    }
 
-            ConnectionIndex projectConnections = new ConnectionIndex();
-            var connectionFiles = _stageManager.GetExtractItems(_extractId, _configComponentId, ExtractTypeEnum.SsisProjectConnectionManager);
+        //    ConnectionIndex projectConnections = new ConnectionIndex();
+        //    var connectionFiles = _stageManager.GetExtractItems(_extractId, _configComponentId, ExtractTypeEnum.SsisProjectConnectionManager);
 
-            foreach (SsisProjectConnectionManager connectionManager in connectionFiles)
-            {
-                var conMgr = AddConnectionManager(connectionManager.ConnectionManager, projectElement, referrables);
-                projectConnections.Add(conMgr);
-            }
+        //    foreach (SsisProjectConnectionManager connectionManager in connectionFiles)
+        //    {
+        //        var conMgr = AddConnectionManager(connectionManager.ConnectionManager, projectElement, referrables);
+        //        projectConnections.Add(conMgr);
+        //    }
 
-            Dictionary<string, string> packageNamesToUrns = new Dictionary<string, string>();
-            List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames = new List<Tuple<ExecutePackageTaskElement, string>>();
-            List<PackageElement> packageNodes = new List<PackageElement>();
+        //    Dictionary<string, string> packageNamesToUrns = new Dictionary<string, string>();
+        //    List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames = new List<Tuple<ExecutePackageTaskElement, string>>();
+        //    List<PackageElement> packageNodes = new List<PackageElement>();
 
-            var packageFiles = _stageManager.GetExtractItems(_extractId, _configComponentId, ExtractTypeEnum.SsisPackage);
+        //    var packageFiles = _stageManager.GetExtractItems(_extractId, _configComponentId, ExtractTypeEnum.SsisPackage);
 
-            foreach (var package in packageFiles)
-            {
-                var urn = _urnBuilder.GetPackageUrn(projectElement, package.Name);
-                packageNamesToUrns.Add(package.Name, urn.Path);
-            }
+        //    foreach (var package in packageFiles)
+        //    {
+        //        var urn = _urnBuilder.GetPackageUrn(projectElement, package.Name);
+        //        packageNamesToUrns.Add(package.Name, urn.Path);
+        //    }
 
-            //var packageFilter = _settings.PackageFilter;
-            HashSet<string> failedPackageLoads = new HashSet<string>();
-            foreach (SsisPackage package in packageFiles)
-            {
-                ConfigManager.Log.Info(string.Format("Parsing SSIS package {0}", package.Name));
-                var pkgNode = AddPackage(package, projectElement, execPackageTasksPackageNames, referrables, projectConnections);
-                packageNodes.Add(pkgNode);
-            }
+        //    //var packageFilter = _settings.PackageFilter;
+        //    HashSet<string> failedPackageLoads = new HashSet<string>();
+        //    foreach (SsisPackage package in packageFiles)
+        //    {
+        //        ConfigManager.Log.Info(string.Format("Parsing SSIS package {0}", package.Name));
+        //        var pkgNode = AddPackage(package, projectElement, execPackageTasksPackageNames, referrables, projectConnections);
+        //        packageNodes.Add(pkgNode);
+        //    }
 
-            foreach (var execTask in execPackageTasksPackageNames)
-            {
-                if (execTask.Item2 == string.Empty)
-                {
-                    continue;
-                }
-                if(!packageNamesToUrns.ContainsKey(execTask.Item2.ToLower()))
-                {
-                    continue;
-                }
-                var urn = packageNamesToUrns[execTask.Item2.ToLower()];
-                if (failedPackageLoads.Contains(urn))
-                {
-                    continue;
-                }
-                var targetPackage = packageNodes.First(x => x.RefPath.Path == urn);
-                execTask.Item1.Package = targetPackage;
-            }
-        }
+        //    foreach (var execTask in execPackageTasksPackageNames)
+        //    {
+        //        if (execTask.Item2 == string.Empty)
+        //        {
+        //            continue;
+        //        }
+        //        if(!packageNamesToUrns.ContainsKey(execTask.Item2.ToLower()))
+        //        {
+        //            continue;
+        //        }
+        //        var urn = packageNamesToUrns[execTask.Item2.ToLower()];
+        //        if (failedPackageLoads.Contains(urn))
+        //        {
+        //            continue;
+        //        }
+        //        var targetPackage = packageNodes.First(x => x.RefPath.Path == urn);
+        //        execTask.Item1.Package = targetPackage;
+        //    }
+        //}
 
         public void ParsePackage(int configComponentId, ProjectElement projectElementShallow, 
             PackageElement packageElement, SsisPackage packageExtract)
@@ -157,7 +158,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             HashSet<string> failedPackageLoads = new HashSet<string>();
             //foreach (SsisPackage package in packageFiles)
             //{
-            ConfigManager.Log.Info(string.Format("Parsing SSIS package {0}", packageExtract.Name));
+            ConfigManager.Log.Info(string.Format("Parsing SSIS package {0}", packageExtract.PackageName));
             PackageElement pkgNode = null;
             try
             {
@@ -198,7 +199,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             }
         }
 
-        public ProjectElement ParseProjectShallow(int configComponentId, FolderElement folder)
+        public ProjectElement ParseProjectShallow(int configComponentId, FolderElement folder, SsisXmlProvider xmlProvider)
         {
             _configComponentId = configComponentId;
             var component = _projectConfig.SsisComponents.First(x => x.SsisProjectComponentId == configComponentId);
@@ -208,10 +209,11 @@ namespace CD.DLS.Parse.Mssql.Ssis
 
             SsisIndex referrables = new SsisIndex();
 
-            var parametersFiles = _stageManager.GetExtractItems(_extractId, _configComponentId, DLS.DAL.Objects.Extract.ExtractTypeEnum.SsisProjectsParameters);
-            var parametersFile = (SsisProjectParameters)(parametersFiles[0]);
+            //var parametersFiles = _stageManager.GetExtractItems(_extractId, _configComponentId, DLS.DAL.Objects.Extract.ExtractTypeEnum.SsisProjectsParameters);
+            //var parametersFile = (SsisProjectParameters)(parametersFiles[0]);
+            var project = xmlProvider.Project;
 
-            foreach (var parameter in parametersFile.Parameters)
+            foreach (var parameter in project.ProjectParameters)
             {
                 var parameterElement = AddProjectParameter(parameter, projectElement);
 
@@ -220,11 +222,11 @@ namespace CD.DLS.Parse.Mssql.Ssis
             }
 
             ConnectionIndex projectConnections = new ConnectionIndex();
-            var connectionFiles = _stageManager.GetExtractItems(_extractId, _configComponentId, ExtractTypeEnum.SsisProjectConnectionManager);
+            //var connectionFiles = _stageManager.GetExtractItems(_extractId, _configComponentId, ExtractTypeEnum.SsisProjectConnectionManager);
 
-            foreach (SsisProjectConnectionManager connectionManager in connectionFiles)
+            foreach (var connectionManager in project.ProjectConnectionManagers)
             {
-                var conMgr = AddConnectionManager(connectionManager.ConnectionManager, projectElement, referrables);
+                var conMgr = AddConnectionManager(connectionManager, projectElement, referrables);
                 projectConnections.Add(conMgr);
             }
 
@@ -315,8 +317,8 @@ namespace CD.DLS.Parse.Mssql.Ssis
             // referenced by IDs
             ConnectionIndex packageConnections = new ConnectionIndex(projectConnections);
 
-            var refPath = _urnBuilder.GetPackageUrn(projectElement, package.Name);// packageInfo.Urn;
-            PackageElement packageElement = new PackageElement(refPath, package.Name, null /* definition*/, projectElement);
+            var refPath = _urnBuilder.GetPackageUrn(projectElement, package.PackageName);// packageInfo.Urn;
+            PackageElement packageElement = new PackageElement(refPath, package.PackageName, null /* definition*/, projectElement);
             projectElement.AddChild(packageElement);
             ParsePackageDeep(packageElement, package, projectElement,
                 execPackageTasksPackageNames, projectReferrables, projectConnections);
@@ -331,13 +333,13 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
             // referenced by IDs
             ConnectionIndex packageConnections = new ConnectionIndex(projectConnections);
 
-            var refPath = _urnBuilder.GetPackageUrn(projectElement, package.Name);// packageInfo.Urn;
+            var refPath = _urnBuilder.GetPackageUrn(projectElement, package.PackageName);// packageInfo.Urn;
             XmlElement definitionXml = null;
-            var definition = _definitionSearcher.GetPackageDefinition(package.Container.ID, out definitionXml);
-            var layout = _definitionSearcher.GetPackageNodeLayout(package.Container.ID);
-            
-            packageElement.Position = layout.TopLeft;
-            packageElement.Size = layout.Size;
+            var definition = _definitionSearcher.GetPackageDefinition(package.Executable.ID, out definitionXml);
+            var layout = _definitionSearcher.GetPackageNodeLayout(package.Executable.ID);
+
+            packageElement.Position = package.Layout.TopLeft;
+            packageElement.Size = package.Layout.Size; // layout.Size;
 
             _tempTablesAvailable.Clear();
 
@@ -346,12 +348,12 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
             // Parameters
             foreach (var parameter in package.Parameters)
             {
-                var parameterElement = AddPackageParameter(parameter, packageElement, package.Container.ID);
+                var parameterElement = AddPackageParameter(parameter, packageElement, package.Executable.ID);
                 packageReferrables.Add(parameterElement.GetExpressionReferenceName(), parameter.ID, parameterElement, packageElement);
             }
 
             // Variables
-            AddVariables(package.Container, packageReferrables, packageElement, definitionXml);
+            AddVariables(package.Executable, packageReferrables, packageElement, definitionXml);
 
             // Connection managers
             foreach (SsisConnectionManager conMag in package.ConnectionManagers)
@@ -361,30 +363,30 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
                 {
                     continue;
                 }
-                var conMagElement = AddConnectionManager(conMag, packageElement, packageReferrables, package.Container.ID);
+                var conMagElement = AddConnectionManager(conMag, packageElement, packageReferrables, package.Executable.ID);
                 packageConnections.Add(conMagElement);
             }
 
             // Executables
             Dictionary<string, SsisModelElement> executablesToNodes = new Dictionary<string, SsisModelElement>();
-            var topolExecutables = TopologicalOrder(package.Container.Children, package.Container.PrecedenceConstraints);
+            var topolExecutables = TopologicalOrder(package.Executable.Children, package.Executable.PrecedenceConstraints);
             foreach (var executable in topolExecutables /*package.Executables*/)
             {
                 var execNode = AddExecutable(executable, package, packageElement, packageReferrables, packageConnections, execPackageTasksPackageNames);
                 if (execNode != null)
                 {
-                    executablesToNodes.Add(((DLS.DAL.Objects.Extract.DtsContainer)executable).ID, execNode);
+                    executablesToNodes.Add(((SsisExecutable)executable).ID, execNode);
                 }
             }
 
-            AddPrecedenceConstraints(package.Container.PrecedenceConstraints, executablesToNodes, packageElement, definitionXml, package);
+            AddPrecedenceConstraints(package.Executable.PrecedenceConstraints, executablesToNodes, packageElement, definitionXml, package);
 
-            AddExpressions(package.Container.Properties, packageReferrables, packageElement);
+            AddExpressions(package.Executable.Properties, packageReferrables, packageElement);
 
             return packageElement;
         }
 
-        private void AddVariables(DLS.DAL.Objects.Extract.DtsContainer container, SsisIndex referrables, SsisModelElement parent, XmlElement containerXmlElement)
+        private void AddVariables(SsisExecutable container, SsisIndex referrables, SsisModelElement parent, XmlElement containerXmlElement)
         {
             foreach (var variable in container.Variables)
             {
@@ -470,16 +472,16 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
             public SsisParameterDirection Direction { get; set; }
         }
 
-        private ExecutableElement AddExecutable(DLS.DAL.Objects.Extract.DtsContainer executable, SsisPackage package, SsisModelElement parentNode, 
+        private ExecutableElement AddExecutable(SsisExecutable executable, SsisPackage package, SsisModelElement parentNode, 
             SsisIndex referrables, ConnectionIndex connections, List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames)
         {
             // a single task is also a DtsContainer
             
             string designRefPath = null;
             XmlElement definitionElement = null;
-            var definition = _definitionSearcher.GetExecutableDefinition(executable.ID, package.Container.ID, out designRefPath, out definitionElement);
+            var definition = _definitionSearcher.GetExecutableDefinition(executable.ID, package.Executable.ID, out designRefPath, out definitionElement);
             //string definition = null;
-            var nodeLayout = _definitionSearcher.GetContainerDesign(package.Container.ID, designRefPath);
+            var nodeLayout = _definitionSearcher.GetContainerDesign(package.Executable.ID, designRefPath);
             //var nodeLayoutXml = _definitionSearcher.GetContainerDesignXml(package.Container.ID, designRefPath);
             var refPath = _urnBuilder.GetExecutableUrn(parentNode, executable.Name, executable.ID);
 
@@ -658,7 +660,7 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
                 SsisIndex containerReferrables = new SsisIndex(referrables);
                 AddVariables(executable, containerReferrables, resNode, definitionElement);
 
-                List<DLS.DAL.Objects.Extract.DtsContainer> exs;
+                List<SsisExecutable> exs;
                 List<SsisPrecedenceConstraint> precedenceConstraints;
                 GetExecutables(executable, out exs, out precedenceConstraints);
                 var topolExs = TopologicalOrder(exs, precedenceConstraints);
@@ -667,7 +669,7 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
 
                 if (exs != null)
                 {
-                    foreach (DLS.DAL.Objects.Extract.DtsContainer e in topolExs /*exs*/)
+                    foreach (SsisExecutable e in topolExs /*exs*/)
                     {
                         var execNode = AddExecutable(e, package, resNode, containerReferrables, connections, execPackageTasksPackageNames);
                         if (execNode != null)
@@ -694,7 +696,7 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
 
         }
 
-        private void GetExecutables(DLS.DAL.Objects.Extract.DtsContainer con, out List<DLS.DAL.Objects.Extract.DtsContainer> exs, out List<SsisPrecedenceConstraint> precedenceConstraints)
+        private void GetExecutables(SsisExecutable con, out List<SsisExecutable> exs, out List<SsisPrecedenceConstraint> precedenceConstraints)
         {
             exs = con.Children;
             precedenceConstraints = con.PrecedenceConstraints;
@@ -716,7 +718,7 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
                 string layoutRefId = null;
                 var definition = _definitionSearcher.GetPrecedenceConstraintDefinition(constraint.ID, containerDefinitionXml, out layoutRefId);
                 var urn = _urnBuilder.GetPrecedenceConstraintUrn(parent, constraint.Name);
-                var arrow = _definitionSearcher.GetPrecedenceConstraintArrow(package.Container.ID, layoutRefId);
+                var arrow = _definitionSearcher.GetPrecedenceConstraintArrow(package.Executable.ID, layoutRefId);
 
                 var constraintElement = new PrecedenceConstraintElement(urn, constraint.Name, definition, parent);
                 parent.AddChild(constraintElement);
@@ -729,12 +731,12 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
 
         // executablesToNodes.Add(((DtsContainer)e).ID, execNode);
 
-        private List<DLS.DAL.Objects.Extract.DtsContainer> TopologicalOrder(List<DLS.DAL.Objects.Extract.DtsContainer> executables, List<SsisPrecedenceConstraint> constraints)
+        private List<SsisExecutable> TopologicalOrder(List<SsisExecutable> executables, List<SsisPrecedenceConstraint> constraints)
         {
-            List<DLS.DAL.Objects.Extract.DtsContainer> res = new List<DLS.DAL.Objects.Extract.DtsContainer>();
+            List<SsisExecutable> res = new List<SsisExecutable>();
             
             Dictionary<string, List<string>> precedingExecutables = new Dictionary<string, List<string>>();
-            Dictionary<string, DLS.DAL.Objects.Extract.DtsContainer> executablesById = new Dictionary<string, DLS.DAL.Objects.Extract.DtsContainer>();
+            Dictionary<string, SsisExecutable> executablesById = new Dictionary<string, SsisExecutable>();
             foreach (var exec in executables)
             {
                 var execId = exec.ID;

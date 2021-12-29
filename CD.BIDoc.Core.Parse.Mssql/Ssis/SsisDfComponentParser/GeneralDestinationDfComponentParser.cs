@@ -9,6 +9,7 @@ using CD.DLS.Model.Mssql.Db;
 using CD.DLS.Model.Mssql.Ssis;
 using CD.DLS.DAL.Objects.Extract;
 using CD.DLS.Parse.Mssql.Db;
+using CD.BIDoc.Core.Parse.Mssql.Ssis;
 
 namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 {
@@ -93,12 +94,12 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             var destinationInput = context.Component.Inputs[0];
 
 
-            Dictionary<int, MssqlModelElement> externalIdsToNodes = new Dictionary<int, MssqlModelElement>();
+            Dictionary<string, MssqlModelElement> externalIdsToNodes = new Dictionary<string, MssqlModelElement>();
             foreach (var externalCol in destinationInput.ExternalColumns)
             {
                 if (targetColumnsFromTargetNames.ContainsKey(externalCol.Name))
                 {
-                    externalIdsToNodes.Add(externalCol.ID, targetColumnsFromTargetNames[externalCol.Name]);
+                    externalIdsToNodes.Add(externalCol.RefId, targetColumnsFromTargetNames[externalCol.Name]);
                 }
             }
 
@@ -113,7 +114,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             foreach (var inputColumn in destinationInput.Columns)
             {
-                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputColumn.Name, inputColumn.ID),
+                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputColumn.Name /*, inputColumn.ID*/),
                     inputColumn.Name, context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputColumn.IdentificationString), inputNode);
 
                 colNode.Precision = inputColumn.Precision;

@@ -751,9 +751,21 @@ namespace CD.DLS.Extract.Mssql.Ssis
                 {
                     files.Add(new SsisPackageFile() { FileName = entry.FileName, FullPath = Path.Combine(folderName, projectName, entry.FileName), Content = content });
                 }
+                else if (entry.FileName.EndsWith(".dtproj"))
+                {
+                    files.Add(new SsisProjectFile { FileName = entry.FileName, FullPath = Path.Combine(folderName, projectName, entry.FileName), Content = content });
+                }
+                else if (entry.FileName.EndsWith(".params"))
+                {
+                    files.Add(new SsisParametersFile  { FileName = entry.FileName, FullPath = Path.Combine(folderName, projectName, entry.FileName), Content = content });
+                }
+                else if(entry.FileName.EndsWith(".conmgr"))
+                {
+                    files.Add(new SsisConnectionManagerFile() { FileName = entry.FileName, FullPath = Path.Combine(folderName, projectName, entry.FileName), Content = content });
+                }
                 else
                 {
-                    files.Add(new SsisProjectFile() { FileName = entry.FileName, FullPath = Path.Combine(folderName, projectName, entry.FileName), Content = content });
+                    files.Add(new SsisProjectFile { FileName = entry.FileName, FullPath = Path.Combine(folderName, projectName, entry.FileName), Content = content });
                 }
             }
             

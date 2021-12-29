@@ -111,7 +111,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                         DfColumnElement dfColumn;
 
                         String lineageIdstr = definition.Substring(1, definition.Length - 1);
-                        int lineageId = Int32.Parse(lineageIdstr);
+                        var lineageId = lineageIdstr;
 
                         referrables.TryGetNodeByColumnLineageId(lineageId, out dfColumn);
                         //if (dfColumn != null)

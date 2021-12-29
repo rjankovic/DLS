@@ -8,6 +8,7 @@ using CD.DLS.Model.Mssql;
 using CD.DLS.Model.Mssql.Db;
 using CD.DLS.Model.Mssql.Ssis;
 using CD.DLS.DAL.Objects.Extract;
+using CD.BIDoc.Core.Parse.Mssql.Ssis;
 
 namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 {
@@ -36,14 +37,14 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             ComponentInput conversionInputMapping = new ComponentInput() { ModelElement = inputNode };
 
             context.ComponentIO.Inputs[conversionInput.IdString] = conversionInputMapping;
-            Dictionary<int, DfColumnElement> inputColumnsByLineageId = new Dictionary<int, DfColumnElement>();
+            Dictionary<string, DfColumnElement> inputColumnsByLineageId = new Dictionary<string, DfColumnElement>();
             foreach (var inputCol in conversionInput.Columns)
             {
                 var name = inputCol.Name;
                 var componentIdString = inputCol.IdentificationString;
                 var externalId = inputCol.ExternalColumnID;
                 
-                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name, inputCol.ID),
+                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name /*, inputCol.ID*/),
                     inputCol.Name, context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.IdentificationString), inputNode);
 
                 colNode.Precision = inputCol.Precision;
@@ -82,7 +83,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             foreach (var outputCol in conversionOutput.Columns)
             {
-                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name, outputCol.ID),
+                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name/*, outputCol.ID*/),
                     outputCol.Name, context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.IdentificationString), outputNode);
 
                 colNode.Precision = outputCol.Precision;
@@ -93,7 +94,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                 outputNode.AddChild(colNode);
                 conversionOutputMapping[outputCol.Name] = colNode;
                 
-                int sourceColId = int.Parse(outputCol.GetPropertyValue("SourceInputColumnLineageID"));
+                var sourceColId = outputCol.GetPropertyValue("SourceInputColumnLineageID");
 
                 colNode.SourceDfColumn = inputColumnsByLineageId[sourceColId];
 

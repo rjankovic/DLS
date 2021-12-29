@@ -148,6 +148,7 @@
     <Compile Include="Ssis\SsisIndex.cs" />
     <Compile Include="Ssis\SsisIndexBuilder.cs" />
     <Compile Include="Ssis\SsisModelExtractor.cs" />
+    <Compile Include="Ssis\SsisXmlObjects.cs" />
     <Compile Include="Ssis\SsisXmlProvider.cs" />
     <Compile Include="Ssis\UrnBuilder.cs" />
     <Compile Include="Ssrs\ExpressionGrammar.cs" />

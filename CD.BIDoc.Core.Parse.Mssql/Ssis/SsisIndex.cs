@@ -26,7 +26,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
         private readonly Dictionary<string, Referrable> _referrablesById;
         private readonly Dictionary<string, Referrable> _definingElementsByRefPath;
         private readonly Dictionary<string, DfColumnElement> _columnElementsByName;
-        private readonly Dictionary<int, DfColumnElement> _columnElementsByLineageId;
+        private readonly Dictionary<string, DfColumnElement> _columnElementsByLineageId;
         /// <summary>
         /// Creates an empty index.
         /// </summary>
@@ -36,7 +36,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             _referrablesById = new Dictionary<string, Referrable>();
             _definingElementsByRefPath = new Dictionary<string, Referrable>();
             _columnElementsByName = new Dictionary<string, DfColumnElement>();
-            _columnElementsByLineageId = new Dictionary<int, DfColumnElement>();
+            _columnElementsByLineageId = new Dictionary<string, DfColumnElement>();
 
         }
         /// <summary>
@@ -106,7 +106,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             return null;
         }
 
-        public bool TryGetNodeByColumnLineageId(int lineageID, out DfColumnElement node)
+        public bool TryGetNodeByColumnLineageId(string lineageID, out DfColumnElement node)
         {
             DfColumnElement dfColumnElement;
             if (_columnElementsByLineageId.TryGetValue(lineageID, out dfColumnElement))
@@ -132,7 +132,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             }
         }
 
-        public void AddColumn(int lineageId, DfColumnElement dfColumn)
+        public void AddColumn(string lineageId, DfColumnElement dfColumn)
         {
             _columnElementsByLineageId.Add(lineageId, dfColumn);
         }

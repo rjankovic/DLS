@@ -49,9 +49,9 @@ namespace CD.DLS.DAL.Objects.SsisDiagram
                 return PointOrientationEnum.Down;
             }
         }
-        
+
     }
-    
+
     public class DesignBlock
     {
         public DesignPoint Position { get; set; }

@@ -18,4 +18,18 @@ namespace CD.DLS.API.Query
         public int ElementId { get; set; }
         public int RequestedElementId { get; set; }
     }
+
+    //public class DesignBlock
+    //{
+    //    public DesignPoint Position { get; set; }
+    //    public DesignPoint Size { get; set; }
+    //    public List<DesignBlock> ChildBlocks { get; set; }
+
+    //    public List<DesignArrow> Arrows { get; set; }
+    //    public string RefPath { get; set; }
+    //    public int ElementId { get; set; }
+    //    public string ElementType { get; set; }
+    //    public string Name { get; set; }
+
+    //}
 }

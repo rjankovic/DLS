@@ -8,6 +8,7 @@ using CD.DLS.Model.Mssql;
 using CD.DLS.Model.Mssql.Db;
 using CD.DLS.Model.Mssql.Ssis;
 using CD.DLS.DAL.Objects.Extract;
+using CD.BIDoc.Core.Parse.Mssql.Ssis;
 
 namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 {
@@ -25,7 +26,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             var componentElement = new DfMergeJoinElement(context.ComponentRefPath, context.Component.Name, context.ComponentDefinitionXml.OuterXml, context.DfElement);
             context.DfElement.AddChild(componentElement);
 
-            Dictionary<int, DfColumnElement> inputColumnsById = new Dictionary<int, DfColumnElement>();
+            Dictionary<string, DfColumnElement> inputColumnsById = new Dictionary<string, DfColumnElement>();
 
             foreach (var input in context.Component.Inputs) {
 
@@ -46,7 +47,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     var componentIdString = inputCol.IdentificationString;
                     var externalId = inputCol.ExternalColumnID;
 
-                    DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name, inputCol.ID),
+                    DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name /*, inputCol.ID*/),
                         inputCol.Name, context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.IdentificationString), inputNode);
 
                     colNode.Precision = inputCol.Precision;
@@ -57,7 +58,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     inputNode.AddChild(colNode);
 
                     mergeJoinInputMapping[inputCol.Name] = colNode;
-                    inputColumnsById[inputCol.ID] = colNode;
+                    inputColumnsById[inputCol.LineageID] = colNode;
 
                 }
             }
@@ -89,7 +90,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             foreach (var outputCol in mergeJoinOutput.Columns)
             {
-                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name, outputCol.ID), outputCol.Name,
+                DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name /*, outputCol.ID*/), outputCol.Name,
                     context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.IdentificationString), outputNode);
 
                 colNode.Precision = outputCol.Precision;
@@ -100,7 +101,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                 outputNode.AddChild(colNode);
                 mergeJoinOutputMapping[outputCol.Name] = colNode;
 
-                int sourceColId = int.Parse(outputCol.GetPropertyValue("InputColumnID"));
+                var sourceColId = outputCol.GetPropertyValue("InputColumnID");
 
                 colNode.SourceDfColumn = inputColumnsById[sourceColId];
                 /*
