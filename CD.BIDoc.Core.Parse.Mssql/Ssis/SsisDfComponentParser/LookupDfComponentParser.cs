@@ -18,7 +18,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.ContractBase == "Lookup";
+            return component.Contract.Contains("Lookup");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -80,13 +80,13 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     var lookupInput = context.Component.Inputs[0];
                     XmlElement inputDefinitionXml = null;
                     DfInputElement inputNode = new DfInputElement(context.UrnBuilder.GetDfInputUrn(componentElement, lookupInput.Name),
-                        lookupInput.Name, context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, lookupInput.IdString, out inputDefinitionXml), componentElement);
+                        lookupInput.Name, context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, lookupInput.RefId, out inputDefinitionXml), componentElement);
                     componentElement.AddChild(inputNode);
 
                     inputNode.InputType = DfInputTypeEnum.Input;
 
                     ComponentInput lookupInputMapping = new ComponentInput() { ModelElement = inputNode };
-                    context.ComponentIO.Inputs[lookupInput.IdString] = lookupInputMapping;
+                    context.ComponentIO.Inputs[lookupInput.RefId] = lookupInputMapping;
                     List<DfColumnElement> lookupJoinColumns = new List<DfColumnElement>();
 
                     SsisDfOutput matchOutput = null;
@@ -104,12 +104,12 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
                     XmlElement outputDefinitionXml = null;
                     DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, matchOutput.Name), matchOutput.Name, context.DefinitionSearcher
-                        .GetDfComponentOutputDefinition(context.ComponentDefinitionXml, matchOutput.IdString, out outputDefinitionXml), componentElement);
+                        .GetDfComponentOutputDefinition(context.ComponentDefinitionXml, matchOutput.RefId, out outputDefinitionXml), componentElement);
                     componentElement.AddChild(outputNode);
                     outputNode.OutputType = matchOutput.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
 
                     ComponentOutput lookupMatchOutputMapping = new ComponentOutput() { ModelElement = outputNode };
-                    context.ComponentIO.Outputs[matchOutput.IdString] = lookupMatchOutputMapping;
+                    context.ComponentIO.Outputs[matchOutput.RefId] = lookupMatchOutputMapping;
 
                     foreach (var inputCol in lookupInput.Columns)
                     {

@@ -18,7 +18,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.ContractBase == "OLE DB Source" || component.ContractBase == "ODBC Source";
+            return component.Contract.Contains("OLE DB Source") || component.Contract.Contains("ODBC Source");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -289,7 +289,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             XmlElement outputDefinitionXml = null;
             DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, sourceOutput.Name),
-                sourceOutput.Name, context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, sourceOutput.IdString, out outputDefinitionXml), componentElement);
+                sourceOutput.Name, context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, sourceOutput.RefId, out outputDefinitionXml), componentElement);
             outputNode.OutputType = sourceOutput.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
             componentElement.AddChild(outputNode);
 
@@ -297,7 +297,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             //var sourceOutputColMapping = componentMapping.AddOutput(sourceOutput.IdentificationString, outputNode);
 
             ComponentOutput sourceOutputColMapping = new ComponentOutput() { ModelElement = outputNode };
-            context.ComponentIO.Outputs[sourceOutput.IdString] = sourceOutputColMapping;
+            context.ComponentIO.Outputs[sourceOutput.RefId] = sourceOutputColMapping;
 
 
 

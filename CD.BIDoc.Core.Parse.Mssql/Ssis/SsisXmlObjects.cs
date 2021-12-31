@@ -88,13 +88,13 @@ namespace CD.BIDoc.Core.Parse.Mssql.Ssis
     public class SsisExecutable : SsisDesignObject
     {
         public string Name { get; set; }
-        public List<SsisVariable> Variables { get; set; }
+        public List<SsisVariable> Variables { get; set; } = new List<SsisVariable>();
         //public List<SsisExpression> Expressions { get; set; }
-        public List<SsisExecutable> Children { get; set; }
+        public List<SsisExecutable> Children { get; set; } = new List<SsisExecutable>();
 
 
         public bool Enabled { get; set; }
-        public List<SsisPrecedenceConstraint> PrecedenceConstraints { get; set; }
+        public List<SsisPrecedenceConstraint> PrecedenceConstraints { get; set; } = new List<SsisPrecedenceConstraint>();
         public string CreationName { get; set; }
         public string ID { get; set; }
         //public string TypeName { get; set; }
@@ -121,13 +121,13 @@ namespace CD.BIDoc.Core.Parse.Mssql.Ssis
         public string ConnectionID { get; set; }
         public string StatementSource { get; set; }
         public string StatementSourceType { get; set; }
-        public List<SsisParameterMapping> Parameters { get; set; }
+        public List<SsisParameterMapping> Parameters { get; set; } = new List<SsisParameterMapping>();
     }
 
     public class SsisDfTask : SsisTask
     {
-        public List<SsisDfComponent> Components { get; set; }
-        public List<SsisDfPath> Paths { get; set; }
+        public List<SsisDfComponent> Components { get; set; } = new List<SsisDfComponent>();
+        public List<SsisDfPath> Paths { get; set; } = new List<SsisDfPath>();
     }
 
     public class SsisDfComponent : SsisDesignObject
@@ -135,15 +135,15 @@ namespace CD.BIDoc.Core.Parse.Mssql.Ssis
         public string Name { get; set; }
 
         public string Contract { get; set; }
-        public string ContractBase { get; set; }
-        public string ObjectType { get; set; }
-        public string IdString { get; set; }
+        //public string ContractBase { get; set; }
+        //public string ObjectType { get; set; }
+        //public string IdString { get; set; }
         public string ClassId { get; set; }
         //public int ID { get; set; }
 
-        public List<SsisDfInput> Inputs { get; set; }
-        public List<SsisDfOutput> Outputs { get; set; }
-        public List<SsisRuntimeConnection> Connections { get; set; }
+        public List<SsisDfInput> Inputs { get; set; } = new List<SsisDfInput>();
+        public List<SsisDfOutput> Outputs { get; set; } = new List<SsisDfOutput>();
+        public List<SsisRuntimeConnection> Connections { get; set; } = new List<SsisRuntimeConnection>();
     }
 
     public class SsisRuntimeConnection : SsisObject
@@ -158,9 +158,6 @@ namespace CD.BIDoc.Core.Parse.Mssql.Ssis
     {
         public string Name { get; set; }
         public string IdString { get; set; }
-        //public int ID { get; set; }
-        public string SourceComponentIdString { get; set; }
-        public string TargetComponentIdString { get; set; }
         public string SourceIdString { get; set; }
         public string TargetIdString { get; set; }
         public DesignArrow DesignArrow { get; set; }
@@ -170,11 +167,11 @@ namespace CD.BIDoc.Core.Parse.Mssql.Ssis
     {
         //public int ID { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
-        public string IdString { get; set; }
+        //public string Description { get; set; }
+        //public string IdString { get; set; }
 
-        public List<DfColumn> Columns { get; set; }
-        public List<DfColumn> ExternalColumns { get; set; }
+        public List<DfColumn> Columns { get; set; } = new List<DfColumn>();
+        public List<DfColumn> ExternalColumns { get; set; } = new List<DfColumn>();
 
     }
 

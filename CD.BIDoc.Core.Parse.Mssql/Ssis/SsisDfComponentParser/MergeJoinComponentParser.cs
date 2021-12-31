@@ -18,7 +18,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.ContractBase == "Merge Join";
+            return component.Contract.Contains("Merge Join");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -32,13 +32,13 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
                 XmlElement inputDefinitionXml = null;
                 DfInputElement inputNode = new DfInputElement(context.UrnBuilder.GetDfInputUrn(componentElement, input.Name), input.Name,
-                    context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, input.IdString, out inputDefinitionXml), componentElement);
+                    context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, input.RefId, out inputDefinitionXml), componentElement);
                 componentElement.AddChild(inputNode);
 
                 ComponentInput mergeJoinInputMapping = new ComponentInput() { ModelElement = inputNode };
                 inputNode.InputType = DfInputTypeEnum.Input;
 
-                context.ComponentIO.Inputs[input.IdString] = mergeJoinInputMapping;
+                context.ComponentIO.Inputs[input.RefId] = mergeJoinInputMapping;
 
 
                 foreach (var inputCol in input.Columns)
@@ -79,12 +79,12 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             /*create model component*/
             XmlElement outputDefinitionXml = null;
             DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, mergeJoinOutput.Name), mergeJoinOutput.Name,
-                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, mergeJoinOutput.IdString, out outputDefinitionXml), componentElement);
+                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, mergeJoinOutput.RefId, out outputDefinitionXml), componentElement);
             componentElement.AddChild(outputNode);
             outputNode.OutputType = mergeJoinOutput.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
 
             ComponentOutput mergeJoinOutputMapping = new ComponentOutput() { ModelElement = outputNode };
-            context.ComponentIO.Outputs[mergeJoinOutput.IdString] = mergeJoinOutputMapping;
+            context.ComponentIO.Outputs[mergeJoinOutput.RefId] = mergeJoinOutputMapping;
 
             Dictionary<int, DfColumnElement> outputColsById = new Dictionary<int, DfColumnElement>();
 

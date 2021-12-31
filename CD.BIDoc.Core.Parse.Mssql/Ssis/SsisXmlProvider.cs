@@ -152,7 +152,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
 
             //    //files.Add(new SsisFile() { FileName = entry.FileName, FullPath = Path.Combine(folderName, projectName, entry.FileName), Content = content, XmlContent = doc, 
             //    // DesignTimeProperties = designDoc, NodeLayoutDesigns = nodeLayouts, EdgeLayouts = edgeLayouts, NodeLayoutDesignXmls = nodeLayoutXmls });
-                
+
 
             //}
 
@@ -190,7 +190,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             LoadPackageNodeDesigns(xml.DocumentElement);
 
             var connectionManagersRoot = xml.GetElementsByTagName("DTS:ConnectionManagers");
-            if(connectionManagersRoot.Count > 0)
+            if (connectionManagersRoot.Count > 0)
             {
                 var connMgrsRoot = connectionManagersRoot[0];
                 foreach (XmlElement conMgr in connMgrsRoot.ChildNodes)
@@ -203,7 +203,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             pkg.PackageName = packageFile.Name;
 
             var parametersRootList = xml.GetElementsByTagName("DTS:PackageParameters");
-            
+
             if (parametersRootList.Count > 0)
             {
                 var parametersRoot = (XmlElement)parametersRootList[0];
@@ -273,20 +273,408 @@ namespace CD.DLS.Parse.Mssql.Ssis
         {
             SsisExecutable exec = new SsisExecutable();
 
+            var creationName = GetCreationName(xml);
+
+
+            var executablesListRoot = xml.GetElementsByTagName("DTS:Executables");
+            if (executablesListRoot.Count == 0)
+            {
+                exec = new SsisTask();
+            }
+
+            if (creationName.Contains("SQLTask"))
+            {
+                SsisSqlTask sqlTask = new SsisSqlTask();
+                exec = sqlTask;
+
+                sqlTask.StatementSourceType = "DirectInput";
+
+                var sqlData = (XmlElement)(xml.GetElementsByTagName("SQLTask:SqlTaskData")[0]);
+                sqlTask.ConnectionID = sqlData.GetAttribute("SQLTask:Connection");
+                var sourceType = sqlData.GetAttribute("SQLTask:SqlStmtSourceType");
+                if (!string.IsNullOrEmpty(sourceType))
+                {
+                    sqlTask.StatementSourceType = sourceType;
+                }
+                sqlTask.StatementSource = sqlData.GetAttribute("SQLTask:SqlStatementSource");
+                sqlTask.Parameters = new List<SsisParameterMapping>();
+
+                var paramXmls = sqlData.GetElementsByTagName("SQLTask:ParameterBinding");
+                foreach (XmlElement paramXml in paramXmls)
+                {
+                    var par = new SsisParameterMapping()
+                    {
+                        Direction = (SsisParameterDirection)Enum.Parse(typeof(SsisParameterDirection), paramXml.GetAttribute("SQLTask:ParameterDirection")),
+                        Name = paramXml.GetAttribute("SQLTask:ParameterName"),
+                        Variablename = paramXml.GetAttribute("SQLTask:DtsVariableName")
+                    };
+
+                    sqlTask.Parameters.Add(par);
+                }
+
+                //public string ConnectionID { get; set; }
+                //public string StatementSource { get; set; }
+                //public string StatementSourceType { get; set; }
+                //public List<SsisParameterMapping> Parameters { get; set; }
+
+                /*
+        <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{A3244E43-27DC-47C4-90CA-776CAAE750E5}"
+          SQLTask:SqlStmtSourceType="Variable"
+          SQLTask:SqlStatementSource="User::Variable1" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+        </DTS:ObjectData>
+                 */
+
+                /*
+<SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::Variable1"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="User::Variable1"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="2"
+            SQLTask:DtsVariableName="User::Variable1"
+            SQLTask:ParameterDirection="Output"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+                 */
+
+            }
+            else if (creationName.Contains("Pipeline"))
+            {
+                SsisDfTask dfTask = new SsisDfTask();
+                exec = dfTask;
+
+                var objectData = (XmlElement)(xml.GetElementsByTagName("DTS:ObjectData")[0]);
+                var pipeline = (XmlElement)(objectData.GetElementsByTagName("pipeline")[0]);
+                dfTask.Paths = GetDfPaths(pipeline);
+                dfTask.Components = GetDfComponents(pipeline);
+            }
+
             exec.ID = GetDtsId(xml);
             exec.Name = GetObjectName(xml);
             exec.RefId = GetRefId(xml);
-            exec.CreationName = GetCreationName(xml);
+            exec.CreationName = creationName;
             exec.Enabled = !GetDisabled(xml);
             exec.Layout = NodeLayoutDesigns[exec.ID];
             exec.Variables = GetVariables(xml);
+            exec.PrecedenceConstraints = GetPrecedenceContraints(xml);
+            exec.Layout = NodeLayoutDesigns[exec.RefId];
+            exec.XmlDefinition = xml.OuterXml;
 
+            var executablesNodes = xml.GetElementsByTagName("DTS:Executables");
+            if (executablesNodes.Count > 0)
+            {
+                var executablesNode = (XmlElement)(executablesNodes[0]);
+                foreach (XmlElement child in executablesNode.GetElementsByTagName("DTS:Executable"))
+                {
+                    var childX = LoadSsisExecutable(child);
+                    exec.Children.Add(childX);
+                }
+            }
+            
             return exec;
+        }
+
+        private List<SsisDfComponent> GetDfComponents(XmlElement pipeline)
+        {
+            List<SsisDfComponent> res = new List<SsisDfComponent>();
+            var componentsNode = (XmlElement)(pipeline.GetElementsByTagName("components")[0]);
+            foreach (XmlElement component in componentsNode.GetElementsByTagName("component"))
+            {
+                var cmp = new SsisDfComponent();
+                /*
+refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="GetAcm"
+                  
+                 */
+
+                var classId = component.GetAttribute("componentClassID");
+                cmp.ClassId = classId;
+                cmp.RefId = GetRefId(component);
+                cmp.Contract = component.GetAttribute("contractInfo");
+                cmp.Properties = GetDfProperties(component);
+
+
+                var inputsNodes = component.GetElementsByTagName("inputs");
+                var outputsNodes = component.GetElementsByTagName("outputs");
+
+                if (inputsNodes.Count > 0)
+                {
+                    foreach (XmlElement input in ((XmlElement)inputsNodes[0]).GetElementsByTagName("input"))
+                    {
+                        SsisDfInput ssisDfInput = new SsisDfInput()
+                        {
+                            Name = input.GetAttribute("name"),
+                            RefId = GetRefId(input),
+                            XmlDefinition = input.OuterXml
+                        };
+
+                        var inputColumnsNode = (XmlElement)(input.GetElementsByTagName("inputColumns")[0]);
+                        foreach (XmlElement inputCol in inputColumnsNode.GetElementsByTagName("inputColumn"))
+                        {
+                            DfColumn col = GetDfColumn(inputCol);
+                            ssisDfInput.Columns.Add(col);
+                        }
+
+                        var externalMetadataColumnsNode = (XmlElement)(input.GetElementsByTagName("externalMetadataColumns")[0]);
+                        foreach (XmlElement externalCol in externalMetadataColumnsNode.GetElementsByTagName("externalMetadataColumn"))
+                        {
+                            DfColumn col = GetDfColumn(externalCol);
+                            ssisDfInput.ExternalColumns.Add(col);
+                        }
+
+                        cmp.Inputs.Add(ssisDfInput);
+                    }
+                }
+
+                if (outputsNodes.Count > 0)
+                {
+                    foreach (XmlElement output in ((XmlElement)outputsNodes[0]).GetElementsByTagName("output"))
+                    {
+                        SsisDfOutput ssisDfOutput = new SsisDfOutput()
+                        {
+                            Name = output.GetAttribute("name"),
+                            RefId = GetRefId(output),
+                            XmlDefinition = output.OuterXml
+                        };
+
+                        var outputColumnsNode = (XmlElement)(output.GetElementsByTagName("outputColumns")[0]);
+                        foreach (XmlElement inputCol in outputColumnsNode.GetElementsByTagName("outputColumn"))
+                        {
+                            DfColumn col = GetDfColumn(inputCol);
+                            ssisDfOutput.Columns.Add(col);
+                        }
+
+                        var externalMetadataColumnsNode = (XmlElement)(output.GetElementsByTagName("externalMetadataColumns")[0]);
+                        foreach (XmlElement externalCol in externalMetadataColumnsNode.GetElementsByTagName("externalMetadataColumn"))
+                        {
+                            DfColumn col = GetDfColumn(externalCol);
+                            ssisDfOutput.ExternalColumns.Add(col);
+                        }
+
+                        cmp.Outputs.Add(ssisDfOutput);
+                    }
+
+                }
+
+
+                /*
+        public string Name { get; set; }
+        public string Contract { get; set; }
+        public string ContractBase { get; set; }
+        public string ObjectType { get; set; }
+        public string IdString { get; set; }
+        public string ClassId { get; set; }
+        //public int ID { get; set; }
+                 */
+
+                res.Add(cmp);
+            }
+
+            return res;
+        }
+
+        private DfColumn GetDfColumn(XmlElement inputCol)
+        {
+            /*
+<inputColumn
+                      refId="Package\Tabulka\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[rok_dane]"
+                      cachedDataType="i2"
+                      cachedName="rok_dane"
+                      externalMetadataColumnId="Package\Tabulka\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[rok_dane]"
+                      lineageId="Package\Tabulka\OLE DB Source.Outputs[OLE DB Source Output].Columns[rok_dane]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Tabulka\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ExtractId]"
+                      dataType="i4"
+                      name="ExtractId" />
+             */
+            /*
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public string IdentificationString { get; set; }
+        public string DataType { get; set; }
+        public int Length { get; set; }
+        public int Precision { get; set; }
+        public int Scale { get; set; }
+        public int CodePage { get; set; }
+        //public int MappedColumnID { get; set; }
+        public string ExternalColumnID { get; set; }
+        public string LineageID { get; set; }
+             */
+
+            DfColumn col = new DfColumn()
+            {
+                RefId = GetRefId(inputCol),
+                Name = inputCol.GetAttribute("name"),
+                LineageID = inputCol.GetAttribute("lineageId"),
+                ExternalColumnID = inputCol.GetAttribute("externalMetadataColumnId"),
+            };
+
+            if (string.IsNullOrEmpty(col.Name))
+            {
+                col.Name = inputCol.GetAttribute("cacheName");
+            }
+
+            return col;
+        }
+
+        private List<SsisProperty> GetDfProperties(XmlElement component)
+        {
+            /*
+<properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+             */
+            List<SsisProperty> props = new List<SsisProperty>();
+            var propsNode = (XmlElement)(component.GetElementsByTagName("properties")[0]);
+            var propsXml = propsNode.GetElementsByTagName("property");
+            foreach (XmlElement pxml in propsXml)
+            {
+                props.Add(new SsisProperty()
+                {
+                    Name = pxml.GetAttribute("Name"),
+                    Value = pxml.Value
+                }) ;
+            }
+
+            return props;
+        }
+
+        private List<SsisDfPath> GetDfPaths(XmlElement pipeline)
+        {
+            /*
+                <path
+                  refId="Package\Sequence Container\Load DimAcMAttended.Paths[New Output]"
+                  endId="Package\Sequence Container\Load DimAcMAttended\Insert Acm.Inputs[OLE DB Destination Input]"
+                  name="New Output"
+                  startId="Package\Sequence Container\Load DimAcMAttended\Slowly Changing Dimension.Outputs[New Output]" />
+                <path
+                  refId="Package\Sequence Container\Load DimAcMAttended.Paths[OLE DB Source Output]"
+                  endId="Package\Sequence Container\Load DimAcMAttended\Lookup SourceModifiedDate.Inputs[Lookup Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Sequence Container\Load DimAcMAttended\GetAcm.Outputs[OLE DB Source Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+             */
+
+            var pathsNode = (XmlElement)(pipeline.GetElementsByTagName("paths")[0]);
+            var paths = pathsNode.GetElementsByTagName("path");
+            List<SsisDfPath> res = new List<SsisDfPath>();
+            foreach (XmlElement path in paths)
+            {
+                res.Add(new SsisDfPath()
+                {
+                    RefId = GetRefId(path),
+                    SourceIdString = path.GetAttribute("startId"),
+                    TargetIdString = path.GetAttribute("endId")
+                }) ;
+            }
+            return res;
+        }
+
+        private List<SsisPrecedenceConstraint> GetPrecedenceContraints(XmlElement xml)
+        {
+            List<SsisPrecedenceConstraint> res = new List<SsisPrecedenceConstraint>();
+            /*
+            <DTS:PrecedenceConstraints>
+                    <DTS:PrecedenceConstraint
+                      DTS:refId="Package\Sequence Container.PrecedenceConstraints[Constraint]"
+                      DTS:CreationName=""
+                      DTS:DTSID="{2C49D1F6-3782-4D69-BBDB-E561726343D4}"
+                      DTS:From="Package\Sequence Container\Insert -1 record"
+                      DTS:LogicalAnd="True"
+                      DTS:ObjectName="Constraint"
+                      DTS:To="Package\Sequence Container\Load DimAcMAttended" />
+                  </DTS:PrecedenceConstraints>
+             */
+
+            var constraintList = xml.GetElementsByTagName("DTS:PrecedenceConstraints");
+
+            if (constraintList.Count == 0)
+            {
+                return res;
+            }
+
+            foreach (XmlElement pcx in constraintList[0].ChildNodes)
+            {
+                var pc = new SsisPrecedenceConstraint()
+                {
+                    XmlDefinition = pcx.OuterXml,
+                    ID = GetDtsId(pcx),
+                    RefId = GetRefId(pcx),
+                    PrecedenceExecutableID = pcx.GetAttribute("DTS:From"),
+                    ConstrainedExecutableID = pcx.GetAttribute("DTS:To"),
+                    Name = GetObjectName(pcx),
+                    DesignArrow = EdgeLayouts[GetRefId(pcx)]
+                };
+
+                res.Add(pc);
+            }
+
+            return res;
         }
 
         private List<SsisVariable> GetVariables(XmlElement xml)
         {
-            throw new NotImplementedException();
+            /*
+<DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F953744D-0ED4-4BA8-AF3E-7C1954631500}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ConnectionStringODS">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=localhost;Initial Catalog=SampleDSA;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;</DTS:VariableValue>
+    </DTS:Variable>
+             */
+
+            var variablesRootList = xml.GetElementsByTagName("DTS:Variable");
+            List<SsisVariable> vars = new List<SsisVariable>();
+            if (variablesRootList.Count == 0)
+            {
+                return vars;
+            }
+
+            foreach (XmlElement v in variablesRootList[0].ChildNodes)
+            {
+                SsisVariable vr = new SsisVariable()
+                {
+                    ID = GetDtsId(v),
+                    Name = GetObjectName(v),
+                    Namespace = v.GetAttribute("DTS:Namespace"),
+                    XmlDefinition = v.OuterXml
+                };
+
+                vr.QualifiedName = vr.Namespace + "::" + vr.Name;
+                vr.Value = ((XmlElement)v.GetElementsByTagName("DTS:VariableValue")[0]).Value;
+                vars.Add(vr);
+            }
+
+            return vars;
         }
 
         private void LoadProjectConnectionManager(SsisConnectionManagerFile conmgrFile)
@@ -403,7 +791,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             {
                 param.Value = prop.Value;
             }
-            
+
             return param;
         }
 
@@ -469,7 +857,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             }
 
             var traceUpNode = containerXmlContent.ParentNode;
-            while(traceUpNode != null)
+            while (traceUpNode != null)
             {
                 if (traceUpNode.Name == "DTS:Executable" && traceUpNode is XmlElement)
                 {
@@ -829,7 +1217,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             innerXml = (XmlElement)(outerTaskElem.GetElementsByTagName("pipeline")[0]);
             return innerXml.OuterXml;
         }
-        
+
         internal string GetDfComponentOutputDefinition(XmlElement componentDefinitionXml, string idString, out XmlElement definitionXml)
         {
             string componentPath = componentDefinitionXml.GetAttribute("refId");

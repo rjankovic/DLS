@@ -18,7 +18,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.ContractBase == "Pivot";
+            return component.Contract.Contains("Pivot");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -47,13 +47,13 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                 XmlElement inputDefinitionXml = null;
                 DfInputElement inputNode = new DfInputElement(context.UrnBuilder.GetDfInputUrn(componentElement, input.Name),
                         input.Name, context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml,
-                        input.IdString, out inputDefinitionXml), componentElement);
+                        input.RefId, out inputDefinitionXml), componentElement);
                 componentElement.AddChild(inputNode);
                 inputNode.InputType = DfInputTypeEnum.Input;
 
                 ComponentInput conversionInputMapping = new ComponentInput() { ModelElement = inputNode };
 
-                context.ComponentIO.Inputs[input.IdString] = conversionInputMapping;
+                context.ComponentIO.Inputs[input.RefId] = conversionInputMapping;
                 
                 foreach (var inputCol in input.Columns)
                 {
@@ -79,12 +79,12 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             XmlElement outputDefinitionXml = null;
             DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, pivotOutput.Name), pivotOutput.Name,
-                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, pivotOutput.IdString, out outputDefinitionXml), componentElement);
+                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, pivotOutput.RefId, out outputDefinitionXml), componentElement);
             componentElement.AddChild(outputNode);
             outputNode.OutputType = pivotOutput.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
 
             ComponentOutput pivotOutputMapping = new ComponentOutput() { ModelElement = outputNode };
-            context.ComponentIO.Outputs[pivotOutput.IdString] = pivotOutputMapping;
+            context.ComponentIO.Outputs[pivotOutput.RefId] = pivotOutputMapping;
 
             foreach (var outputCol in pivotOutput.Columns)
             {

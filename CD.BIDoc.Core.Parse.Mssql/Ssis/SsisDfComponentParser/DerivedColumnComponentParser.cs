@@ -19,7 +19,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.ContractBase == "Derived Column";
+            return component.Contract.Contains("Derived Column");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -38,13 +38,13 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
                 XmlElement inputDefinitionXml = null;
                 DfInputElement inputNode = new DfInputElement(context.UrnBuilder.GetDfInputUrn(componentElement, input.Name), input.Name,
-                    context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, input.IdString, out inputDefinitionXml), componentElement);
+                    context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, input.RefId, out inputDefinitionXml), componentElement);
                 componentElement.AddChild(inputNode);
 
                 ComponentInput derivedColumnInputMapping = new ComponentInput() { ModelElement = inputNode };
                 inputNode.InputType = DfInputTypeEnum.Input;
 
-                context.ComponentIO.Inputs[input.IdString] = derivedColumnInputMapping;
+                context.ComponentIO.Inputs[input.RefId] = derivedColumnInputMapping;
 
 
                 foreach (var inputCol in input.Columns)
@@ -93,12 +93,12 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             XmlElement outputDefinitionXml = null;
             DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, derivedColumnOutput.Name), derivedColumnOutput.Name,
-                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, derivedColumnOutput.IdString, out outputDefinitionXml), componentElement);
+                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, derivedColumnOutput.RefId, out outputDefinitionXml), componentElement);
             componentElement.AddChild(outputNode);
             outputNode.OutputType = derivedColumnOutput.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
 
             ComponentOutput derivedColumnOutputMapping = new ComponentOutput() { ModelElement = outputNode };
-            context.ComponentIO.Outputs[derivedColumnOutput.IdString] = derivedColumnOutputMapping;
+            context.ComponentIO.Outputs[derivedColumnOutput.RefId] = derivedColumnOutputMapping;
 
             Dictionary<int, DfColumnElement> outputColsById = new Dictionary<int, DfColumnElement>();
             Dictionary<String, SsisModelElement> expressionModelsByOutputColsLineageId = new Dictionary<String, SsisModelElement>();

@@ -18,7 +18,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.ContractBase == "Unpivot";
+            return component.Contract.Contains("Unpivot");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -43,12 +43,12 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             /*create model component*/
             XmlElement outputDefinitionXml = null;
             DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, unpivotOutput.Name), unpivotOutput.Name,
-                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, unpivotOutput.IdString, out outputDefinitionXml), componentElement);
+                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, unpivotOutput.RefId, out outputDefinitionXml), componentElement);
             componentElement.AddChild(outputNode);
             outputNode.OutputType = unpivotOutput.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
 
             ComponentOutput unpivotOutputMapping = new ComponentOutput() { ModelElement = outputNode };
-            context.ComponentIO.Outputs[unpivotOutput.IdString] = unpivotOutputMapping;
+            context.ComponentIO.Outputs[unpivotOutput.RefId] = unpivotOutputMapping;
 
             /*different for each component, creating cild of elements, use property*/
             Dictionary<string, DfColumnElement> outputColsByLineageId = new Dictionary<string, DfColumnElement>();
@@ -92,13 +92,13 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                 XmlElement inputDefinitionXml = null;
                 DfInputElement inputNode = new DfInputElement(context.UrnBuilder.GetDfInputUrn(componentElement, input.Name),
                     input.Name, context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml,
-                    input.IdString, out inputDefinitionXml), componentElement);
+                    input.RefId, out inputDefinitionXml), componentElement);
                 componentElement.AddChild(inputNode);
 
                 inputNode.InputType = DfInputTypeEnum.Input;
 
                 ComponentInput unpivotInputMapping = new ComponentInput() { ModelElement = inputNode };
-                context.ComponentIO.Inputs[input.IdString] = unpivotInputMapping;
+                context.ComponentIO.Inputs[input.RefId] = unpivotInputMapping;
 
                 Dictionary<int, DfColumnElement> inputColumnsByLineageId = new Dictionary<int, DfColumnElement>();
 

@@ -19,7 +19,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.ContractBase == "OLE DB Destination" || component.ContractBase == "ODBC Destination"; ;
+            return component.Contract.Contains("OLE DB Destination") || component.Contract.Contains("ODBC Destination"); ;
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -41,7 +41,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             string tgtTableName = string.Empty;
             string destinationType = string.Empty;
 
-            if (context.Component.ContractBase.Equals("OLE DB Destination"))
+            if (context.Component.Contract.Contains("OLE DB Destination"))
             {
                 destinationType = "OpenRowset";
             } else
@@ -105,12 +105,12 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             XmlElement inputDefinitionXml = null;
             DfInputElement inputNode = new DfInputElement(context.UrnBuilder.GetDfInputUrn(componentElement, destinationInput.Name), destinationInput.Name,
-                context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, destinationInput.IdString, out inputDefinitionXml), componentElement);
+                context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, destinationInput.RefId, out inputDefinitionXml), componentElement);
             componentElement.AddChild(inputNode);
             inputNode.InputType = DfInputTypeEnum.Input;
 
             ComponentInput destinationInputMapping = new ComponentInput() { ModelElement = inputNode };
-            context.ComponentIO.Inputs[destinationInput.IdString] = destinationInputMapping;
+            context.ComponentIO.Inputs[destinationInput.RefId] = destinationInputMapping;
 
             foreach (var inputColumn in destinationInput.Columns)
             {

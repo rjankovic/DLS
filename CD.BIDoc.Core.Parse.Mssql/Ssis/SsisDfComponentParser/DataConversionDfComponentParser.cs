@@ -18,7 +18,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.ContractBase == "Data Conversion";
+            return component.Contract.Contains("Data Conversion");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -29,14 +29,14 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             var conversionInput = context.Component.Inputs[0];
             XmlElement inputDefinitionXml = null;
             DfInputElement inputNode = new DfInputElement(context.UrnBuilder.GetDfInputUrn(componentElement, conversionInput.Name), conversionInput.Name,
-                context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, conversionInput.IdString, out inputDefinitionXml), componentElement);
+                context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, conversionInput.RefId, out inputDefinitionXml), componentElement);
             componentElement.AddChild(inputNode);
 
             inputNode.InputType = DfInputTypeEnum.Input;
 
             ComponentInput conversionInputMapping = new ComponentInput() { ModelElement = inputNode };
 
-            context.ComponentIO.Inputs[conversionInput.IdString] = conversionInputMapping;
+            context.ComponentIO.Inputs[conversionInput.RefId] = conversionInputMapping;
             Dictionary<string, DfColumnElement> inputColumnsByLineageId = new Dictionary<string, DfColumnElement>();
             foreach (var inputCol in conversionInput.Columns)
             {
@@ -74,12 +74,12 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             XmlElement outputDefinitionXml = null;
             DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, conversionOutput.Name), conversionOutput.Name,
-                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, conversionOutput.IdString, out outputDefinitionXml), componentElement);
+                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, conversionOutput.RefId, out outputDefinitionXml), componentElement);
             componentElement.AddChild(outputNode);
             outputNode.OutputType = conversionOutput.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
 
             ComponentOutput conversionOutputMapping = new ComponentOutput() { ModelElement = outputNode };
-            context.ComponentIO.Outputs[conversionOutput.IdString] = conversionOutputMapping;
+            context.ComponentIO.Outputs[conversionOutput.RefId] = conversionOutputMapping;
 
             foreach (var outputCol in conversionOutput.Columns)
             {

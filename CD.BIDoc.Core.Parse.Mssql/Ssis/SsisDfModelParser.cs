@@ -76,19 +76,19 @@ namespace CD.DLS.Parse.Mssql.Ssis
 
             foreach (SsisDfComponent component in components)
             {
-                var fullName = component.ObjectType; // .GetType().FullName;
+                //var fullName = component.ObjectType; // .GetType().FullName;
 
                 var allIO = new ComponentAllIO();
-                cummulativeIO[component.IdString] = allIO;
+                cummulativeIO[component.RefId] = allIO;
 
                 var componentInputMapping = allIO.Inputs;
                 var componentOutputMapping = allIO.Outputs;
 
                 var contract = component.Contract;
                 var contractBase = contract.Split(';')[0];
-                var objType = component.ObjectType;
-                var objTypeString = component.ObjectType.ToString();
-                var idString = component.IdString;
+                //var objType = component.ObjectType;
+                //var objTypeString = component.ObjectType.ToString();
+                var idString = component.RefId;
                 var classId = component.ClassId;
                 var properties = component.Properties;
                 //PropertyCollection props = new PropertyCollection(properties);
@@ -96,9 +96,9 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 var layout = _definitionSearcher.GetContainerDesign(package.Executable.ID, parentLayoutRefPath + "\\" + idString);
                 var isSource = contractBase.EndsWith("Source");
 
-                var componentUrn = isSource ? _urnBuilder.GetDfSourceComponentUrn(dfElement, component.IdString) : _urnBuilder.GetDfComponentUrn(dfElement, component.IdString);
+                var componentUrn = isSource ? _urnBuilder.GetDfSourceComponentUrn(dfElement, component.RefId) : _urnBuilder.GetDfComponentUrn(dfElement, component.RefId);
                 XmlElement componentDefinitionXml;
-                var componentDefinition = _definitionSearcher.GetDfComponentDefinition(flowXml, parentLayoutRefPath, component.IdString, out componentDefinitionXml);
+                var componentDefinition = _definitionSearcher.GetDfComponentDefinition(flowXml, parentLayoutRefPath, component.RefId, out componentDefinitionXml);
 
                 DfComponentElement componentElement = null;
 
@@ -136,19 +136,19 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 {
                     DfInputElement inputNode = null;
                     XmlElement inputDefinitionXml = null;
-                    var inputDefinition = _definitionSearcher.GetDfComponentInputDefinition(componentDefinitionXml, input.IdString, out inputDefinitionXml);
+                    var inputDefinition = _definitionSearcher.GetDfComponentInputDefinition(componentDefinitionXml, input.RefId, out inputDefinitionXml);
 
 
-                    if (!componentInputMapping.ContainsKey(input.IdString))
+                    if (!componentInputMapping.ContainsKey(input.RefId))
                     {
                         inputNode = new DfInputElement(_urnBuilder.GetDfInputUrn(componentElement, input.Name), input.Name, inputDefinition, componentElement);
                         componentElement.AddChild(inputNode);
                         inputNode.InputType = DfInputTypeEnum.Input;
                         ComponentInput colCollection = new ComponentInput() { ModelElement = inputNode };
-                        componentInputMapping[input.IdString] = colCollection;
+                        componentInputMapping[input.RefId] = colCollection;
                     }
 
-                    var inputMapping = componentInputMapping[input.IdString];
+                    var inputMapping = componentInputMapping[input.RefId];
                     inputNode = inputMapping.ModelElement;
 
                     foreach (var inputCol in input.Columns)
@@ -180,21 +180,21 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 {
                     DfOutputElement outputNode = null;
                     XmlElement outputDefinitionXml = null;
-                    var outputDefinition = _definitionSearcher.GetDfComponentOutputDefinition(componentDefinitionXml, output.IdString, out outputDefinitionXml);
+                    var outputDefinition = _definitionSearcher.GetDfComponentOutputDefinition(componentDefinitionXml, output.RefId, out outputDefinitionXml);
 
-                    if (!componentOutputMapping.ContainsKey(output.IdString))
+                    if (!componentOutputMapping.ContainsKey(output.RefId))
                     {
                         outputNode = new DfOutputElement(_urnBuilder.GetDfOutputUrn(componentElement, output.Name), output.Name, outputDefinition, componentElement);
                         outputNode.OutputType = output.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
 
                         componentElement.AddChild(outputNode);
                         var colCollection = new ComponentOutput() { ModelElement = outputNode };
-                        componentOutputMapping[output.IdString] = colCollection;
+                        componentOutputMapping[output.RefId] = colCollection;
 
                     }
 
-                    var outputMapping = componentOutputMapping[output.IdString];
-                    outputNode = componentOutputMapping[output.IdString].ModelElement;
+                    var outputMapping = componentOutputMapping[output.RefId];
+                    outputNode = componentOutputMapping[output.RefId].ModelElement;
 
                     foreach (var outputCol in output.Columns)
                     {
@@ -224,7 +224,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 componentElement.Position = layout.TopLeft;
                 componentElement.Size = layout.Size;
 
-                cummulativeIO[component.IdString].ModelElement = componentElement;
+                cummulativeIO[component.RefId].ModelElement = componentElement;
             } // end foreach component
 
             // add DF path in topological order
@@ -246,15 +246,15 @@ namespace CD.DLS.Parse.Mssql.Ssis
             //var topolOrder = new List<string>();
             foreach (var component in components)
             {
-                topolPrecedences.Add(component.IdString, new List<string>());
-                outboundPaths[component.IdString] = new List<SsisDfPath>();
-                topolSuccessors[component.IdString] = new List<string>();
+                topolPrecedences.Add(component.RefId, new List<string>());
+                outboundPaths[component.RefId] = new List<SsisDfPath>();
+                topolSuccessors[component.RefId] = new List<string>();
             }
             foreach (var path in paths)
             {
-                topolPrecedences[path.TargetComponentIdString].Add(path.SourceComponentIdString);
-                topolSuccessors[path.SourceComponentIdString].Add(path.TargetComponentIdString);
-                outboundPaths[path.SourceComponentIdString].Add(path);
+                topolPrecedences[path.TargetIdString].Add(path.SourceIdString);
+                topolSuccessors[path.SourceIdString].Add(path.TargetIdString);
+                outboundPaths[path.SourceIdString].Add(path);
             }
 
             while (topolPrecedences.Any())
@@ -271,7 +271,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                     foreach (var path in outboundPaths[independentComponentId])
                     {
                         var srcOutput = srcOutputs[path.SourceIdString];
-                        var tgtComponent = cummulativeIO[path.TargetComponentIdString];
+                        var tgtComponent = cummulativeIO[path.TargetIdString];
                         var tgtInput = tgtComponent.Inputs[path.TargetIdString];
                         foreach (var inputColumnName in tgtInput.Dictionary.Keys)
                         {
