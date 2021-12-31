@@ -23,7 +23,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
         {
-            var componentElement = new DfSourceElement(context.ComponentRefPath, context.Component.Name, context.ComponentDefinitionXml.OuterXml, context.DfElement);
+            var componentElement = new DfSourceElement(context.ComponentRefPath, context.Component.Name, context.Component.XmlDefinition, context.DfElement);
             context.DfElement.AddChild(componentElement);
 
             if (!string.IsNullOrEmpty(context.Component.GetPropertyValue("OpenRowset")) || !string.IsNullOrEmpty(context.Component.GetPropertyValue("OpenRowsetVariable")))

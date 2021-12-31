@@ -24,7 +24,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
         {
-            var componentElement = new DfDestinationElement(context.ComponentRefPath, context.Component.Name, context.ComponentDefinitionXml.OuterXml, context.DfElement);
+            var componentElement = new DfDestinationElement(context.ComponentRefPath, context.Component.Name, context.Component.XmlDefinition, context.DfElement);
             context.DfElement.AddChild(componentElement);
 
             string conMagId = null;
@@ -105,7 +105,9 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             XmlElement inputDefinitionXml = null;
             DfInputElement inputNode = new DfInputElement(context.UrnBuilder.GetDfInputUrn(componentElement, destinationInput.Name), destinationInput.Name,
-                context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, destinationInput.RefId, out inputDefinitionXml), componentElement);
+                //context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, destinationInput.RefId, out inputDefinitionXml)
+                destinationInput.XmlDefinition
+                , componentElement);
             componentElement.AddChild(inputNode);
             inputNode.InputType = DfInputTypeEnum.Input;
 
@@ -115,7 +117,10 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             foreach (var inputColumn in destinationInput.Columns)
             {
                 DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputColumn.Name /*, inputColumn.ID*/),
-                    inputColumn.Name, context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputColumn.IdentificationString), inputNode);
+                    inputColumn.Name
+                    //, context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputColumn.RefId)
+                    , inputColumn.XmlDefinition
+                    , inputNode);
 
                 colNode.Precision = inputColumn.Precision;
                 colNode.Scale = inputColumn.Scale;

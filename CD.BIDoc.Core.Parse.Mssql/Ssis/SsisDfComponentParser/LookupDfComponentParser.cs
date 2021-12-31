@@ -23,7 +23,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
         {
-            var componentElement = new DfLookupElement(context.ComponentRefPath, context.Component.Name, context.ComponentDefinitionXml.OuterXml, context.DfElement);
+            var componentElement = new DfLookupElement(context.ComponentRefPath, context.Component.Name, context.Component.XmlDefinition, context.DfElement);
             context.DfElement.AddChild(componentElement);
 
             string conMagId = null;
@@ -80,7 +80,10 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     var lookupInput = context.Component.Inputs[0];
                     XmlElement inputDefinitionXml = null;
                     DfInputElement inputNode = new DfInputElement(context.UrnBuilder.GetDfInputUrn(componentElement, lookupInput.Name),
-                        lookupInput.Name, context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, lookupInput.RefId, out inputDefinitionXml), componentElement);
+                        lookupInput.Name, 
+                        //context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, lookupInput.RefId, out inputDefinitionXml)
+                        lookupInput.XmlDefinition
+                        , componentElement);
                     componentElement.AddChild(inputNode);
 
                     inputNode.InputType = DfInputTypeEnum.Input;
@@ -103,8 +106,11 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     }
 
                     XmlElement outputDefinitionXml = null;
-                    DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, matchOutput.Name), matchOutput.Name, context.DefinitionSearcher
-                        .GetDfComponentOutputDefinition(context.ComponentDefinitionXml, matchOutput.RefId, out outputDefinitionXml), componentElement);
+                    DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, matchOutput.Name), matchOutput.Name, 
+                        //context.DefinitionSearcher
+                        //.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, matchOutput.RefId, out outputDefinitionXml)
+                        matchOutput.XmlDefinition
+                        , componentElement);
                     componentElement.AddChild(outputNode);
                     outputNode.OutputType = matchOutput.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
 
@@ -114,11 +120,13 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     foreach (var inputCol in lookupInput.Columns)
                     {
                         var name = inputCol.Name;
-                        var lookupIdString = inputCol.IdentificationString;
+                        var lookupIdString = inputCol.RefId;
                         var lokkupExternalId = inputCol.ExternalColumnID;
                         
                         DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name /*, inputCol.ID*/), inputCol.Name,
-                            context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.IdentificationString), inputNode);
+                            //context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.RefId)
+                            inputCol.XmlDefinition
+                            , inputNode);
 
                         colNode.Precision = inputCol.Precision;
                         colNode.Scale = inputCol.Scale;
@@ -180,7 +188,9 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     foreach (var outputCol in matchOutput.Columns)
                     {
                         DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name /*, outputCol.ID*/), outputCol.Name, 
-                            context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.IdentificationString), outputNode);
+                            //context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.RefId)
+                            outputCol.XmlDefinition
+                            , outputNode);
 
                         colNode.Precision = outputCol.Precision;
                         colNode.Scale = outputCol.Scale;

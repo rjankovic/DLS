@@ -23,7 +23,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
         {
-            var componentElement = new DfSourceElement(context.ComponentRefPath, context.Component.Name, context.ComponentDefinitionXml.OuterXml, context.DfElement);
+            var componentElement = new DfSourceElement(context.ComponentRefPath, context.Component.Name, context.Component.XmlDefinition, context.DfElement);
             var sourceElement = componentElement as DfSourceElement;
             sourceElement.IsExternalSource = false;
             context.DfElement.AddChild(componentElement);
@@ -65,8 +65,19 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
                     Dictionary<string, MssqlModelElement> outputColumnsFromNames = null;
 
-                    var accessMode = context.DefinitionSearcher.GetAccessMode(context.ComponentDefinitionXml);
-                                                                                               
+                    var accessModeProp = context.Component.Properties.First(x => x.Name == "AccessMode").Value; //context.DefinitionSearcher.GetAccessMode(context.ComponentDefinitionXml);
+                    SsisXmlProvider.AccessMode accessMode = SsisXmlProvider.AccessMode.OpenRowset;
+                    switch (accessModeProp)
+                    {
+                        case "0":
+                            accessMode = SsisXmlProvider.AccessMode.OpenRowset;
+                            break;
+                        case "1": accessMode = SsisXmlProvider.AccessMode.OpenRowsetVariable; break;
+                        case "2": accessMode = SsisXmlProvider.AccessMode.SqlCommand; break;
+                        case "3": accessMode = SsisXmlProvider.AccessMode.SqlCommandVariable; break;
+                        default: throw new Exception("Unknown access mode " + accessModeProp);
+                    }
+
                     if (accessMode == SsisXmlProvider.AccessMode.SqlCommand || accessMode == SsisXmlProvider.AccessMode.SqlCommandVariable)
                     {
 
@@ -289,7 +300,10 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             XmlElement outputDefinitionXml = null;
             DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, sourceOutput.Name),
-                sourceOutput.Name, context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, sourceOutput.RefId, out outputDefinitionXml), componentElement);
+                sourceOutput.Name, 
+                //context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, sourceOutput.RefId, out outputDefinitionXml)
+                sourceOutput.XmlDefinition
+                , componentElement);
             outputNode.OutputType = sourceOutput.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
             componentElement.AddChild(outputNode);
 
@@ -304,7 +318,9 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             foreach (var outputColumn in sourceOutput.Columns)
             {
                 DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputColumn.Name/*, outputColumn.ID*/), outputColumn.Name,
-                    context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputColumn.IdentificationString), outputNode);
+                    //context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputColumn.RefId)
+                    outputColumn.XmlDefinition
+                    , outputNode);
 
                 colNode.Precision = outputColumn.Precision;
                 colNode.Scale = outputColumn.Scale;

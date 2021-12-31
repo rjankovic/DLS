@@ -59,10 +59,11 @@ namespace CD.DLS.Parse.Mssql.Ssis
             SsisPackage package,
             SsisIndex referrables,
             ConnectionIndex connections,
-            Dictionary<string, Db.TableSourceColumnList> tempTablesAvailable)
+            Dictionary<string, Db.TableSourceColumnList> tempTablesAvailable,
+            SsisDfTask task)
         {
             XmlElement flowXml;
-            var dfDefinition = _definitionSearcher.GetDfInnerDefinition(outerTaskDefinitionElement, out flowXml);
+            var dfDefinition = task.XmlDefinition; // _definitionSearcher.GetDfInnerDefinition(outerTaskDefinitionElement, out flowXml);
             var dfUrn = _urnBuilder.GetDfInnerUrn(parent);
             DfInnerElement dfElement = new DfInnerElement(dfUrn, parent.Caption /*+ " Main pipe"*/, dfDefinition, parent);
             dfElement.Position = new DesignPoint() { X = 0, Y = 0 };
@@ -93,12 +94,12 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 var properties = component.Properties;
                 //PropertyCollection props = new PropertyCollection(properties);
                 //var componentId = component.ID;
-                var layout = _definitionSearcher.GetContainerDesign(package.Executable.ID, parentLayoutRefPath + "\\" + idString);
+                var layout = package.Layout; // _definitionSearcher.GetContainerDesign(package.Executable.ID, parentLayoutRefPath + "\\" + idString);
                 var isSource = contractBase.EndsWith("Source");
 
                 var componentUrn = isSource ? _urnBuilder.GetDfSourceComponentUrn(dfElement, component.RefId) : _urnBuilder.GetDfComponentUrn(dfElement, component.RefId);
                 XmlElement componentDefinitionXml;
-                var componentDefinition = _definitionSearcher.GetDfComponentDefinition(flowXml, parentLayoutRefPath, component.RefId, out componentDefinitionXml);
+                var componentDefinition = component.XmlDefinition; //_definitionSearcher.GetDfComponentDefinition(flowXml, parentLayoutRefPath, component.RefId, out componentDefinitionXml);
 
                 DfComponentElement componentElement = null;
 
@@ -107,7 +108,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                     , connections
                     , tempTablesAvailable
                     , component
-                    , componentDefinitionXml
+                    //, componentDefinitionXml
                     , allIO
                     , dfElement
                     , _urnBuilder
@@ -136,7 +137,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 {
                     DfInputElement inputNode = null;
                     XmlElement inputDefinitionXml = null;
-                    var inputDefinition = _definitionSearcher.GetDfComponentInputDefinition(componentDefinitionXml, input.RefId, out inputDefinitionXml);
+                    var inputDefinition = input.XmlDefinition; // _definitionSearcher.GetDfComponentInputDefinition(componentDefinitionXml, input.RefId, out inputDefinitionXml);
 
 
                     if (!componentInputMapping.ContainsKey(input.RefId))
@@ -154,21 +155,21 @@ namespace CD.DLS.Parse.Mssql.Ssis
                     foreach (var inputCol in input.Columns)
                     {
                         var inputColUrn = _urnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name);
-                        var inputColDef = _definitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.IdentificationString);
+                        var inputColDef = inputCol.XmlDefinition; //_definitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.RefId);
                         var inputColNode = new DfColumnElement(inputColUrn, inputCol.Name, inputColDef, inputNode);
                         
                         if (inputMapping.Dictionary.ContainsKey(inputCol.Name))
                         {
                             var col = inputMapping.Dictionary[inputCol.Name];
-                            col.DtsDataType = inputCol.DataType.ToString();
-                            SetDataTypeLength(col);
+                            //col.DtsDataType = inputCol.DataType.ToString();
+                            //SetDataTypeLength(col);
                             continue;
                         }
-                        inputColNode.DtsDataType = inputCol.DataType.ToString();
-                        inputColNode.Precision = inputCol.Precision;
-                        inputColNode.Scale = inputCol.Scale;                       
-                        inputColNode.Length = inputCol.Length;
-                        SetDataTypeLength(inputColNode);
+                        //inputColNode.DtsDataType = inputCol.DataType.ToString();
+                        //inputColNode.Precision = inputCol.Precision;
+                        //inputColNode.Scale = inputCol.Scale;                       
+                        //inputColNode.Length = inputCol.Length;
+                        //SetDataTypeLength(inputColNode);
 
                         inputNode.AddChild(inputColNode);
                         inputMapping[inputCol.Name] = inputColNode;
@@ -180,7 +181,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 {
                     DfOutputElement outputNode = null;
                     XmlElement outputDefinitionXml = null;
-                    var outputDefinition = _definitionSearcher.GetDfComponentOutputDefinition(componentDefinitionXml, output.RefId, out outputDefinitionXml);
+                    var outputDefinition = output.XmlDefinition; //_definitionSearcher.GetDfComponentOutputDefinition(componentDefinitionXml, output.RefId, out outputDefinitionXml);
 
                     if (!componentOutputMapping.ContainsKey(output.RefId))
                     {
@@ -199,22 +200,22 @@ namespace CD.DLS.Parse.Mssql.Ssis
                     foreach (var outputCol in output.Columns)
                     {
                         var outputColUrn = _urnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name /*, outputCol.ID*/);
-                        var outputColDef = _definitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.IdentificationString);
+                        var outputColDef = outputCol.XmlDefinition; //_definitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.RefId);
                         var outputColNode = new DfColumnElement(outputColUrn, outputCol.Name, outputColDef, outputNode);
                         
                         if (outputMapping.Dictionary.ContainsKey(outputCol.Name))
                         {
                             var col = outputMapping.Dictionary[outputCol.Name];
-                            col.DtsDataType = outputCol.DataType.ToString();
-                            SetDataTypeLength(col);
+                            //col.DtsDataType = outputCol.DataType.ToString();
+                            //SetDataTypeLength(col);
                             continue;
                         }
 
-                        outputColNode.DtsDataType = outputCol.DataType.ToString();
-                        outputColNode.Precision = outputCol.Precision;
-                        outputColNode.Scale = outputCol.Scale; 
-                        outputColNode.Length = outputCol.Length;
-                        SetDataTypeLength(outputColNode);
+                        //outputColNode.DtsDataType = outputCol.DataType.ToString();
+                        //outputColNode.Precision = outputCol.Precision;
+                        //outputColNode.Scale = outputCol.Scale; 
+                        //outputColNode.Length = outputCol.Length;
+                        //SetDataTypeLength(outputColNode);
 
                         outputNode.AddChild(outputColNode);
                         outputMapping[outputCol.Name] = outputColNode;
@@ -252,9 +253,9 @@ namespace CD.DLS.Parse.Mssql.Ssis
             }
             foreach (var path in paths)
             {
-                topolPrecedences[path.TargetIdString].Add(path.SourceIdString);
-                topolSuccessors[path.SourceIdString].Add(path.TargetIdString);
-                outboundPaths[path.SourceIdString].Add(path);
+                topolPrecedences[path.TargetComponentRefId].Add(path.SourceComponentRefId);
+                topolSuccessors[path.SourceComponentRefId].Add(path.TargetComponentRefId);
+                outboundPaths[path.SourceComponentRefId].Add(path);
             }
 
             while (topolPrecedences.Any())
@@ -271,7 +272,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                     foreach (var path in outboundPaths[independentComponentId])
                     {
                         var srcOutput = srcOutputs[path.SourceIdString];
-                        var tgtComponent = cummulativeIO[path.TargetIdString];
+                        var tgtComponent = cummulativeIO[path.TargetComponentRefId /*path.TargetIdString*/];
                         var tgtInput = tgtComponent.Inputs[path.TargetIdString];
                         foreach (var inputColumnName in tgtInput.Dictionary.Keys)
                         {
@@ -320,10 +321,10 @@ namespace CD.DLS.Parse.Mssql.Ssis
                         var x_startIdString = path.SourceIdString;
                         var x_endIdString = path.TargetIdString;
 
-                        var pathDef = _definitionSearcher.GetDfPathDefinition(flowXml, x_startIdString, x_endIdString, out fullLayoutPath);
-                        var pathUrn = _urnBuilder.GetDfPathUrn(dfElement, path.IdString);
+                        var pathDef = path.XmlDefinition; // _definitionSearcher.GetDfPathDefinition(flowXml, x_startIdString, x_endIdString, out fullLayoutPath);
+                        var pathUrn = _urnBuilder.GetDfPathUrn(dfElement, path.RefId);
                         DesignArrow pathArrow;
-                        pathArrow = _definitionSearcher.GetDfPathArrow(package.Executable.ID, fullLayoutPath);
+                        pathArrow = path.DesignArrow; // _definitionSearcher.GetDfPathArrow(package.Executable.ID, fullLayoutPath);
 
                         DfPathElement pathNode = new DfPathElement(pathUrn, path.Name, pathDef, dfElement);
                         dfElement.AddChild(pathNode);

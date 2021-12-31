@@ -24,7 +24,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
         {
-            var componentElement = new DfDerivedColumnElement(context.ComponentRefPath, context.Component.Name, context.ComponentDefinitionXml.OuterXml, context.DfElement);
+            var componentElement = new DfDerivedColumnElement(context.ComponentRefPath, context.Component.Name, context.Component.XmlDefinition, context.DfElement);
             context.DfElement.AddChild(componentElement);
 
             Dictionary<string, DfColumnElement> inputColumnsByName = new Dictionary<string, DfColumnElement>();
@@ -38,7 +38,9 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
                 XmlElement inputDefinitionXml = null;
                 DfInputElement inputNode = new DfInputElement(context.UrnBuilder.GetDfInputUrn(componentElement, input.Name), input.Name,
-                    context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, input.RefId, out inputDefinitionXml), componentElement);
+                    //context.DefinitionSearcher.GetDfComponentInputDefinition(context.ComponentDefinitionXml, input.RefId, out inputDefinitionXml)
+                    input.XmlDefinition
+                    , componentElement);
                 componentElement.AddChild(inputNode);
 
                 ComponentInput derivedColumnInputMapping = new ComponentInput() { ModelElement = inputNode };
@@ -50,13 +52,16 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                 foreach (var inputCol in input.Columns)
                 {
                     var name = inputCol.Name;
-                    var componentIdString = inputCol.IdentificationString;
+                    var componentIdString = inputCol.RefId;
                     var externalId = inputCol.ExternalColumnID;
                     var lineageID = inputCol.LineageID;
                     //DfColumnElement outputColElement = null;
 
                     DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfInputColumnUrn(inputNode, inputCol.Name /*, inputCol.ID*/),
-                        inputCol.Name, context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.IdentificationString), inputNode);
+                        inputCol.Name, 
+                        //context.DefinitionSearcher.GetDfInputColumnDefinition(inputDefinitionXml, inputCol.RefId)
+                        inputCol.XmlDefinition
+                        , inputNode);
 
                     colNode.Precision = inputCol.Precision;
                     colNode.Scale = inputCol.Scale;
@@ -93,7 +98,9 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
             XmlElement outputDefinitionXml = null;
             DfOutputElement outputNode = new DfOutputElement(context.UrnBuilder.GetDfOutputUrn(componentElement, derivedColumnOutput.Name), derivedColumnOutput.Name,
-                context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, derivedColumnOutput.RefId, out outputDefinitionXml), componentElement);
+                //context.DefinitionSearcher.GetDfComponentOutputDefinition(context.ComponentDefinitionXml, derivedColumnOutput.RefId, out outputDefinitionXml)
+                derivedColumnOutput.XmlDefinition
+                , componentElement);
             componentElement.AddChild(outputNode);
             outputNode.OutputType = derivedColumnOutput.IsErrorOutput ? DfOutputTypeEnum.ErrorOutput : DfOutputTypeEnum.Output;
 
@@ -108,7 +115,9 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             foreach (var outputCol in derivedColumnOutput.Columns)
             {
                 DfColumnElement colNode = new DfColumnElement(context.UrnBuilder.GetDfOutputColumnUrn(outputNode, outputCol.Name /*, outputCol.ID*/), outputCol.Name,
-                    context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.IdentificationString), outputNode);
+                    //context.DefinitionSearcher.GetDfOutputColumnDefinition(outputDefinitionXml, outputCol.RefId)
+                    outputCol.XmlDefinition
+                    , outputNode);
 
                 colNode.Precision = outputCol.Precision;
                 colNode.Scale = outputCol.Scale;

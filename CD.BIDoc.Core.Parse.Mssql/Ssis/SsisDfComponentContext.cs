@@ -15,7 +15,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             ConnectionIndex connections,
             Dictionary<string, TableSourceColumnList> tempTablesAvailable,
             SsisDfComponent component,
-            XmlElement componentDefinitionXml,
+            //XmlElement componentDefinitionXml,
             ComponentAllIO componentIO,
             DfInnerElement dfElement,
             UrnBuilder urnBuilder,
@@ -29,7 +29,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             Connections = connections;
             TempTablesAvailable = tempTablesAvailable;
             Component = component;
-            ComponentDefinitionXml = componentDefinitionXml;
+            //ComponentDefinitionXml = componentDefinitionXml;
             ComponentIO = componentIO;
             DfElement = dfElement;
             UrnBuilder = urnBuilder;
@@ -54,7 +54,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
         /// <summary>
         /// XML definition of the component
         /// </summary>
-        public XmlElement ComponentDefinitionXml { get; }
+        //public XmlElement ComponentDefinitionXml { get; }
         /// <summary>
         /// Input and output collection
         /// </summary>

@@ -222,6 +222,12 @@ namespace CD.DLS.Parse.Mssql.Ssis
             pkg.Executable = LoadSsisExecutable(xml.DocumentElement);
 
             pkg.Project = _project;
+
+            var xDim = NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.X + x.Size.X);
+            var yDim = NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.Y + x.Size.Y);
+            pkg.Layout = new ElementLayoutDesign() { Size = new DesignPoint() { X = xDim, Y = yDim }, TopLeft = new DesignPoint() { X = 0, Y = 0 } };
+            pkg.Executable.Layout = pkg.Layout;
+
             _project.Packages.Add(pkg);
             return;
         }
@@ -364,10 +370,12 @@ namespace CD.DLS.Parse.Mssql.Ssis
             exec.RefId = GetRefId(xml);
             exec.CreationName = creationName;
             exec.Enabled = !GetDisabled(xml);
-            exec.Layout = NodeLayoutDesigns[exec.ID];
+            if (exec.RefId != "Package")
+            {
+                exec.Layout = NodeLayoutDesigns[exec.RefId];
+            }
             exec.Variables = GetVariables(xml);
             exec.PrecedenceConstraints = GetPrecedenceContraints(xml);
-            exec.Layout = NodeLayoutDesigns[exec.RefId];
             exec.XmlDefinition = xml.OuterXml;
 
             var executablesNodes = xml.GetElementsByTagName("DTS:Executables");
@@ -405,7 +413,7 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
                 cmp.RefId = GetRefId(component);
                 cmp.Contract = component.GetAttribute("contractInfo");
                 cmp.Properties = GetDfProperties(component);
-
+                cmp.Name = component.GetAttribute("name");
 
                 var inputsNodes = component.GetElementsByTagName("inputs");
                 var outputsNodes = component.GetElementsByTagName("outputs");
@@ -422,17 +430,23 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
                         };
 
                         var inputColumnsNode = (XmlElement)(input.GetElementsByTagName("inputColumns")[0]);
-                        foreach (XmlElement inputCol in inputColumnsNode.GetElementsByTagName("inputColumn"))
+                        if (inputColumnsNode != null)
                         {
-                            DfColumn col = GetDfColumn(inputCol);
-                            ssisDfInput.Columns.Add(col);
+                            foreach (XmlElement inputCol in inputColumnsNode.GetElementsByTagName("inputColumn"))
+                            {
+                                DfColumn col = GetDfColumn(inputCol);
+                                ssisDfInput.Columns.Add(col);
+                            }
                         }
 
                         var externalMetadataColumnsNode = (XmlElement)(input.GetElementsByTagName("externalMetadataColumns")[0]);
-                        foreach (XmlElement externalCol in externalMetadataColumnsNode.GetElementsByTagName("externalMetadataColumn"))
+                        if (externalMetadataColumnsNode != null)
                         {
-                            DfColumn col = GetDfColumn(externalCol);
-                            ssisDfInput.ExternalColumns.Add(col);
+                            foreach (XmlElement externalCol in externalMetadataColumnsNode.GetElementsByTagName("externalMetadataColumn"))
+                            {
+                                DfColumn col = GetDfColumn(externalCol);
+                                ssisDfInput.ExternalColumns.Add(col);
+                            }
                         }
 
                         cmp.Inputs.Add(ssisDfInput);
@@ -451,17 +465,23 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
                         };
 
                         var outputColumnsNode = (XmlElement)(output.GetElementsByTagName("outputColumns")[0]);
-                        foreach (XmlElement inputCol in outputColumnsNode.GetElementsByTagName("outputColumn"))
+                        if (outputColumnsNode != null)
                         {
-                            DfColumn col = GetDfColumn(inputCol);
-                            ssisDfOutput.Columns.Add(col);
+                            foreach (XmlElement outputCol in outputColumnsNode.GetElementsByTagName("outputColumn"))
+                            {
+                                DfColumn col = GetDfColumn(outputCol);
+                                ssisDfOutput.Columns.Add(col);
+                            }
                         }
 
                         var externalMetadataColumnsNode = (XmlElement)(output.GetElementsByTagName("externalMetadataColumns")[0]);
-                        foreach (XmlElement externalCol in externalMetadataColumnsNode.GetElementsByTagName("externalMetadataColumn"))
+                        if (externalMetadataColumnsNode != null)
                         {
-                            DfColumn col = GetDfColumn(externalCol);
-                            ssisDfOutput.ExternalColumns.Add(col);
+                            foreach (XmlElement externalCol in externalMetadataColumnsNode.GetElementsByTagName("externalMetadataColumn"))
+                            {
+                                DfColumn col = GetDfColumn(externalCol);
+                                ssisDfOutput.ExternalColumns.Add(col);
+                            }
                         }
 
                         cmp.Outputs.Add(ssisDfOutput);
@@ -486,7 +506,7 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             return res;
         }
 
-        private DfColumn GetDfColumn(XmlElement inputCol)
+        private DfColumn GetDfColumn(XmlElement dfColXml)
         {
             /*
 <inputColumn
@@ -519,15 +539,16 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
 
             DfColumn col = new DfColumn()
             {
-                RefId = GetRefId(inputCol),
-                Name = inputCol.GetAttribute("name"),
-                LineageID = inputCol.GetAttribute("lineageId"),
-                ExternalColumnID = inputCol.GetAttribute("externalMetadataColumnId"),
+                RefId = GetRefId(dfColXml),
+                Name = dfColXml.GetAttribute("name"),
+                LineageID = dfColXml.GetAttribute("lineageId"),
+                ExternalColumnID = dfColXml.GetAttribute("externalMetadataColumnId"),
+                XmlDefinition = dfColXml.OuterXml
             };
 
             if (string.IsNullOrEmpty(col.Name))
             {
-                col.Name = inputCol.GetAttribute("cacheName");
+                col.Name = dfColXml.GetAttribute("cacheName");
             }
 
             return col;
@@ -548,13 +569,17 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
              */
             List<SsisProperty> props = new List<SsisProperty>();
             var propsNode = (XmlElement)(component.GetElementsByTagName("properties")[0]);
+            if (propsNode == null)
+            {
+                return props;
+            }
             var propsXml = propsNode.GetElementsByTagName("property");
             foreach (XmlElement pxml in propsXml)
             {
                 props.Add(new SsisProperty()
                 {
-                    Name = pxml.GetAttribute("Name"),
-                    Value = pxml.Value
+                    Name = pxml.GetAttribute("name"),
+                    Value = pxml.InnerText
                 }) ;
             }
 
@@ -580,14 +605,21 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
         </DTS:Executable>
              */
 
-            var pathsNode = (XmlElement)(pipeline.GetElementsByTagName("paths")[0]);
-            var paths = pathsNode.GetElementsByTagName("path");
             List<SsisDfPath> res = new List<SsisDfPath>();
+            var pathsNode = (XmlElement)(pipeline.GetElementsByTagName("paths")[0]);
+
+            if (pathsNode == null)
+            {
+                return res;
+            }
+
+            var paths = pathsNode.GetElementsByTagName("path");
             foreach (XmlElement path in paths)
             {
                 res.Add(new SsisDfPath()
                 {
                     RefId = GetRefId(path),
+                    Name = path.GetAttribute("name"),
                     SourceIdString = path.GetAttribute("startId"),
                     TargetIdString = path.GetAttribute("endId")
                 }) ;
@@ -652,7 +684,7 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
     </DTS:Variable>
              */
 
-            var variablesRootList = xml.GetElementsByTagName("DTS:Variable");
+            var variablesRootList = xml.GetElementsByTagName("DTS:Variables");
             List<SsisVariable> vars = new List<SsisVariable>();
             if (variablesRootList.Count == 0)
             {
@@ -670,7 +702,7 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
                 };
 
                 vr.QualifiedName = vr.Namespace + "::" + vr.Name;
-                vr.Value = ((XmlElement)v.GetElementsByTagName("DTS:VariableValue")[0]).Value;
+                vr.Value = ((XmlElement)v.GetElementsByTagName("DTS:VariableValue")[0]).InnerText;
                 vars.Add(vr);
             }
 
@@ -688,7 +720,12 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
 
         private string GetRefId(XmlElement xml)
         {
-            return xml.GetAttribute("DTS:refId");
+            var id = xml.GetAttribute("DTS:refId");
+            if (string.IsNullOrEmpty(id))
+            {
+                id = xml.GetAttribute("refId");
+            }
+            return id;
         }
 
         private string GetDtsId(XmlElement xml)
@@ -766,13 +803,19 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
     </DTS:PackageParameter>
              */
 
+            var sensitiveString = xml.GetAttribute("DTS:Sensitive");
+            if (string.IsNullOrEmpty(sensitiveString))
+            {
+                sensitiveString = "false";
+            }
             var param = new SsisParameter()
             {
                 DataType = "",
                 Name = GetObjectName(xml),
-                Sensitive = bool.Parse(xml.GetAttribute("DTS:Sensitive")),
+                Sensitive = bool.Parse(sensitiveString),
                 //Value = props["Value"],
-                XmlDefinition = xml.OuterXml
+                XmlDefinition = xml.OuterXml,
+                ID = GetDtsId(xml)
             };
 
             var props = xml.GetElementsByTagName("DTS:Property");
@@ -789,7 +832,7 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
 
             if (!param.Sensitive)
             {
-                param.Value = prop.Value;
+                param.Value = prop.InnerText;
             }
 
             return param;
@@ -821,84 +864,84 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             var props = ((XmlElement)propsElement).GetElementsByTagName("SSIS:Property");
             foreach (XmlElement prop in props)
             {
-                res.Add(prop.GetAttribute("SSIS:Name"), prop.Value);
+                res.Add(prop.GetAttribute("SSIS:Name"), prop.InnerText);
             }
 
             return res;
         }
 
 
-        public string GetPackageParameterDefinition(string parameterId, string packageId)
-        {
-            var packageFile = _files[packageId].XmlContent;
-            var pars = ((XmlElement)(packageFile.GetElementsByTagName("DTS:PackageParameters")[0]));
-            foreach (XmlElement p in pars.GetElementsByTagName("DTS:PackageParameter"))
-            {
-                var id = p.GetAttribute("DTS:DTSID");
-                if (id == parameterId)
-                {
-                    return p.OuterXml;
-                }
-            }
-            throw new Exception();
-        }
+        //public string GetPackageParameterDefinition(string parameterId, string packageId)
+        //{
+        //    var packageFile = _files[packageId].XmlContent;
+        //    var pars = ((XmlElement)(packageFile.GetElementsByTagName("DTS:PackageParameters")[0]));
+        //    foreach (XmlElement p in pars.GetElementsByTagName("DTS:PackageParameter"))
+        //    {
+        //        var id = p.GetAttribute("DTS:DTSID");
+        //        if (id == parameterId)
+        //        {
+        //            return p.OuterXml;
+        //        }
+        //    }
+        //    throw new Exception();
+        //}
 
-        public string GetVariableDefinition(string variableId, XmlElement containerXmlContent)
-        {
-            //var packageFile = _files[package.ID].XmlContent;
-            var vars = ((XmlElement)(containerXmlContent.GetElementsByTagName("DTS:Variables")[0]));
-            foreach (XmlElement v in vars.GetElementsByTagName("DTS:Variable"))
-            {
-                var id = v.GetAttribute("DTS:DTSID");
-                if (id == variableId)
-                {
-                    return v.OuterXml;
-                }
-            }
+        //public string GetVariableDefinition(string variableId, XmlElement containerXmlContent)
+        //{
+        //    //var packageFile = _files[package.ID].XmlContent;
+        //    var vars = ((XmlElement)(containerXmlContent.GetElementsByTagName("DTS:Variables")[0]));
+        //    foreach (XmlElement v in vars.GetElementsByTagName("DTS:Variable"))
+        //    {
+        //        var id = v.GetAttribute("DTS:DTSID");
+        //        if (id == variableId)
+        //        {
+        //            return v.OuterXml;
+        //        }
+        //    }
 
-            var traceUpNode = containerXmlContent.ParentNode;
-            while (traceUpNode != null)
-            {
-                if (traceUpNode.Name == "DTS:Executable" && traceUpNode is XmlElement)
-                {
-                    return GetVariableDefinition(variableId, (XmlElement)traceUpNode);
-                }
-                else
-                {
-                    traceUpNode = traceUpNode.ParentNode;
-                }
-            }
-            throw new Exception();
-        }
+        //    var traceUpNode = containerXmlContent.ParentNode;
+        //    while (traceUpNode != null)
+        //    {
+        //        if (traceUpNode.Name == "DTS:Executable" && traceUpNode is XmlElement)
+        //        {
+        //            return GetVariableDefinition(variableId, (XmlElement)traceUpNode);
+        //        }
+        //        else
+        //        {
+        //            traceUpNode = traceUpNode.ParentNode;
+        //        }
+        //    }
+        //    throw new Exception();
+        //}
 
-        public string GetPrecedenceConstraintDefinition(string constraintId, XmlElement containerXml, out string refId)
-        {
-            XmlElement pcs = null;
-            // inner containers have constraints too and constraints appear after inner executables
-            foreach (var node in containerXml.ChildNodes)
-            {
-                if (!(node is XmlElement))
-                {
-                    continue;
-                }
-                var elem = node as XmlElement;
-                if (elem.Name == "DTS:PrecedenceConstraints")
-                {
-                    pcs = elem;
-                }
-            }
+        //public string GetPrecedenceConstraintDefinition(string constraintId, XmlElement containerXml, out string refId)
+        //{
+        //    XmlElement pcs = null;
+        //    // inner containers have constraints too and constraints appear after inner executables
+        //    foreach (var node in containerXml.ChildNodes)
+        //    {
+        //        if (!(node is XmlElement))
+        //        {
+        //            continue;
+        //        }
+        //        var elem = node as XmlElement;
+        //        if (elem.Name == "DTS:PrecedenceConstraints")
+        //        {
+        //            pcs = elem;
+        //        }
+        //    }
 
-            foreach (XmlElement pc in pcs.GetElementsByTagName("DTS:PrecedenceConstraint"))
-            {
-                var id = pc.GetAttribute("DTS:DTSID");
-                if (id == constraintId)
-                {
-                    refId = pc.GetAttribute("DTS:refId");
-                    return pc.OuterXml;
-                }
-            }
-            throw new Exception();
-        }
+        //    foreach (XmlElement pc in pcs.GetElementsByTagName("DTS:PrecedenceConstraint"))
+        //    {
+        //        var id = pc.GetAttribute("DTS:DTSID");
+        //        if (id == constraintId)
+        //        {
+        //            refId = pc.GetAttribute("DTS:refId");
+        //            return pc.OuterXml;
+        //        }
+        //    }
+        //    throw new Exception();
+        //}
 
         public DesignArrow GetPrecedenceConstraintArrow(string packageId, string layoutRefId)
         {
@@ -985,61 +1028,61 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             throw new Exception();
         }
 
-        public string GetProjectConnectionManagerDefinition(string connManagerId, out XmlElement xmlElement)
-        {
-            var text = _files[connManagerId].Content;
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(text);
-            xmlElement = (XmlElement)doc.DocumentElement;
-            return text;
-        }
+        //public string GetProjectConnectionManagerDefinition(string connManagerId, out XmlElement xmlElement)
+        //{
+        //    var text = _files[connManagerId].Content;
+        //    XmlDocument doc = new XmlDocument();
+        //    doc.LoadXml(text);
+        //    xmlElement = (XmlElement)doc.DocumentElement;
+        //    return text;
+        //}
 
-        public string GetProjectParamDefinition(string parameterId)
-        {
-            var projFile = _files["@Project.params"];
-            var pars = projFile.XmlContent.GetElementsByTagName("SSIS:Parameter");
-            foreach (XmlElement p in pars)
-            {
-                var props = p.GetElementsByTagName("SSIS:Property");
-                foreach (XmlElement pp in props)
-                {
-                    var name = pp.GetAttribute("SSIS:Name");
-                    if (name == "ID")
-                    {
-                        if (pp.InnerText == parameterId)
-                        {
-                            return p.OuterXml;
-                        }
-                    }
-                }
-            }
-            throw new Exception();
-        }
+        //public string GetProjectParamDefinition(string parameterId)
+        //{
+        //    var projFile = _files["@Project.params"];
+        //    var pars = projFile.XmlContent.GetElementsByTagName("SSIS:Parameter");
+        //    foreach (XmlElement p in pars)
+        //    {
+        //        var props = p.GetElementsByTagName("SSIS:Property");
+        //        foreach (XmlElement pp in props)
+        //        {
+        //            var name = pp.GetAttribute("SSIS:Name");
+        //            if (name == "ID")
+        //            {
+        //                if (pp.InnerText == parameterId)
+        //                {
+        //                    return p.OuterXml;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    throw new Exception();
+        //}
 
-        public string GetPackageDefinition(string packageId, out XmlElement xmlElement)
-        {
-            var file = _files[packageId];
-            xmlElement = file.XmlContent.DocumentElement;
-            return file.Content;
-        }
+        //public string GetPackageDefinition(string packageId, out XmlElement xmlElement)
+        //{
+        //    var file = _files[packageId];
+        //    xmlElement = file.XmlContent.DocumentElement;
+        //    return file.Content;
+        //}
 
-        public string GetExecutableDefinition(string executableId, string packageId, out string refPath, out XmlElement element)
-        {
-            var file = _files[packageId];
-            var doc = file.XmlContent;
-            var execs = doc.GetElementsByTagName("DTS:Executable");
-            foreach (XmlElement exec in execs)
-            {
-                if (exec.GetAttribute("DTS:DTSID") == executableId)
-                {
-                    refPath = exec.GetAttribute("DTS:refId");
-                    element = exec;
-                    return exec.OuterXml;
-                }
-            }
-            refPath = null;
-            throw new Exception();
-        }
+        //public string GetExecutableDefinition(string executableId, string packageId, out string refPath, out XmlElement element)
+        //{
+        //    var file = _files[packageId];
+        //    var doc = file.XmlContent;
+        //    var execs = doc.GetElementsByTagName("DTS:Executable");
+        //    foreach (XmlElement exec in execs)
+        //    {
+        //        if (exec.GetAttribute("DTS:DTSID") == executableId)
+        //        {
+        //            refPath = exec.GetAttribute("DTS:refId");
+        //            element = exec;
+        //            return exec.OuterXml;
+        //        }
+        //    }
+        //    refPath = null;
+        //    throw new Exception();
+        //}
 
         public ElementLayoutDesign GetContainerDesign(string containingPackageId, string designRefPath)
         {
@@ -1061,46 +1104,46 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
         //    return file.NodeLayoutDesignXmls[designRefPath];
         //}
 
-        public string GetDfComponentDefinition(XmlElement flowXml, string parentLayoutRefPath, string componentIdString, out XmlElement componentDefinitionXml)
-        {
-            var layoutRefPath = parentLayoutRefPath + "\\" + componentIdString;
-            foreach (XmlElement n in flowXml.GetElementsByTagName("component"))
-            {
-                var refId = n.GetAttribute("refId");
-                if (refId == layoutRefPath)
-                {
-                    componentDefinitionXml = n;
-                    return n.OuterXml;
-                }
-            }
-            throw new Exception();
-        }
+        //public string GetDfComponentDefinition(XmlElement flowXml, string parentLayoutRefPath, string componentIdString, out XmlElement componentDefinitionXml)
+        //{
+        //    var layoutRefPath = parentLayoutRefPath + "\\" + componentIdString;
+        //    foreach (XmlElement n in flowXml.GetElementsByTagName("component"))
+        //    {
+        //        var refId = n.GetAttribute("refId");
+        //        if (refId == layoutRefPath)
+        //        {
+        //            componentDefinitionXml = n;
+        //            return n.OuterXml;
+        //        }
+        //    }
+        //    throw new Exception();
+        //}
 
         public enum AccessMode { SqlCommand, SqlCommandVariable, OpenRowset, OpenRowsetVariable }
 
-        public AccessMode GetAccessMode(XmlElement componentDefinition)
-        {
-            var properties = (XmlElement)(componentDefinition.GetElementsByTagName("properties")[0]);
+        //public AccessMode GetAccessMode(XmlElement componentDefinition)
+        //{
+        //    var properties = (XmlElement)(componentDefinition.GetElementsByTagName("properties")[0]);
 
-            foreach (XmlElement n in properties.GetElementsByTagName("property"))
-            {
-                var name = n.GetAttribute("name");
-                if (name == "AccessMode")
-                {
-                    var value = n.InnerText;
-                    switch (value)
-                    {
-                        case "0":
-                            return AccessMode.OpenRowset;
-                        case "1": return AccessMode.OpenRowsetVariable;
-                        case "2": return AccessMode.SqlCommand;
-                        case "3": return AccessMode.SqlCommandVariable;
-                        default: throw new Exception("Unknown access mode " + value);
-                    }
-                }
-            }
-            throw new Exception("Access Mode not found");
-        }
+        //    foreach (XmlElement n in properties.GetElementsByTagName("property"))
+        //    {
+        //        var name = n.GetAttribute("name");
+        //        if (name == "AccessMode")
+        //        {
+        //            var value = n.InnerText;
+        //            switch (value)
+        //            {
+        //                case "0":
+        //                    return AccessMode.OpenRowset;
+        //                case "1": return AccessMode.OpenRowsetVariable;
+        //                case "2": return AccessMode.SqlCommand;
+        //                case "3": return AccessMode.SqlCommandVariable;
+        //                default: throw new Exception("Unknown access mode " + value);
+        //            }
+        //        }
+        //    }
+        //    throw new Exception("Access Mode not found");
+        //}
 
         public class ParamAssignment
         {
@@ -1212,76 +1255,76 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             return arw;
         }
 
-        public string GetDfInnerDefinition(XmlElement outerTaskElem, out XmlElement innerXml)
-        {
-            innerXml = (XmlElement)(outerTaskElem.GetElementsByTagName("pipeline")[0]);
-            return innerXml.OuterXml;
-        }
+        //public string GetDfInnerDefinition(XmlElement outerTaskElem, out XmlElement innerXml)
+        //{
+        //    innerXml = (XmlElement)(outerTaskElem.GetElementsByTagName("pipeline")[0]);
+        //    return innerXml.OuterXml;
+        //}
 
-        internal string GetDfComponentOutputDefinition(XmlElement componentDefinitionXml, string idString, out XmlElement definitionXml)
-        {
-            string componentPath = componentDefinitionXml.GetAttribute("refId");
-            var basePath = componentPath.Substring(0, componentPath.LastIndexOf("\\") + 1);
-            var outputPath = basePath + idString;
-            foreach (XmlElement output in componentDefinitionXml.GetElementsByTagName("output"))
-            {
-                var itemPath = output.GetAttribute("refId");
-                if (itemPath == outputPath)
-                {
-                    definitionXml = output;
-                    return output.OuterXml;
-                }
-            }
-            throw new Exception();
-        }
+        //internal string GetDfComponentOutputDefinition(XmlElement componentDefinitionXml, string idString, out XmlElement definitionXml)
+        //{
+        //    string componentPath = componentDefinitionXml.GetAttribute("refId");
+        //    var basePath = componentPath.Substring(0, componentPath.LastIndexOf("\\") + 1);
+        //    var outputPath = basePath + idString;
+        //    foreach (XmlElement output in componentDefinitionXml.GetElementsByTagName("output"))
+        //    {
+        //        var itemPath = output.GetAttribute("refId");
+        //        if (itemPath == outputPath)
+        //        {
+        //            definitionXml = output;
+        //            return output.OuterXml;
+        //        }
+        //    }
+        //    throw new Exception();
+        //}
 
-        internal string GetDfOutputColumnDefinition(XmlElement outputDefinitionXml, string idString)
-        {
-            string outputPath = outputDefinitionXml.GetAttribute("refId");
-            var basePath = outputPath.Substring(0, outputPath.LastIndexOf("\\") + 1);
-            var columnPath = basePath + idString;
-            foreach (XmlElement outputColumn in outputDefinitionXml.GetElementsByTagName("outputColumn"))
-            {
-                var itemPath = outputColumn.GetAttribute("refId");
-                if (itemPath == columnPath)
-                {
-                    return outputColumn.OuterXml;
-                }
-            }
-            throw new Exception();
-        }
+        //internal string GetDfOutputColumnDefinition(XmlElement outputDefinitionXml, string idString)
+        //{
+        //    string outputPath = outputDefinitionXml.GetAttribute("refId");
+        //    var basePath = outputPath.Substring(0, outputPath.LastIndexOf("\\") + 1);
+        //    var columnPath = basePath + idString;
+        //    foreach (XmlElement outputColumn in outputDefinitionXml.GetElementsByTagName("outputColumn"))
+        //    {
+        //        var itemPath = outputColumn.GetAttribute("refId");
+        //        if (itemPath == columnPath)
+        //        {
+        //            return outputColumn.OuterXml;
+        //        }
+        //    }
+        //    throw new Exception();
+        //}
 
-        internal string GetDfComponentInputDefinition(XmlElement componentDefinitionXml, string identificationString, out XmlElement inputDefinitionXml)
-        {
-            string componentPath = componentDefinitionXml.GetAttribute("refId");
-            var basePath = componentPath.Substring(0, componentPath.LastIndexOf("\\") + 1);
-            var inputPath = basePath + identificationString;
-            foreach (XmlElement input in componentDefinitionXml.GetElementsByTagName("input"))
-            {
-                var itemPath = input.GetAttribute("refId");
-                if (itemPath == inputPath)
-                {
-                    inputDefinitionXml = input;
-                    return input.OuterXml;
-                }
-            }
-            throw new Exception();
-        }
+        //internal string GetDfComponentInputDefinition(XmlElement componentDefinitionXml, string identificationString, out XmlElement inputDefinitionXml)
+        //{
+        //    string componentPath = componentDefinitionXml.GetAttribute("refId");
+        //    var basePath = componentPath.Substring(0, componentPath.LastIndexOf("\\") + 1);
+        //    var inputPath = basePath + identificationString;
+        //    foreach (XmlElement input in componentDefinitionXml.GetElementsByTagName("input"))
+        //    {
+        //        var itemPath = input.GetAttribute("refId");
+        //        if (itemPath == inputPath)
+        //        {
+        //            inputDefinitionXml = input;
+        //            return input.OuterXml;
+        //        }
+        //    }
+        //    throw new Exception();
+        //}
 
-        internal string GetDfInputColumnDefinition(XmlElement inputDefinitionXml, string identificationString)
-        {
-            string inputPath = inputDefinitionXml.GetAttribute("refId");
-            var basePath = inputPath.Substring(0, inputPath.LastIndexOf("\\") + 1);
-            var columnPath = basePath + identificationString;
-            foreach (XmlElement inputColumn in inputDefinitionXml.GetElementsByTagName("inputColumn"))
-            {
-                var itemPath = inputColumn.GetAttribute("refId");
-                if (itemPath == columnPath)
-                {
-                    return inputColumn.OuterXml;
-                }
-            }
-            throw new Exception();
-        }
+        //internal string GetDfInputColumnDefinition(XmlElement inputDefinitionXml, string identificationString)
+        //{
+        //    string inputPath = inputDefinitionXml.GetAttribute("refId");
+        //    var basePath = inputPath.Substring(0, inputPath.LastIndexOf("\\") + 1);
+        //    var columnPath = basePath + identificationString;
+        //    foreach (XmlElement inputColumn in inputDefinitionXml.GetElementsByTagName("inputColumn"))
+        //    {
+        //        var itemPath = inputColumn.GetAttribute("refId");
+        //        if (itemPath == columnPath)
+        //        {
+        //            return inputColumn.OuterXml;
+        //        }
+        //    }
+        //    throw new Exception();
+        //}
     }
 }

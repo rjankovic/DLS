@@ -160,6 +160,10 @@ namespace CD.BIDoc.Core.Parse.Mssql.Ssis
         public string IdString { get; set; }
         public string SourceIdString { get; set; }
         public string TargetIdString { get; set; }
+
+        public string SourceComponentRefId => SourceIdString.Substring(0, Math.Max(SourceIdString.LastIndexOf(".Inputs["), SourceIdString.LastIndexOf(".Outputs[")));
+
+        public string TargetComponentRefId => TargetIdString.Substring(0, Math.Max(TargetIdString.LastIndexOf(".Inputs["), TargetIdString.LastIndexOf(".Outputs[")));
         public DesignArrow DesignArrow { get; set; }
     }
 
@@ -199,7 +203,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Ssis
         //public int ID { get; set; }
         public string Description { get; set; }
         public string Name { get; set; }
-        public string IdentificationString { get; set; }
+        //public string IdentificationString { get; set; }
         public string DataType { get; set; }
         public int Length { get; set; }
         public int Precision { get; set; }
