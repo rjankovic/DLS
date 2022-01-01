@@ -134,7 +134,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Ssis
     {
         public string Name { get; set; }
 
-        public string Contract { get; set; }
+        //public string Contract { get; set; }
         //public string ContractBase { get; set; }
         //public string ObjectType { get; set; }
         //public string IdString { get; set; }
@@ -149,7 +149,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Ssis
     public class SsisRuntimeConnection : SsisObject
     {
         //public int ID { get; set; }
-        public string IdentificationString { get; set; }
+        //public string IdentificationString { get; set; }
         public string Name { get; set; }
         public string ConnectionManagerID { get; set; }
     }
@@ -204,7 +204,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Ssis
         public string Description { get; set; }
         public string Name { get; set; }
         //public string IdentificationString { get; set; }
-        public string DataType { get; set; }
+        public string DataType { get; set; } = string.Empty;
         public int Length { get; set; }
         public int Precision { get; set; }
         public int Scale { get; set; }

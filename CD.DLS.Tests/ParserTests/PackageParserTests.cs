@@ -78,6 +78,7 @@ namespace CD.DLS.Tests.ParserTests
             NetBridge nb = new NetBridge(true, false);
             nb.SetConnectionString("Data Source=localhost;Initial Catalog=DLS;Integrated Security=True;Pooling=False");
             GraphManager graphManager = new GraphManager(nb);
+            graphManager.ClearModelPartWithAggregations(new Guid("A4D16D79-497C-4F6B-B816-D7AABB17A67B"), "IntegrationServices");
             StageManager stageManager = new StageManager(nb);
             ProjectConfigManager pcm = new ProjectConfigManager(nb);
             ConfigManager.Log = new ConsoleLogger("DLS test");

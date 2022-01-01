@@ -96,7 +96,12 @@ namespace CD.DLS.Parse.Mssql.Ssis
                     {
 
                         ReferrableValueElement referrable;
-                        referrables.TryGetNodeByName(definition, out referrable);
+                        var found = referrables.TryGetNodeByName(definition, out referrable);
+                        if (!found)
+                        {
+                            var trimDef = definition.TrimStart('@').TrimStart('[').TrimEnd(']');
+                            referrables.TryGetNodeByName(trimDef, out referrable);
+                        }
                         // Create the fragment node
                         var fragment = new SsisExpressionFragmentElement(fragmentUrn, definition, definition, rootElement);
                         fragment.OffsetFrom = offset;

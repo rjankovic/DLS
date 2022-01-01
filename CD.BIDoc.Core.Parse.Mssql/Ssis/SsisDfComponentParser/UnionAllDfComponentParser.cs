@@ -18,7 +18,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.Contract.Contains("Union All");
+            return component.ClassId.Contains("UnionAll");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)

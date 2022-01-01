@@ -41,8 +41,15 @@ namespace CD.DLS.Parse.Mssql.Ssis
         public void Add(ConnectionManagerElement connectionManager)
         {
             _connections.Add(connectionManager.ManagerId, connectionManager);
+            
         }
-        
+
+        public void AddWithRefId(string refId, ConnectionManagerElement connectionManager)
+        {
+            _connections.Add(refId, connectionManager);
+
+        }
+
         public bool TryGetConnectionManager(string id, out ConnectionManagerElement connectionManager)
         {
             return _connections.TryGetValue(id, out connectionManager);

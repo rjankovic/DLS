@@ -18,7 +18,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.Contract.Contains("OLE DB Source") || component.Contract.Contains("ODBC Source");
+            return component.ClassId.Contains("OLEDBSource") || component.ClassId.Contains("ODBCSource");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -202,7 +202,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                             var colName = outputColumn.Name;
                             if (outputColumnsFromNames.ContainsKey(colName))
                             {
-                                outputColumnsFromExtMetadata[outputColumn.LineageID] = outputColumnsFromNames[colName];
+                                outputColumnsFromExtMetadata[outputColumn.RefId] = outputColumnsFromNames[colName];
                             }
                         }
                     }
@@ -288,7 +288,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                         foreach (var outputColumn in sourceOutput.ExternalColumns)
                         {
                             var colName = outputColumn.Name;
-                            outputColumnsFromExtMetadata[outputColumn.LineageID] = foreignSource;
+                            outputColumnsFromExtMetadata[outputColumn.RefId] = foreignSource;
                         }
                     }
                 }

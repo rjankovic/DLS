@@ -19,7 +19,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.Contract.Contains("OLE DB Destination") || component.Contract.Contains("ODBC Destination"); ;
+            return component.ClassId.Contains("OLEDBDestination") || component.ClassId.Contains("ODBCDestination"); ;
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -41,7 +41,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             string tgtTableName = string.Empty;
             string destinationType = string.Empty;
 
-            if (context.Component.Contract.Contains("OLE DB Destination"))
+            if (context.Component.ClassId.Contains("OLEDBDestination"))
             {
                 destinationType = "OpenRowset";
             } else

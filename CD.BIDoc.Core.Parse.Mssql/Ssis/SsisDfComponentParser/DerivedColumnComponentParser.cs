@@ -19,7 +19,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.Contract.Contains("Derived Column");
+            return component.ClassId.Contains("DerivedColumn");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -31,7 +31,8 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
             Dictionary<string, DfColumnElement> inputColumnsByLineageId = new Dictionary<string, DfColumnElement>();
 
             //create local SsisIndex which will later be used for expression extractor
-            SsisIndex localIndex = new SsisIndex();
+            SsisIndex localIndex = new SsisIndex(context.Referrables);
+            
 
             foreach (var input in context.Component.Inputs)
             {

@@ -371,6 +371,7 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
                 }
                 var conMagElement = AddConnectionManager(conMag, packageElement, packageReferrables, package.Executable.ID);
                 packageConnections.Add(conMagElement);
+                packageConnections.AddWithRefId(conMag.RefId, conMagElement);
             }
 
             // Executables

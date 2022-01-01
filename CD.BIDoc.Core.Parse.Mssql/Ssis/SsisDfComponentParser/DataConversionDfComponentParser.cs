@@ -18,7 +18,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.Contract.Contains("Data Conversion");
+            return component.ClassId.Contains("DataConvert");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)

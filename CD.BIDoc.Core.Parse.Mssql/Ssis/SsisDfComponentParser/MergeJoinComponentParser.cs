@@ -18,7 +18,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.Contract.Contains("Merge Join");
+            return component.ClassId.Contains("MergeJoin");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -63,7 +63,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     inputNode.AddChild(colNode);
 
                     mergeJoinInputMapping[inputCol.Name] = colNode;
-                    inputColumnsById[inputCol.LineageID] = colNode;
+                    inputColumnsById[inputCol.RefId] = colNode;
 
                 }
             }

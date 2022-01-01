@@ -13,7 +13,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
 
         public bool CanParse(SsisDfComponent component)
         {
-            return component.Contract.Contains("Aggregate");
+            return component.ClassId.Contains("Aggregate");
         }
 
         public DfComponentElement ParseComponent(SsisDfComponentContext context)
@@ -97,7 +97,7 @@ namespace CD.DLS.Parse.Mssql.Ssis.SsisDfComponentParser
                     outputCol.XmlDefinition
                     , outputNode);
 
-                if (inputColumnsByLineageId.ContainsKey(inputColId))
+                if (inputColId != null && inputColumnsByLineageId.ContainsKey(inputColId))
                 {
                     var inputColElement = inputColumnsByLineageId[inputColId];
                     colNode.SourceDfColumn = inputColElement;

@@ -737,8 +737,13 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                             //Parse.Mssql.Ssis.SsisXmlProvider xmlProvider = new Parse.Mssql.Ssis.SsisXmlProvider(request.ExtractId, projectComponent.SsisProjectComponentId, StageManager, xmlExtract);
                             Parse.Mssql.Ssis.ProjectModelParser projectModelParser = new Parse.Mssql.Ssis.ProjectModelParser(xmlProvider, adbix, projectConfig, request.ExtractId, StageManager);
 
-                            projectModelParser.ParsePackage(projectComponent.SsisProjectComponentId, projectModel, packageElement,
-                                xmlItem, projectModel.ConnectionManagers.ToList());
+                            //if (package.Name.Contains("FactIssuedInvoice"))
+                            //{
+
+                                projectModelParser.ParsePackage(projectComponent.SsisProjectComponentId, projectModel, packageElement,
+                                    xmlItem, projectModel.ConnectionManagers.ToList());
+
+                            //}
 
                             //projectElement.Parent = null;
 

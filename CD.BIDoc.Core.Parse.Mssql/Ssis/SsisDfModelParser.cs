@@ -85,8 +85,8 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 var componentInputMapping = allIO.Inputs;
                 var componentOutputMapping = allIO.Outputs;
 
-                var contract = component.Contract;
-                var contractBase = contract.Split(';')[0];
+                //var contract = component.Contract;
+                //var contractBase = contract.Split(';')[0];
                 //var objType = component.ObjectType;
                 //var objTypeString = component.ObjectType.ToString();
                 var idString = component.RefId;
@@ -95,7 +95,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 //PropertyCollection props = new PropertyCollection(properties);
                 //var componentId = component.ID;
                 var layout = package.Layout; // _definitionSearcher.GetContainerDesign(package.Executable.ID, parentLayoutRefPath + "\\" + idString);
-                var isSource = contractBase.EndsWith("Source");
+                var isSource = classId.Contains("Source");
 
                 var componentUrn = isSource ? _urnBuilder.GetDfSourceComponentUrn(dfElement, component.RefId) : _urnBuilder.GetDfComponentUrn(dfElement, component.RefId);
                 XmlElement componentDefinitionXml;
@@ -128,7 +128,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 }
                 if (componentElement == null)
                 {
-                    throw new Exception("Could not find a parser for component " + component.Contract);
+                    throw new Exception("Could not find a parser for component " + component.ClassId);
                 }
 
                 var cName = component.Name;
@@ -284,7 +284,13 @@ namespace CD.DLS.Parse.Mssql.Ssis
                                     XmlDocument xDoc = new XmlDocument();
                                     xDoc.LoadXml(tgtInput.Dictionary[inputColumnName].Definition);
                                     var lineageId = ((XmlElement)xDoc.FirstChild).GetAttributeNode("lineageId").InnerXml;
-                                    var lineageColumnName = lineageId.Substring(lineageId.LastIndexOf(".Columns[") + ".Columns[".Length).TrimEnd(']');
+                                    var lineageColumnName = lineageId.Substring(lineageId.LastIndexOf(".Columns[") + ".Columns[".Length);
+                                        //.TrimEnd(']');
+                                    if (lineageColumnName.EndsWith("]"))
+                                    {
+                                        lineageColumnName = lineageColumnName.Substring(0, lineageColumnName.Length - 1);
+                                    }
+
                                     if (!srcOutput.Dictionary.ContainsKey(lineageColumnName))
                                     {
                                         ConfigManager.Log.Error(string.Format("Could not resolve through lineageId: {0}, {1}", lineageId, lineageColumnName));

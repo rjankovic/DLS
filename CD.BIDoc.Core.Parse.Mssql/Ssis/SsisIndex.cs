@@ -39,11 +39,13 @@ namespace CD.DLS.Parse.Mssql.Ssis
             _columnElementsByLineageId = new Dictionary<string, DfColumnElement>();
 
         }
+
         /// <summary>
         /// Creates a derived index.
         /// </summary>
         /// <param name="parent">The index that is used as a parent.</param>
         public SsisIndex(SsisIndex parent)
+            : this()
         {
             _referrablesByName = new Dictionary<string, Referrable>(parent._referrablesByName);
             _referrablesById = new Dictionary<string, Referrable>(parent._referrablesById);
@@ -66,7 +68,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
         public bool TryGetNodeByName(string name, out ReferrableValueElement node)
         {
             Referrable referrable;
-            if(_referrablesByName.TryGetValue(name, out referrable))
+            if (_referrablesByName.TryGetValue(name, out referrable))
             {
                 node = referrable._element;
                 return true;
@@ -85,11 +87,19 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 node = referrable._element;
                 return true;
             }
-            else
+
+            if (id.IndexOf('-') != id.LastIndexOf('-'))
             {
-                node = default(ReferrableValueElement);
-                return false;
+                var shortened = ShortenId(id);
+                if (_referrablesById.TryGetValue(shortened, out referrable))
+                {
+                    node = referrable._element;
+                    return true;
+                }
             }
+
+            node = default(ReferrableValueElement);
+            return false;
         }
         public ReferrableValueElement GetNodeByName(string name)
         {
@@ -126,10 +136,21 @@ namespace CD.DLS.Parse.Mssql.Ssis
             var referrable = new Referrable(referrableElement, definingElement);
             _referrablesByName.Add(name, referrable);
             _referrablesById.Add(id, referrable);
+            if (id.Length == "{AAF0DF8E-D78A-4D3B-A2E9-A502D659BB46}".Length && (id.IndexOf('-') != id.LastIndexOf('-')))
+            {
+                var shortened = ShortenId(id); //id.Substring(0, id.IndexOf('-')) + id.Substring(id.IndexOf('-', id.IndexOf('-') + 1));
+                _referrablesById.Add(shortened, referrable);
+            }
             if (!_definingElementsByRefPath.ContainsKey(definingElement.RefPath.Path))
             {
                 _definingElementsByRefPath.Add(definingElement.RefPath.Path, referrable);
             }
+        }
+
+        private string ShortenId(string id)
+        {
+            var shortened = id.Substring(0, id.IndexOf('-')) + id.Substring(id.IndexOf('-', id.IndexOf('-') + 1));
+            return shortened;
         }
 
         public void AddColumn(string lineageId, DfColumnElement dfColumn)

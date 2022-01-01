@@ -411,9 +411,11 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
                 var classId = component.GetAttribute("componentClassID");
                 cmp.ClassId = classId;
                 cmp.RefId = GetRefId(component);
-                cmp.Contract = component.GetAttribute("contractInfo");
+                //cmp.Contract = component.GetAttribute("contractInfo");
                 cmp.Properties = GetDfProperties(component);
                 cmp.Name = component.GetAttribute("name");
+                cmp.XmlDefinition = component.OuterXml;
+                cmp.Connections = GetDfConnections(component);
 
                 var inputsNodes = component.GetElementsByTagName("inputs");
                 var outputsNodes = component.GetElementsByTagName("outputs");
@@ -506,6 +508,44 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             return res;
         }
 
+        private List<SsisRuntimeConnection> GetDfConnections(XmlElement component)
+        {
+            //throw new NotImplementedException();
+            /*
+                              <connections>
+                                <connection
+                                  refId="Package\Issued Invoice\Load IssuedInvoice\ElectronicInvoices.Connections[OleDbConnection]"
+                                  connectionManagerID="Package.ConnectionManagers[DSA]"
+                                  connectionManagerRefId="Package.ConnectionManagers[DSA]"
+                                  description="The OLE DB runtime connection used to access the database."
+                                  name="OleDbConnection" />
+                              </connections>
+             */
+            List<SsisRuntimeConnection> res = new List<SsisRuntimeConnection>();
+
+            var connectionsNodeList = component.GetElementsByTagName("connections");
+
+            if (connectionsNodeList.Count == 0)
+            {
+                return res;
+            }
+
+            foreach (XmlElement connection in ((XmlElement)(connectionsNodeList[0])).GetElementsByTagName("connection"))
+            {
+                SsisRuntimeConnection conn = new SsisRuntimeConnection()
+                { 
+                    ConnectionManagerID = connection.GetAttribute("connectionManagerID"),
+                    Name = connection.GetAttribute("name"),
+                    RefId = GetRefId(connection),
+                    XmlDefinition = connection.OuterXml
+                };
+
+                res.Add(conn);
+            }
+
+            return res;
+        }
+
         private DfColumn GetDfColumn(XmlElement dfColXml)
         {
             /*
@@ -543,12 +583,13 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
                 Name = dfColXml.GetAttribute("name"),
                 LineageID = dfColXml.GetAttribute("lineageId"),
                 ExternalColumnID = dfColXml.GetAttribute("externalMetadataColumnId"),
-                XmlDefinition = dfColXml.OuterXml
+                XmlDefinition = dfColXml.OuterXml,
+                Properties = GetDfProperties(dfColXml)
             };
 
             if (string.IsNullOrEmpty(col.Name))
             {
-                col.Name = dfColXml.GetAttribute("cacheName");
+                col.Name = dfColXml.GetAttribute("cachedName");
             }
 
             return col;
@@ -576,11 +617,16 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             var propsXml = propsNode.GetElementsByTagName("property");
             foreach (XmlElement pxml in propsXml)
             {
-                props.Add(new SsisProperty()
+                var p = new SsisProperty()
                 {
                     Name = pxml.GetAttribute("name"),
                     Value = pxml.InnerText
-                }) ;
+                };
+                if (p.Value.StartsWith("#{"))
+                {
+                    p.Value = p.Value.TrimStart('#').TrimStart('{').TrimEnd('}');
+                }
+                props.Add(p) ;
             }
 
             return props;
