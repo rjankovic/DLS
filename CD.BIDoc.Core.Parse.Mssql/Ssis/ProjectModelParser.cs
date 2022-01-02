@@ -151,7 +151,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
             foreach (var package in projectElementShallow.Packages)
             {
                 var urn = package.RefPath; // _urnBuilder.GetPackageUrn(projectElement, package.Name);
-                packageNamesToUrns.Add(package.Caption /* .Name*/, urn.Path);
+                packageNamesToUrns.Add(package.Caption.ToLower() /* .Name*/, urn.Path);
             }
 
             //var packageFilter = _settings.PackageFilter;
@@ -194,7 +194,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 {
                     continue;
                 }
-                var targetPackage = packageNodes.First(x => x.RefPath.Path == urn);
+                var targetPackage = projectElementShallow.Packages.First(x => x.RefPath.Path == urn);
                 execTask.Item1.Package = targetPackage;
             }
         }
@@ -241,7 +241,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
 
             var parameterElement = new ProjectParameterElement(urn, parameter.Name, definition, projectElement);
             projectElement.AddChild(parameterElement);
-            parameterElement.DataType = (TypeCode)(Enum.Parse(typeof(TypeCode), parameter.DataType));
+            //parameterElement.DataType = (TypeCode)(Enum.Parse(typeof(TypeCode), parameter.DataType));
             parameterElement.Value = parameter.Value.ToString();
 
             return parameterElement;
@@ -382,7 +382,7 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
                 var execNode = AddExecutable(executable, package, packageElement, packageReferrables, packageConnections, execPackageTasksPackageNames);
                 if (execNode != null)
                 {
-                    executablesToNodes.Add(((SsisExecutable)executable).ID, execNode);
+                    executablesToNodes.Add(((SsisExecutable)executable).RefId, execNode);
                 }
             }
 
@@ -517,15 +517,16 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
                         ConfigManager.Log.Error(string.Format("Failed to parse dataflow task in {0}: {1}{2}{3}", resNode.RefPath.Path, ex.Message, Environment.NewLine, ex.StackTrace));
                     }
                 }
-                else if (host.CreationName.StartsWith("SSIS.ExecutePackageTask", StringComparison.Ordinal))
+                else if (host is SsisExecutePackageTask /* host.CreationName.EndsWith(".ExecutePackageTask", StringComparison.Ordinal)*/)
                 {
-                    var packageName = host.GetPropertyValue("PackageName");
+                    var execTask = (SsisExecutePackageTask)host;
+                    var packageName = execTask.PackageName; // host.GetPropertyValue("PackageName");
                     ExecutePackageTaskElement execNode = new ExecutePackageTaskElement(refPath, host.Name, definition, parentNode);
                     execPackageTasksPackageNames.Add(new Tuple<ExecutePackageTaskElement, string>(execNode, packageName));
                     resNode = execNode;
                     //AddVariables(con, referrables, resNode, definitionElement);
 
-                    var paramAssigns = _definitionSearcher.GetExecPackageParameterAssignments(definitionElement);
+                    var paramAssigns = execTask.ParameterAssignments; // _definitionSearcher.GetExecPackageParameterAssignments(definitionElement);
 
                     HashSet<string> assignedParams = new HashSet<string>();
                     foreach (var paramAssignment in paramAssigns)
@@ -534,7 +535,7 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
                         {
                             continue;
                         }
-                        var assignmentRefPath = _urnBuilder.GetParameterAssignmentUrn(execNode /*parentNode*/, paramAssignment);
+                        var assignmentRefPath = _urnBuilder.GetParameterAssignmentUrn(execNode /*parentNode*/, paramAssignment.ParamName);
                         var asgNode = new ExecutePackageParameterAssignmentElement(assignmentRefPath, paramAssignment.ParamName, paramAssignment.Definition, execNode);
                         execNode.AddChild(asgNode);
                         // asgNode.Links.Add(new BasicNodeLink() { NodeFrom = asgNode, NodeTo = referrables[paramAssignment.ReferrableName].Item1 });
@@ -681,7 +682,7 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
                         var execNode = AddExecutable(e, package, resNode, containerReferrables, connections, execPackageTasksPackageNames);
                         if (execNode != null)
                         {
-                            executablesToNodes.Add(e.ID, execNode);
+                            executablesToNodes.Add(e.RefId, execNode);
                         }
                     }
 
@@ -725,7 +726,7 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
                 string layoutRefId = null;
                 var definition = constraint.XmlDefinition; // _definitionSearcher.GetPrecedenceConstraintDefinition(constraint.ID, containerDefinitionXml, out layoutRefId);
                 var urn = _urnBuilder.GetPrecedenceConstraintUrn(parent, constraint.Name);
-                var arrow = _definitionSearcher.GetPrecedenceConstraintArrow(package.Executable.ID, layoutRefId);
+                var arrow = constraint.DesignArrow; //_definitionSearcher.GetPrecedenceConstraintArrow(package.Executable.ID, layoutRefId);
 
                 var constraintElement = new PrecedenceConstraintElement(urn, constraint.Name, definition, parent);
                 parent.AddChild(constraintElement);

@@ -563,7 +563,7 @@ namespace CD.DLS.Parse.Mssql.Db
                 tempTable.ModelElement = fragmentsToElements[tempTable.ObjectContent];
                 foreach (var column in tempTable.Columns)
                 {
-                    if (column.ObjectContent == null)
+                    if (column.ObjectContent == null && column.ModelElement == null)
                     {
                         try
                         {
@@ -575,6 +575,10 @@ namespace CD.DLS.Parse.Mssql.Db
                         }
                             continue;
 
+                    }
+                    if(column.ObjectContent == null)
+                    {
+                        continue;
                     }
                     column.ModelElement = fragmentsToElements[column.ObjectContent];
                 }

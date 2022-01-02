@@ -78,6 +78,19 @@ SELECT @rc = @@ROWCOUNT
 END
 
 
+SET @rc = 1
+WHILE @rc > 0
+BEGIN
+DELETE TOP (10000) l FROM [BIDoc].[BasicGraphLinks] l
+INNER JOIN [BIDoc].[BasicGraphNodes] n ON l.NodeToId = n.BasicGraphNodeId
+INNER JOIN BIDoc.ModelElements e ON n.SourceElementId = e.ModelElementId
+WHERE n.ProjectConfigId = @projectconfigid 
+AND LEFT(e.RefPath, LEN(@path)) = @path
+--AND n.RefPathIntervalStart BETWEEN @intervalFrom AND @intervalTo
+SELECT @rc = @@ROWCOUNT
+END
+
+
 EXEC [Adm].[sp_WriteLogInfo] N'Clearing graph nodes'
 
 SET @rc = 1

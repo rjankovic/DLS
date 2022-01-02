@@ -737,7 +737,7 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                             //Parse.Mssql.Ssis.SsisXmlProvider xmlProvider = new Parse.Mssql.Ssis.SsisXmlProvider(request.ExtractId, projectComponent.SsisProjectComponentId, StageManager, xmlExtract);
                             Parse.Mssql.Ssis.ProjectModelParser projectModelParser = new Parse.Mssql.Ssis.ProjectModelParser(xmlProvider, adbix, projectConfig, request.ExtractId, StageManager);
 
-                            //if (package.Name.Contains("FactIssuedInvoice"))
+                            //if (package.Name.Contains("LoadHelios_DimBranch.dtsx"))
                             //{
 
                                 projectModelParser.ParsePackage(projectComponent.SsisProjectComponentId, projectModel, packageElement,

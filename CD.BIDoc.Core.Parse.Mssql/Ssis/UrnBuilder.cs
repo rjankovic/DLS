@@ -76,10 +76,16 @@ namespace CD.DLS.Parse.Mssql.Ssis
             return parent.RefPath.NamedChild("ConnectionManager", managerName);
         }
 
-        public RefPath GetParameterAssignmentUrn(SsisModelElement parent, SsisXmlProvider.ParamAssignment assignment)
+        //public RefPath GetParameterAssignmentUrn(SsisModelElement parent, SsisXmlProvider.ParamAssignment assignment)
+        //{
+        //    return parent.RefPath.NamedChild("ParameterAssignment", assignment.ParamName);
+        //}
+
+        public RefPath GetParameterAssignmentUrn(SsisModelElement parent, string paramName)
         {
-            return parent.RefPath.NamedChild("ParameterAssignment", assignment.ParamName);
+            return parent.RefPath.NamedChild("ParameterAssignment", paramName);
         }
+
 
         public RefPath GetPrecedenceConstraintUrn(SsisModelElement parent, string constraintName)
         {

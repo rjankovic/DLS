@@ -282,11 +282,11 @@ namespace CD.DLS.Parse.Mssql.Ssis
             var creationName = GetCreationName(xml);
 
 
-            var executablesListRoot = xml.GetElementsByTagName("DTS:Executables");
-            if (executablesListRoot.Count == 0)
-            {
-                exec = new SsisTask();
-            }
+            //var executablesListRoot = xml.GetElementsByTagName("DTS:Executables");
+            //if (executablesListRoot.Count == 0)
+            //{
+            //    exec = new SsisTask();
+            //}
 
             if (creationName.Contains("SQLTask"))
             {
@@ -354,6 +354,21 @@ namespace CD.DLS.Parse.Mssql.Ssis
                  */
 
             }
+            else if (creationName.Contains(".ExecutePackageTask"))
+            {
+                SsisExecutePackageTask packageTask = new SsisExecutePackageTask();
+                exec = packageTask;
+
+                packageTask.ParameterAssignments = GetExecPackageParameterAssignments(xml);
+                var execPackageNode = xml.GetElementsByTagName("ExecutePackageTask")[0] as XmlElement;
+                var packageNameElem = execPackageNode.GetElementsByTagName("PackageName")[0] as XmlElement;
+
+                if (packageNameElem != null)
+                {
+                    packageTask.PackageName = packageNameElem.InnerText;
+                }
+
+            }
             else if (creationName.Contains("Pipeline"))
             {
                 SsisDfTask dfTask = new SsisDfTask();
@@ -378,13 +393,22 @@ namespace CD.DLS.Parse.Mssql.Ssis
             exec.PrecedenceConstraints = GetPrecedenceContraints(xml);
             exec.XmlDefinition = xml.OuterXml;
 
-            var executablesNodes = xml.GetElementsByTagName("DTS:Executables");
-            if (executablesNodes.Count > 0)
+            var executablesNodes = GetChildElementByName(xml, "DTS:Executables");
+            if (executablesNodes != null)
             {
-                var executablesNode = (XmlElement)(executablesNodes[0]);
-                foreach (XmlElement child in executablesNode.GetElementsByTagName("DTS:Executable"))
+                var executablesNode = (XmlElement)(executablesNodes);
+                foreach (XmlNode child in executablesNode.ChildNodes)
                 {
-                    var childX = LoadSsisExecutable(child);
+                    if (!(child is XmlElement))
+                    {
+                        continue;
+                    }
+                    var childXml = child as XmlElement;
+                    if (childXml.Name != "DTS:Executable")
+                    {
+                        continue;
+                    }
+                    var childX = LoadSsisExecutable(childXml);
                     exec.Children.Add(childX);
                 }
             }
@@ -416,6 +440,15 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
                 cmp.Name = component.GetAttribute("name");
                 cmp.XmlDefinition = component.OuterXml;
                 cmp.Connections = GetDfConnections(component);
+                if (NodeLayoutDesigns.ContainsKey(cmp.RefId))
+                {
+                    cmp.Layout = NodeLayoutDesigns[cmp.RefId];
+                }
+                else
+                {
+                    cmp.Layout = new ElementLayoutDesign() { Size = new DesignPoint() { X = 0, Y = 0 }, TopLeft = new DesignPoint() { X = 0, Y = 0 } };
+                }
+                    
 
                 var inputsNodes = component.GetElementsByTagName("inputs");
                 var outputsNodes = component.GetElementsByTagName("outputs");
@@ -662,13 +695,17 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             var paths = pathsNode.GetElementsByTagName("path");
             foreach (XmlElement path in paths)
             {
-                res.Add(new SsisDfPath()
+                var x = new SsisDfPath()
                 {
                     RefId = GetRefId(path),
                     Name = path.GetAttribute("name"),
                     SourceIdString = path.GetAttribute("startId"),
-                    TargetIdString = path.GetAttribute("endId")
-                }) ;
+                    TargetIdString = path.GetAttribute("endId"),
+                    XmlDefinition = path.OuterXml
+                };
+
+                x.DesignArrow = EdgeLayouts[x.RefId];
+                res.Add(x);
             }
             return res;
         }
@@ -689,14 +726,14 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
                   </DTS:PrecedenceConstraints>
              */
 
-            var constraintList = xml.GetElementsByTagName("DTS:PrecedenceConstraints");
+            var constraintList = GetChildElementByName(xml, "DTS:PrecedenceConstraints");
 
-            if (constraintList.Count == 0)
+            if (constraintList == null)
             {
                 return res;
             }
 
-            foreach (XmlElement pcx in constraintList[0].ChildNodes)
+            foreach (XmlElement pcx in constraintList.ChildNodes)
             {
                 var pc = new SsisPrecedenceConstraint()
                 {
@@ -715,6 +752,25 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             return res;
         }
 
+        private XmlElement GetChildElementByName(XmlElement xml, string name)
+        {
+            foreach (var child in xml.ChildNodes)
+            {
+                var childXml = child as XmlElement;
+                if (childXml == null)
+                {
+                    continue;
+                }
+
+                if (childXml.Name != name)
+                {
+                    continue;
+                }
+                return childXml;
+            }
+            return null;
+        }
+
         private List<SsisVariable> GetVariables(XmlElement xml)
         {
             /*
@@ -730,14 +786,14 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
     </DTS:Variable>
              */
 
-            var variablesRootList = xml.GetElementsByTagName("DTS:Variables");
+            var variablesRootList = GetChildElementByName(xml, "DTS:Variables");
             List<SsisVariable> vars = new List<SsisVariable>();
-            if (variablesRootList.Count == 0)
+            if (variablesRootList == null)
             {
                 return vars;
             }
 
-            foreach (XmlElement v in variablesRootList[0].ChildNodes)
+            foreach (XmlElement v in variablesRootList.ChildNodes)
             {
                 SsisVariable vr = new SsisVariable()
                 {
@@ -833,7 +889,7 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             {
                 DataType = "",
                 Name = xml.GetAttribute("SSIS:Name"),
-                Sensitive = bool.Parse(props["Sensitive"]),
+                Sensitive = props["Sensitive"] == "1",
                 Value = props["Value"],
                 XmlDefinition = xml.OuterXml
             };
@@ -900,13 +956,13 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
         {
             Dictionary<string, string> res = new Dictionary<string, string>();
 
-            var propsElements = xml.GetElementsByTagName("SSIS:Properties");
-            if (propsElements.Count == 0)
+            var propsElements = GetChildElementByName(xml, "SSIS:Properties");
+            if (propsElements == null)
             {
                 return res;
             }
 
-            var propsElement = propsElements[0];
+            var propsElement = propsElements;
             var props = ((XmlElement)propsElement).GetElementsByTagName("SSIS:Property");
             foreach (XmlElement prop in props)
             {
@@ -1191,14 +1247,8 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
         //    throw new Exception("Access Mode not found");
         //}
 
-        public class ParamAssignment
-        {
-            public string Definition { get; set; }
-            public string ParamName { get; set; }
-            public string ReferrableName { get; set; }
-        }
-
-        public List<ParamAssignment> GetExecPackageParameterAssignments(XmlElement defElement)
+        
+        private List<ParamAssignment> GetExecPackageParameterAssignments(XmlElement defElement)
         {
             List<ParamAssignment> res = new List<ParamAssignment>();
             var execPackageNode = defElement.GetElementsByTagName("ExecutePackageTask")[0] as XmlElement;
@@ -1211,17 +1261,17 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             return res;
         }
 
-        public ElementLayoutDesign GetPackageNodeLayout(string packageId)
-        {
-            var file = _files[packageId];
-            if (file.EdgeLayouts.Count == 0)
-            {
-                return new ElementLayoutDesign();
-            }
-            var xDim = file.NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.X + x.Size.X);
-            var yDim = file.NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.Y + x.Size.Y);
-            return new ElementLayoutDesign() { Size = new DesignPoint() { X = xDim, Y = yDim }, TopLeft = new DesignPoint() { X = 0, Y = 0 } };
-        }
+        //public ElementLayoutDesign GetPackageNodeLayout(string packageId)
+        //{
+        //    var file = _files[packageId];
+        //    if (file.EdgeLayouts.Count == 0)
+        //    {
+        //        return new ElementLayoutDesign();
+        //    }
+        //    var xDim = file.NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.X + x.Size.X);
+        //    var yDim = file.NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.Y + x.Size.Y);
+        //    return new ElementLayoutDesign() { Size = new DesignPoint() { X = xDim, Y = yDim }, TopLeft = new DesignPoint() { X = 0, Y = 0 } };
+        //}
 
         private ElementLayoutDesign GetNodeLayoutDesign(XmlElement designNode)
         {
@@ -1262,7 +1312,7 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             DesignPoint topLeftPoint = ParseDesignPoint(topLeftAttr);
 
             arw.TopLeft = topLeftPoint;
-            arw.TopLeft = startPoint;
+            //arw.TopLeft = startPoint;
             //arw.End = endConnector;
             arw.Shifts = new List<DesignPoint>();
 

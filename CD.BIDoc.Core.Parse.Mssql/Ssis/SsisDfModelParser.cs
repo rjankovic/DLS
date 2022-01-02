@@ -94,7 +94,7 @@ namespace CD.DLS.Parse.Mssql.Ssis
                 var properties = component.Properties;
                 //PropertyCollection props = new PropertyCollection(properties);
                 //var componentId = component.ID;
-                var layout = package.Layout; // _definitionSearcher.GetContainerDesign(package.Executable.ID, parentLayoutRefPath + "\\" + idString);
+                var layout = component.Layout; // package.Layout; // _definitionSearcher.GetContainerDesign(package.Executable.ID, parentLayoutRefPath + "\\" + idString);
                 var isSource = classId.Contains("Source");
 
                 var componentUrn = isSource ? _urnBuilder.GetDfSourceComponentUrn(dfElement, component.RefId) : _urnBuilder.GetDfComponentUrn(dfElement, component.RefId);

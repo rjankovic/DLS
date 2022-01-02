@@ -103,6 +103,10 @@ namespace CD.DLS.Parse.Mssql.Ssis
         }
         public ReferrableValueElement GetNodeByName(string name)
         {
+            if (!_referrablesByName.ContainsKey(name))
+            {
+                return null;
+            }
             return _referrablesByName[name]._element;
         }
 

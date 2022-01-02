@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CD.DLS.Parse.Mssql.Ssis.SsisXmlProvider;
 
 namespace CD.BIDoc.Core.Parse.Mssql.Ssis
 {
@@ -105,10 +106,19 @@ namespace CD.BIDoc.Core.Parse.Mssql.Ssis
     {
     }
 
-    public class SsisExecuteSsisPackabeTask : SsisTask
+    public class SsisExecutePackageTask : SsisTask
     {
-
+        public List<ParamAssignment> ParameterAssignments { get; set; } = new List<ParamAssignment>();
+        public string PackageName { get; set; }
     }
+
+    public class ParamAssignment
+    {
+        public string Definition { get; set; }
+        public string ParamName { get; set; }
+        public string ReferrableName { get; set; }
+    }
+
 
     public class SsisExpressionTask : SsisTask
     {

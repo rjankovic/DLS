@@ -88,7 +88,8 @@ namespace CD.DLS.Tests.ParserTests
 
             UpdateModelRequest request = new UpdateModelRequest()
             {
-                ExtractId = new Guid("EF920A55-0D03-49C4-83C3-F9CB638585C5")
+                ExtractId = new Guid("34C95EC6-76B4-4113-81D3-7B4D989E4EA1")
+                //ExtractId = new Guid("EF920A55-0D03-49C4-83C3-F9CB638585C5")
             };
 
             UpdateModelRequestDirectProcessor processor = new UpdateModelRequestDirectProcessor();
