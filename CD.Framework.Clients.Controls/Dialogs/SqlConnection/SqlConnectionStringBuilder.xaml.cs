@@ -167,6 +167,7 @@ namespace CD.DLS.Clients.Controls.Dialogs.SqlConnection
             }
         }
 
+        
         private void OnPropertyChanged(params string[] propertyNames)
         {
             if (PropertyChanged == null) return;
@@ -263,8 +264,24 @@ namespace CD.DLS.Clients.Controls.Dialogs.SqlConnection
             var res = TestConnection();
             if (res)
             {
-                MessageBox.Show("Connection Test Successful", "Connection Test Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (_showConnectionSuccessfulMessage)
+                {
+                    MessageBox.Show("Connection Test Successful", "Connection Test Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                if (OnConnectionSuccessful != null)
+                {
+                    OnConnectionSuccessful(this, new EventArgs());
+                }
             }
         }
+
+        private string _connectText = "Test Connection";
+        public string ConnectText { get => _connectText; set => _connectText = value; }
+        public bool ShowConnectionSuccessfulMessage { get => _showConnectionSuccessfulMessage; set => _showConnectionSuccessfulMessage = value; }
+
+        public event EventHandler OnConnectionSuccessful;
+
+        private bool _showConnectionSuccessfulMessage = true;
+
     }
 }

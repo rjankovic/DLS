@@ -7,7 +7,7 @@
         xmlns:SqlConnection1="clr-namespace:CD.DLS.Clients.Controls.Dialogs.SqlConnection;assembly=CD.DLS.Clients.Controls"
         xmlns:dialogs="clr-namespace:CD.DLS.Clients.Controls.Dialogs;assembly=CD.DLS.Clients.Controls"
         mc:Ignorable="d"
-        Title="DLS Client Configuration" Width="800" MaxWidth="1000" Height="600">
+        Title="Datawut Configuration" Width="800" MaxWidth="1000" Height="600">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -19,18 +19,12 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Image Source="Resources\DLS_banner.png" Margin="100 50 100 0" Grid.Row="0" />
-        <StackPanel x:Name="deploymentRadioStack" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center">
-            <Label Content="Deployment mode:" HorizontalAlignment="Center" Margin="0 40 0 10" />
-            <StackPanel Orientation="Horizontal">
-                <RadioButton x:Name="azureDeploymentRadio" Margin="100 0 50 0" IsChecked="True" Checked="AzureDeploymentRadio_Checked">Azure</RadioButton>
-                <RadioButton x:Name="onPremisesDeploymentRadio" Margin="50 0 100 0" Checked="OnPremisesDeploymentRadio_Checked" IsEnabled="False">On-Premises</RadioButton>
-            </StackPanel>
-        </StackPanel>
-        
-        <SqlConnection1:SqlConnectionStringBuilder Header="Your DLS Database Connection" x:Name="connectionStringBuilder" ConnectionString="{Binding ElementName=_this, Path=Test}" Grid.Row="2" Visibility="Collapsed" />
-        <TextBlock x:Name="connectionStringTb" Text="{Binding ElementName=_this, Path=Test, StringFormat='Produced Connection String: {0}'}" Grid.Row="3" Visibility="Collapsed" />
+        <!--<Image Source="Resources\DLS_banner.png" Margin="100 50 100 0" Grid.Row="0" />-->
 
-        <Button x:Name="configureButton" Content="Configure Client Tools" Width="200" Margin="0 20 0 0" Padding="5" Grid.Row="4" Click="ConfigureButton_Click" />
+
+        <SqlConnection1:SqlConnectionStringBuilder MinHeight="200" Grid.Column="0" Header="Your Datawut Database Connection" x:Name="connectionStringBuilder" ConnectionString="{Binding ElementName=_this, Path=Test}" Grid.Row="2" />
+        <TextBlock x:Name="connectionStringTb" Text="{Binding ElementName=_this, Path=Test, StringFormat='Produced Connection String: {0}'}" Grid.Column="0" Grid.Row="3" />
+
+        <!--<Button x:Name="configureButton" Content="Configure Client Tools" Width="200" Margin="0 20 0 0" Padding="5" Grid.Row="4" Click="ConfigureButton_Click" />-->
     </Grid>
 </Window>

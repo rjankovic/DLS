@@ -38,6 +38,16 @@ namespace CD.DLS.Configuration
             {
                 connectionStringBuilder.ConnectionString = new Clients.Controls.Dialogs.SqlConnection.SqlConnectionString(_preconfiguredConnectionString);
             }
+
+            //connectionStringBuilder.PropertyChanged += ConnectionStringBuilder_PropertyChanged;
+            connectionStringBuilder.ConnectText = "Connect";
+            connectionStringBuilder.ShowConnectionSuccessfulMessage = false;
+            connectionStringBuilder.OnConnectionSuccessful += ConnectionStringBuilder_OnConnectionSuccessful;
+        }
+
+        private void ConnectionStringBuilder_OnConnectionSuccessful(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -47,36 +57,36 @@ namespace CD.DLS.Configuration
             Close();
         }
 
-        private async void ConfigureButton_Click(object sender, RoutedEventArgs e)
-        {
-            var css = connectionStringBuilder.ConnectionString.ToString();
-            configureButton.IsEnabled = false;
-            string errorMessage = string.Empty;
-            bool success = false;
+        //private async void ConfigureButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var css = connectionStringBuilder.ConnectionString.ToString();
+        //    configureButton.IsEnabled = false;
+        //    string errorMessage = string.Empty;
+        //    bool success = false;
 
-            if (onPremisesDeploymentRadio.IsChecked.Value)
-            {
-                success = await Task.Run(() => ConfigureOnPremises(css, out errorMessage));
-            }
-            else
-            {
-                success = await Task.Run(() => ConfigureAzure(out errorMessage));
-            }
+        //    if (onPremisesDeploymentRadio.IsChecked.Value)
+        //    {
+        //        success = await Task.Run(() => ConfigureOnPremises(css, out errorMessage));
+        //    }
+        //    else
+        //    {
+        //        success = await Task.Run(() => ConfigureAzure(out errorMessage));
+        //    }
 
-            configureButton.IsEnabled = true;
-            if (success)
-            {
-                MessageBox.Show("Configuration finished successfully", "Configuration Successful", MessageBoxButton.OK, MessageBoxImage.Asterisk);
-                this.Close();
-            }
-            else
-            {
-                if (errorMessage != null)
-                {
-                    MessageBox.Show("Configuration failed:  " + Environment.NewLine + errorMessage, "Configuration Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
+        //    configureButton.IsEnabled = true;
+        //    if (success)
+        //    {
+        //        MessageBox.Show("Configuration finished successfully", "Configuration Successful", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+        //        this.Close();
+        //    }
+        //    else
+        //    {
+        //        if (errorMessage != null)
+        //        {
+        //            MessageBox.Show("Configuration failed:  " + Environment.NewLine + errorMessage, "Configuration Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        //        }
+        //    }
+        //}
 
         private bool ConfigureOnPremises(string connectionString, out string errorMessage)
         {
@@ -123,72 +133,6 @@ namespace CD.DLS.Configuration
             return true;
         }
 
-        private bool ConfigureAzure(out string errorMessage)
-        {
-            try
-            {
-                ManualConfigManager mcm = new ManualConfigManager();
-                mcm.DeploymentMode = DeploymentModeEnum.Azure;
-                mcm.ApplicationClass = ApplicationClassEnum.Client;
-                ConfigManager.SetCustomConfigManager(mcm);
-
-                mcm.AadRedirectUri = "https://lukasmatejovskycleverdecisi.onmicrosoft.com/DLSClient";
-                var clientIdEncrypted = "9RLBIRBujkzMW2FpjWaqiZ0qwqAB3mD7SqueAzWZnDG6TRpLmknnEZAkqWUFO3CIh50Weafd8hiFjExrWH6JpPDXE1Tt8oH+wOOOovPJgWoiMLFP5yiS6bhulypB8g2tGmMm4ljSwmyjlLVEOjaa8FTUVvprJK3ML/msT98TCi8=";
-                var clientId = StringCipher.Decrypt(clientIdEncrypted);
-                mcm.AadClientId = clientId;
-                mcm.AadInstance = "https://login.microsoftonline.com/{0}";
-                mcm.AzureTenant = "lukasmatejovskycleverdecisi.onmicrosoft.com";
-                mcm.MsGraphResourceId = "https://graph.microsoft.com";
-                IdentityProvider.Login(false);
-                if (IdentityProvider.GetCurrentUser() == null)
-                {
-                    errorMessage = null;
-                    return false;
-                }
-
-                var customerCode = IdentityProvider.GetCurrentUser().GetCustomerCode();
-
-                mcm.AzureKeyVaultBaseAddress = $"https://{customerCode}dlscustkv.vault.azure.net";
-                
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_AAD_CLIENTID, clientIdEncrypted);
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_AAD_INSTANCE, "https://login.microsoftonline.com/{0}");
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_AAD_REDIRECT_URI, "https://lukasmatejovskycleverdecisi.onmicrosoft.com/DLSClient");
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_AZURE_TENANT, "lukasmatejovskycleverdecisi.onmicrosoft.com");
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_DEPLOYMENT_MODE, DeploymentModeEnum.Azure.ToString());
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_DEV_MODE, DevModeStatus.Production.ToString());
-                ConfigureExtractorPath();
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_GRAPH_API_VERSION, "1.5");
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_GRAPH_RESOURCE_ID, "https://graph.microsoft.com");
-                
-                var serviceBusConnectionString = IdentityProvider.GetKeyVaultSecret(StandardConfigManager.DLS_SERVICE_BUS_CONNECTION_STRING);
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_SERVICE_BUS_CONNECTION_STRING, serviceBusConnectionString);
-
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_ASB_SERVICE_TOPIC, "requestmessagestopic");
-
-                var serviceReceiverId = IdentityProvider.GetKeyVaultSecret(StandardConfigManager.DLS_SERVICERECEIVERID);
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_SERVICERECEIVERID, serviceReceiverId);
-
-                var uploaderConnectionString = IdentityProvider.GetKeyVaultSecret(StandardConfigManager.DLS_UPLOADER_CONNECTION_STRING);
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_UPLOADER_CONNECTION_STRING, uploaderConnectionString);
-
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_AZURE_FUNCTION_API, "https://dlsfunctionsservice.azurewebsites.net/api/HttpProcessMessage");
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_AZURE_FUNCTION_SECRET_NAME, "HttpFunctionKey");
-
-                var azureFunctionKey = IdentityProvider.GetKeyVaultSecret(StandardConfigManager.DLS_AZURE_FUNCTION_KEY);
-                Registry.SetConfigValue6432(StandardConfigManager.DLS_AZURE_FUNCTION_KEY, azureFunctionKey);
-
-                // 9RLBIRBujkzMW2FpjWaqiZ0qwqAB3mD7SqueAzWZnDG6TRpLmknnEZAkqWUFO3CIh50Weafd8hiFjExrWH6JpPDXE1Tt8oH+wOOOovPJgWoiMLFP5yiS6bhulypB8g2tGmMm4ljSwmyjlLVEOjaa8FTUVvprJK3ML/msT98TCi8=
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message + (ex.InnerException == null ? string.Empty : (Environment.NewLine + ex.InnerException.Message)) + Environment.NewLine + ex.StackTrace;
-                return false;
-            }
-
-            errorMessage = null;
-            return true;
-        }
-
         private void ConfigureExtractorPath()
         {
             var installDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -215,23 +159,6 @@ namespace CD.DLS.Configuration
             }
         }
 
-        
-        private void AzureDeploymentRadio_Checked(object sender, RoutedEventArgs e)
-        {
-            if (connectionStringTb != null && connectionStringBuilder != null)
-            {
-                connectionStringBuilder.Visibility = Visibility.Collapsed;
-                connectionStringTb.Visibility = Visibility.Collapsed;
-            }
-        }
 
-        private void OnPremisesDeploymentRadio_Checked(object sender, RoutedEventArgs e)
-        {
-            if (connectionStringTb != null && connectionStringBuilder != null)
-            {
-                connectionStringBuilder.Visibility = Visibility.Visible;
-                connectionStringTb.Visibility = Visibility.Visible;
-            }
-        }
     }
 }

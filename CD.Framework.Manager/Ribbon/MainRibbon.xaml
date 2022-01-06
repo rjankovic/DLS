@@ -5,7 +5,7 @@
                      xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
                      xmlns:Fluent="urn:fluent-ribbon"
                      xmlns:fa="http://schemas.fontawesome.io/icons/"
-                     Title="DLS Manager" Icon="/CD.DLS.Manager;component/Resources/dtlns_logo.png" 
+                     Title="DLS Manager" Icon="/Datawut.Manager;component/Resources/dtlns_logo.png" 
                      Closing="RibbonWindow_Closing"
                      PreviewMouseLeftButtonDown="RibbonWindow_PreviewMouseLeftButtonDown"
                      PreviewMouseRightButtonDown="RibbonWindow_PreviewMouseRightButtonDown"
@@ -16,42 +16,42 @@
     <Fluent:RibbonWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Manager;component/Resources/DefaultResourceDictionary.xaml" />
+                <ResourceDictionary x:Name ="Default" Source="/Datawut.Manager;component/Resources/DefaultResourceDictionary.xaml" />
                 <ResourceDictionary>
-                    <BitmapImage x:Key="AddIcon" UriSource="/CD.DLS.Manager;component/Resources/Add.png"/>
-                    <BitmapImage x:Key="RemoveIcon" UriSource="/CD.DLS.Manager;component/Resources/Remove.png"/>
-                    <BitmapImage x:Key="ConfigIcon" UriSource="/CD.DLS.Manager;component/Resources/Config.png"/>
-                    <BitmapImage x:Key="FlowIcon" UriSource="/CD.DLS.Manager;component/Resources/Flow.png"/>
-                    <BitmapImage x:Key="HeartbeatIcon" UriSource="/CD.DLS.Manager;component/Resources/Heartbeat.png"/>
-                    <BitmapImage x:Key="OpenIcon" UriSource="/CD.DLS.Manager;component/Resources/Open.png"/>
-                    <BitmapImage x:Key="ProcessIcon" UriSource="/CD.DLS.Manager;component/Resources/Process.png"/>
-                    <BitmapImage x:Key="InputIcon" UriSource="/CD.DLS.Manager;component/Resources/Input.png"/>
-                    <BitmapImage x:Key="DbIcon" UriSource="/CD.DLS.Manager;component/Resources/Db.png"/>
-                    <BitmapImage x:Key="RequestIcon" UriSource="/CD.DLS.Manager;component/Resources/Request.png"/>
-                    <BitmapImage x:Key="HighFlowIcon" UriSource="/CD.DLS.Manager;component/Resources/HighFlow.png"/>
-                    <BitmapImage x:Key="WarningIcon" UriSource="/CD.DLS.Manager;component/Resources/Warning.png"/>
-                    <BitmapImage x:Key="SearchIcon" UriSource="/CD.DLS.Manager;component/Resources/Search.png"/>
-                    <BitmapImage x:Key="AboutIcon" UriSource="/CD.DLS.Manager;component/Resources/About.png"/>
-                    <BitmapImage x:Key="SecurityIcon" UriSource="/CD.DLS.Manager;component/Resources/Security.png"/>
-                    <BitmapImage x:Key="UserIcon" UriSource="/CD.DLS.Manager;component/Resources/User.png"/>
-                    <BitmapImage x:Key="BookIcon" UriSource="/CD.DLS.Manager;component/Resources/Book.png"/>
-                    <BitmapImage x:Key="TitleProjectIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleProject.png"/>
-                    <BitmapImage x:Key="TitleMonitoringIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleMonitoring.png"/>
-                    <BitmapImage x:Key="TitleSecurityIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleSecurity.png"/>
-                    <BitmapImage x:Key="TitleManageIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleManage.png"/>
-                    <BitmapImage x:Key="TitleDlsIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleDls.png"/>
-                    <BitmapImage x:Key="TitleBrowseIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleBrowse.png"/>
-                    <BitmapImage x:Key="TitleDebugIcon" UriSource="/CD.DLS.Manager;component/Resources/TitleDebug.png"/>
-                    <BitmapImage x:Key="CloseIcon" UriSource="/CD.DLS.Manager;component/Resources/Close.png"/>
-                    <BitmapImage x:Key="ShowIcon" UriSource="/CD.DLS.Manager;component/Resources/Show.png"/>
-                    <BitmapImage x:Key="SystemMinIcon" UriSource="/CD.DLS.Manager;component/Resources/SystemMin.png"/>
-                    <BitmapImage x:Key="SystemMaxIcon" UriSource="/CD.DLS.Manager;component/Resources/SystemMax.png"/>
-                    <BitmapImage x:Key="SystemCloseIcon" UriSource="/CD.DLS.Manager;component/Resources/SystemClose.png"/>
-                    <BitmapImage x:Key="FiltersArrowIcon" UriSource="/CD.DLS.Manager;component/Resources/FiltersArrow.jpg"/>
-                    <BitmapImage x:Key="MenuHideIcon" UriSource="/CD.DLS.Manager;component/Resources/MenuHide.png"/>
-                    <BitmapImage x:Key="ButtonBackIcon" UriSource="/CD.DLS.Manager;component/Resources/ButtonBack.png"/>
-                    <BitmapImage x:Key="ButtBackActiveIcon" UriSource="/CD.DLS.Manager;component/Resources/ButtBackActive.png"/>
-                    <BitmapImage x:Key="LinkIcon" UriSource="/CD.DLS.Manager;component/Resources/link.png"/>
+                    <BitmapImage x:Key="AddIcon" UriSource="/Datawut.Manager;component/Resources/Add.png"/>
+                    <BitmapImage x:Key="RemoveIcon" UriSource="/Datawut.Manager;component/Resources/Remove.png"/>
+                    <BitmapImage x:Key="ConfigIcon" UriSource="/Datawut.Manager;component/Resources/Config.png"/>
+                    <BitmapImage x:Key="FlowIcon" UriSource="/Datawut.Manager;component/Resources/Flow.png"/>
+                    <BitmapImage x:Key="HeartbeatIcon" UriSource="/Datawut.Manager;component/Resources/Heartbeat.png"/>
+                    <BitmapImage x:Key="OpenIcon" UriSource="/Datawut.Manager;component/Resources/Open.png"/>
+                    <BitmapImage x:Key="ProcessIcon" UriSource="/Datawut.Manager;component/Resources/Process.png"/>
+                    <BitmapImage x:Key="InputIcon" UriSource="/Datawut.Manager;component/Resources/Input.png"/>
+                    <BitmapImage x:Key="DbIcon" UriSource="/Datawut.Manager;component/Resources/Db.png"/>
+                    <BitmapImage x:Key="RequestIcon" UriSource="/Datawut.Manager;component/Resources/Request.png"/>
+                    <BitmapImage x:Key="HighFlowIcon" UriSource="/Datawut.Manager;component/Resources/HighFlow.png"/>
+                    <BitmapImage x:Key="WarningIcon" UriSource="/Datawut.Manager;component/Resources/Warning.png"/>
+                    <BitmapImage x:Key="SearchIcon" UriSource="/Datawut.Manager;component/Resources/Search.png"/>
+                    <BitmapImage x:Key="AboutIcon" UriSource="/Datawut.Manager;component/Resources/About.png"/>
+                    <BitmapImage x:Key="SecurityIcon" UriSource="/Datawut.Manager;component/Resources/Security.png"/>
+                    <BitmapImage x:Key="UserIcon" UriSource="/Datawut.Manager;component/Resources/User.png"/>
+                    <BitmapImage x:Key="BookIcon" UriSource="/Datawut.Manager;component/Resources/Book.png"/>
+                    <BitmapImage x:Key="TitleProjectIcon" UriSource="/Datawut.Manager;component/Resources/TitleProject.png"/>
+                    <BitmapImage x:Key="TitleMonitoringIcon" UriSource="/Datawut.Manager;component/Resources/TitleMonitoring.png"/>
+                    <BitmapImage x:Key="TitleSecurityIcon" UriSource="/Datawut.Manager;component/Resources/TitleSecurity.png"/>
+                    <BitmapImage x:Key="TitleManageIcon" UriSource="/Datawut.Manager;component/Resources/TitleManage.png"/>
+                    <BitmapImage x:Key="TitleDlsIcon" UriSource="/Datawut.Manager;component/Resources/TitleDls.png"/>
+                    <BitmapImage x:Key="TitleBrowseIcon" UriSource="/Datawut.Manager;component/Resources/TitleBrowse.png"/>
+                    <BitmapImage x:Key="TitleDebugIcon" UriSource="/Datawut.Manager;component/Resources/TitleDebug.png"/>
+                    <BitmapImage x:Key="CloseIcon" UriSource="/Datawut.Manager;component/Resources/Close.png"/>
+                    <BitmapImage x:Key="ShowIcon" UriSource="/Datawut.Manager;component/Resources/Show.png"/>
+                    <BitmapImage x:Key="SystemMinIcon" UriSource="/Datawut.Manager;component/Resources/SystemMin.png"/>
+                    <BitmapImage x:Key="SystemMaxIcon" UriSource="/Datawut.Manager;component/Resources/SystemMax.png"/>
+                    <BitmapImage x:Key="SystemCloseIcon" UriSource="/Datawut.Manager;component/Resources/SystemClose.png"/>
+                    <BitmapImage x:Key="FiltersArrowIcon" UriSource="/Datawut.Manager;component/Resources/FiltersArrow.jpg"/>
+                    <BitmapImage x:Key="MenuHideIcon" UriSource="/Datawut.Manager;component/Resources/MenuHide.png"/>
+                    <BitmapImage x:Key="ButtonBackIcon" UriSource="/Datawut.Manager;component/Resources/ButtonBack.png"/>
+                    <BitmapImage x:Key="ButtBackActiveIcon" UriSource="/Datawut.Manager;component/Resources/ButtBackActive.png"/>
+                    <BitmapImage x:Key="LinkIcon" UriSource="/Datawut.Manager;component/Resources/link.png"/>
                     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.TabsGrid.Background">#71616C</SolidColorBrush>
                     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.Content.Background">#F2EAF0</SolidColorBrush>
 
