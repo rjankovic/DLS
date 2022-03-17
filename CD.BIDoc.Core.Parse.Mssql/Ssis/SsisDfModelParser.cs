@@ -230,10 +230,10 @@ namespace CD.DLS.Parse.Mssql.Ssis
 
             // add DF path in topological order
 
-            if (dfElement.ChildBlocks.Any())
+            if (dfElement.ChildBlocks.Any(x => x.Position != null && x.Size != null))
             {
-                var width = dfElement.ChildBlocks.Max(x => x.Position.X + x.Size.X);
-                var height = dfElement.ChildBlocks.Max(x => x.Position.Y + x.Size.Y);
+                var width = dfElement.ChildBlocks.Where(x => x.Position != null && x.Size != null).Max(x => x.Position.X + x.Size.X);
+                var height = dfElement.ChildBlocks.Where(x => x.Position != null && x.Size != null).Max(x => x.Position.Y + x.Size.Y);
                 dfElement.Size = new DesignPoint() { X = width, Y = height };
             }
             else

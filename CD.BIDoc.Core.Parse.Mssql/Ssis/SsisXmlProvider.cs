@@ -1304,13 +1304,19 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
             {
                 return null;
             }
-            if (attrVal == "{x:Null}")
+            if (attrVal == "{x:Null}" || attrVal.ToLower().Contains("assembly"))
             {
                 return new DesignPoint() { X = 0, Y = 0 };
             }
+            
             var split = attrVal.Split(',');
-            var x = float.Parse(split[0], westernCulture);
-            var y = float.Parse(split[1], westernCulture);
+            float x = 0;
+            float y = 0;
+            if (split.Length > 1)
+            {
+                x = float.Parse(split[0], westernCulture);
+                y = float.Parse(split[1], westernCulture);
+            }
             return new DesignPoint() { X = x, Y = y };
         }
 
