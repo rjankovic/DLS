@@ -695,9 +695,16 @@ List<Tuple<ExecutePackageTaskElement, string>> execPackageTasksPackageNames, Ssi
             //{
             parentNode.AddChild(resNode);
 
-            resNode.Size = nodeLayout.Size;
-            resNode.Position = nodeLayout.TopLeft;
-            resNode.Enabled = executable.Enabled;
+            resNode.Size = new DAL.Objects.SsisDiagram.DesignPoint();
+            resNode.Position = new DAL.Objects.SsisDiagram.DesignPoint();
+            resNode.Enabled = true;
+
+            if (nodeLayout != null)
+            {
+                resNode.Size = nodeLayout.Size;
+                resNode.Position = nodeLayout.TopLeft;
+                resNode.Enabled = executable.Enabled;
+            }
 
             return resNode;
             //}

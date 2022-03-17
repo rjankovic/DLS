@@ -223,8 +223,14 @@ namespace CD.DLS.Parse.Mssql.Ssis
 
             pkg.Project = _project;
 
-            var xDim = NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.X + x.Size.X);
-            var yDim = NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.Y + x.Size.Y);
+            float xDim = 1;
+            float yDim = 1;
+
+            if (NodeLayoutDesigns.Any())
+            {
+                xDim = NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.X + x.Size.X);
+                yDim = NodeLayoutDesigns.Values.Where(x => x.TopLeft != null && x.Size != null).Max(x => x.TopLeft.Y + x.Size.Y);
+            }
             pkg.Layout = new ElementLayoutDesign() { Size = new DesignPoint() { X = xDim, Y = yDim }, TopLeft = new DesignPoint() { X = 0, Y = 0 } };
             pkg.Executable.Layout = pkg.Layout;
 
@@ -387,7 +393,10 @@ namespace CD.DLS.Parse.Mssql.Ssis
             exec.Enabled = !GetDisabled(xml);
             if (exec.RefId != "Package")
             {
-                exec.Layout = NodeLayoutDesigns[exec.RefId];
+                if (NodeLayoutDesigns.ContainsKey(exec.RefId))
+                {
+                    exec.Layout = NodeLayoutDesigns[exec.RefId];
+                }
             }
             exec.Variables = GetVariables(xml);
             exec.PrecedenceConstraints = GetPrecedenceContraints(xml);
@@ -703,8 +712,10 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
                     TargetIdString = path.GetAttribute("endId"),
                     XmlDefinition = path.OuterXml
                 };
-
-                x.DesignArrow = EdgeLayouts[x.RefId];
+                if (EdgeLayouts.ContainsKey(x.RefId))
+                {
+                    x.DesignArrow = EdgeLayouts[x.RefId];
+                }
                 res.Add(x);
             }
             return res;
@@ -742,9 +753,12 @@ refId="Package\Sequence Container\Load DimAcMAttended\GetAcm"
                     RefId = GetRefId(pcx),
                     PrecedenceExecutableID = pcx.GetAttribute("DTS:From"),
                     ConstrainedExecutableID = pcx.GetAttribute("DTS:To"),
-                    Name = GetObjectName(pcx),
-                    DesignArrow = EdgeLayouts[GetRefId(pcx)]
+                    Name = GetObjectName(pcx)
                 };
+                if (EdgeLayouts.ContainsKey(GetRefId(pcx)))
+                {
+                    pc.DesignArrow = EdgeLayouts[GetRefId(pcx)];
+                }
 
                 res.Add(pc);
             }

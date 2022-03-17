@@ -486,6 +486,7 @@
     <None Include="CD.Framework.DB.Azure.Manpower.publish.xml" />
     <None Include="DLS.publish.publish.xml" />
     <None Include="localhost.DLS.publish.xml" />
+    <None Include="CD.DLS.DB.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql">

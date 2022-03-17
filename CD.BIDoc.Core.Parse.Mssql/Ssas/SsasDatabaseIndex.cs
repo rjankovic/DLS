@@ -66,7 +66,7 @@ namespace CD.DLS.Parse.Mssql.Ssas
                     return _databasesPerServerDictionary[serverName][databaseName];
                 }
             }
-            return null;
+            return new SsasTabularDatabaseIndex();
         }
 
         public SsasServerIndex(ProjectConfig projectConfig, GraphManager graphManager)

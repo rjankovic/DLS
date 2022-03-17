@@ -312,7 +312,7 @@
     <ManifestKeyFile>CD.DLS.ExcelAddin16_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>E0C27BDFC7A3D4C7E0C298F273C77FC9969F3240</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>50E72A18F8BB89886CC0DB94C434EA9E8A2B6938</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
