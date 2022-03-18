@@ -487,6 +487,7 @@
     <None Include="DLS.publish.publish.xml" />
     <None Include="localhost.DLS.publish.xml" />
     <None Include="CD.DLS.DB.publish.xml" />
+    <None Include="CD.DLS.DB_ITR_SQL05.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql">

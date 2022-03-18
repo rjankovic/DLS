@@ -185,7 +185,7 @@ namespace CD.DLS.Tests.ParserTests
                 }
                 foreach (var reportSection in report.Sections)
                 {
-                    var reportSectionRefPath = _urnBuiler.GetReportSectionUrn(reportSection, reportRefPath);
+                    var reportSectionRefPath = _urnBuiler.GetReportSectionUrn(reportSection, reportElement);
                     ReportSectionElement reportSectionElement = new ReportSectionElement(reportSectionRefPath, reportSection.Displayname, null, reportElement);
                     reportElement.AddChild(reportSectionElement);
 

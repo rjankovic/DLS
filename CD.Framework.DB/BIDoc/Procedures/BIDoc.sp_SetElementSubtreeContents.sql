@@ -52,10 +52,19 @@ BEGIN
 
 	UPDATE e SET SubtreeContent = N'(' + e.RefPathSuffix + N' ' + e.ExtendedProperties +
 		(
+			
+			STUFF((
+    SELECT ', ' + sube.SubtreeContent 
+    FROM BIDoc.ModelElements sube
+			INNER JOIN BIDoc.ModelLinks subl ON subl.Type = N'parent' AND subl.ElementFromId = sube.ModelElementId
+			WHERE subl.ElementToId = e.ModelElementId AND sube.RefPath NOT LIKE 'Business%' 
+    FOR XML PATH(''),TYPE).value('(./text())[1]','VARCHAR(MAX)'),1,2,'')
+			/*
 			SELECT STRING_AGG(sube.SubtreeContent, N',') WITHIN GROUP (ORDER BY sube.RefPath)
 			FROM BIDoc.ModelElements sube
 			INNER JOIN BIDoc.ModelLinks subl ON subl.Type = N'parent' AND subl.ElementFromId = sube.ModelElementId
 			WHERE subl.ElementToId = e.ModelElementId AND sube.RefPath NOT LIKE 'Business%'
+			*/
 		) + N')'
 	FROM BIDoc.ModelElements e
 	INNER JOIN #elementIds ids ON ids.ModelElementId = e.ModelElementId

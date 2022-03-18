@@ -669,18 +669,23 @@ namespace CD.DLS.Extract.PowerBi
             List<ReportSection> sections = new List<ReportSection>();
             foreach (Section section in layout.Sections)
             {
-                var visuals = ExtractVisuals(section.VisualContainers, connections);
+                var visuals = ExtractVisuals(section.VisualContainers, connections, section);
                 sections.Add(new ReportSection(visuals, section.Name, section.DisplayName, section.GetFilters()));
             }
             return sections;
         }
 
-        private List<Visual> ExtractVisuals(VisualContainer[] visualContainers, List<Connection> connections)
+        private List<Visual> ExtractVisuals(VisualContainer[] visualContainers, List<Connection> connections, Section section)
         {
             List<Visual> visuals = new List<Visual>();
             foreach (VisualContainer vc in visualContainers)
             {
                 var config = vc.GetConfig();
+                if (config.SingleVisual1 == null)
+                {
+                    ConfigManager.Log.Warning($"Skipping visual {vc.Id} in {section.Name} - visual not defined");
+                    continue;
+                }
                 Visual visual = new Visual(vc.Id, config.SingleVisual1.VisualType, vc.GetFilters());
                 PropertyInfo[] properties = typeof(VisualContainerConfig.Projections).GetProperties();
                 if (config.SingleVisual1.Projections == null)

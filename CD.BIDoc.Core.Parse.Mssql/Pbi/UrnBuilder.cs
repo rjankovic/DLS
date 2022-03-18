@@ -68,9 +68,9 @@ namespace CD.DLS.Parse.Mssql.Pbi
             return parent.RefPath.NamedChild("Projection", projection.Name + $"_{parent.Children.Count() + 1}");
         }
 
-        public RefPath GetReportSectionUrn(ReportSection reportSection, RefPath parent)
+        public RefPath GetReportSectionUrn(ReportSection reportSection, MssqlModelElement parent)
         {
-            return parent.NamedChild("Report section", reportSection.Displayname);
+            return parent.RefPath.NamedChild("Report section", reportSection.Displayname + $"_{parent.Children.Count() + 1}");
         }
 
 

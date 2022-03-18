@@ -199,6 +199,11 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                         var calculatedColumnExpression = column.Expression;
                         Dictionary<string, SsasModelElement> resultColumns;
                         var scriptModel = columnCalculationsExtractor.ExtractDaxScript(calculatedColumnExpression, columnCalculationsIndex, columnElement, out resultColumns);
+                        if (scriptModel == null)
+                        {
+                            ConfigManager.Log.Warning("Failed to parse " + columnElement.RefPath.Path);
+                            continue;
+                        }
                         columnElement.AddChild(scriptModel);
                         columnElement.Reference = resultColumns.First().Value;
                     }
@@ -368,6 +373,11 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
                 Dictionary<string, SsasModelElement> resultColumns;
                 var scriptModel = measureExtractor.ExtractDaxScript(measureExpression, databaseIndex, measureElement, out resultColumns);
+                if (scriptModel == null)
+                {
+                    ConfigManager.Log.Warning("Failed to parse " + measureElement.RefPath.Path);
+                    continue;
+                }
                 measureElement.AddChild(scriptModel);
                 measureElement.Reference = resultColumns.First().Value;
             }

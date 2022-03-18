@@ -18,9 +18,10 @@ DECLARE @elementId INT = (SELECT [ModelElementId] FROM [BIDoc].[f_GetModelElemen
 SELECT @intervalFrom = e.RefPathIntervalStart, @intervalTo = e.RefPathIntervalEnd FROM BIDoc.ModelElements e WHERE e.ModelElementId = @elementId
 
 DECLARE @likePattern NVARCHAR(MAX) =  N'%' + [Adm].[f_EscapeForLike](@pattern) + N'%'
-DECLARE @containsPattern NVARCHAR(1000) = N'ISABOUT(' + REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(TRIM(' ()[]&!|"' from @pattern), N' ', N', '), N'(', N''), N')', N''), N'[', N''), N']', N''), N'!', N''), N'|', N''), N'&', N''), N'"', N'') + N')'
+DECLARE @containsPattern NVARCHAR(1000) = N'ISABOUT(' + REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(/*TRIM(' ()[]&!|"' from*/ @pattern /*)*/, N' ', N', '), N'(', N''), N')', N''), N'[', N''), N']', N''), N'!', N''), N'|', N''), N'&', N''), N'"', N'') + N')'
 
 ;WITH r AS(
+/**/
 SELECT fts.ModelElementId, fts.ElementName, fts.TypeDescription /*td.TypeDescription*/, fts.DescriptiveRootPath /*dscPth.DescriptiveRootPath*/, 
 fts.BusinessFields, KEY_TBL.RANK * fts.SearchPriority ResultPriority, fts.ElementType /*e.Type*/
 ,fts.RefPath
@@ -34,7 +35,7 @@ INNER JOIN CONTAINSTABLE(Search.FulltextSearch, (ElementName, ElementNameSplit, 
 WHERE fts.ProjectConfigId = @projectConfigId
 
 UNION
-
+/**/
 SELECT fts.ModelElementId, fts.ElementName, fts.TypeDescription, fts.DescriptiveRootPath, 
 fts.BusinessFields, LEN(@pattern) * 5 * fts.SearchPriority ResultPriority, fts.ElementType
 ,fts.RefPath
