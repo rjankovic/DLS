@@ -160,7 +160,7 @@ namespace CD.DLS.Parse.Mssql.Ssas
             // Literals
             var number = new NumberLiteral(NONTERM_NUMBER);
             number.AddPrefix("0x", NumberOptions.Hex);
-            var stringLiteral = new StringLiteral(NONTERM_STRING, "\"", StringOptions.AllowsDoubledQuote);
+            var stringLiteral = new StringLiteral(NONTERM_STRING, "\"", StringOptions.NoEscapes | StringOptions.AllowsDoubledQuote);
 
 
             var expression = new NonTerminal(NONTERM_EXPRESSION);
@@ -217,7 +217,7 @@ namespace CD.DLS.Parse.Mssql.Ssas
             evaluateList.Rule = MakePlusRule(evaluateList, Empty, evaluate);
 
             var query = new NonTerminal(NONTERM_QUERY);
-            query.Rule = evaluateList | defineClause + evaluateList;
+            query.Rule = evaluateList | defineClause + evaluateList | defineList + defineReturn; ;
 
             var daxRoot = new NonTerminal(NONTERM_DAX_ROOT);
             daxRoot.Rule = expression | formula /*| namedFormula*/ | query;

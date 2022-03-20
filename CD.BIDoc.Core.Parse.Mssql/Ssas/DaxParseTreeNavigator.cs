@@ -106,9 +106,14 @@ namespace CD.DLS.Parse.Mssql.Ssas
             return DFTraverseInner(root).Where(x => x.Term.Name == DaxGrammar.NONTERM_ID).First();
         }
 
-        public ParseTreeNode GetTopEvaluate()
+        public ParseTreeNode GetTopEvaluateOrReturn()
         {
-            return DFTraverse(_tree).FirstOrDefault(x => x != null && x.Term.Name == DaxGrammar.NONTERM_EVALUATE);
+            var res = DFTraverse(_tree).First(x => x != null && (x.Term.Name == DaxGrammar.NONTERM_EVALUATE || x.Term.Name == DaxGrammar.NONTERM_DEFINE_RETURN));
+            //if (res.Term.Name == DaxGrammar.NONTERM_DEFINE_RETURN)
+            //{ 
+            
+            //}
+            return res;
         }
 
         public DaxScriptType FindScriptType(out ParseTreeNode rootNode)

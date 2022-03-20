@@ -399,7 +399,7 @@ namespace CD.DLS.Parse.Mssql.Ssas
             }
 
             // first evaluate
-            var topEvaluate = navigator.GetTopEvaluate();
+            var topEvaluate = navigator.GetTopEvaluateOrReturn();
             var topEvaluateExpression = navigator.FindExpressionNode(topEvaluate);
 
             ParseDaxExpression(navigator, topEvaluateExpression, environment, scriptElement, out resultColumns);
