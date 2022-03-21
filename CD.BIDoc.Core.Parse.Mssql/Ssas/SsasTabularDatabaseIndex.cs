@@ -22,11 +22,19 @@ namespace CD.DLS.Parse.Mssql.Ssas
     {
         private Dictionary<string, SsasModelElement> _referrablesDictionary = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
         private Dictionary<string, SsasModelElement> _localReferrablesDictionary = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
+        private List<SsasTabularRelationshipElement> _relationships = new List<SsasTabularRelationshipElement>();
+        Dictionary<string, List<SsasTabularRelationshipElement>> _relationshipsFromTable = new Dictionary<string, List<SsasTabularRelationshipElement>>();
+        Dictionary<string, List<SsasTabularRelationshipElement>> _relationshipsToTable = new Dictionary<string, List<SsasTabularRelationshipElement>>();
+        // these don't matter when not resolved
+        HashSet<string> _keywords = new HashSet<string>(new string[] { "second", "minute", "hour", "day", "today", "week", "month", "year", "now", "true", "false" });
+
         private ProjectConfig _projectConfig;
         private GraphManager _graphManager;
 
         private Dictionary<MssqlModelElement, int> _premappedElements = new Dictionary<MssqlModelElement, int>();
         public Dictionary<MssqlModelElement, int> PremappedElements { get { return _premappedElements; } }
+
+        private SsasTabularDatabaseElement _tabularDb = null;
 
         private void AddMappedElement(MssqlModelElement e)
         {
@@ -78,8 +86,18 @@ namespace CD.DLS.Parse.Mssql.Ssas
                 }
             }
 
-            ConfigManager.Log.Warning(string.Format("DAX resolver could not resolve {0}", normalizedIdentifier));
+            if(!_keywords.Contains(identifier.ToLower()))
+            {
+                ConfigManager.Log.Warning(string.Format("DAX resolver could not resolve {0}", normalizedIdentifier));
+            }
+
             return null;
+        }
+
+        public SsasTabularTableColumnElement FindColumn(string table, string column)
+        { 
+            var id = $"\'{table}\'[{column}]";
+            return (SsasTabularTableColumnElement)TryResolveIdentifier(id, TabularReferenceType.Column);
         }
         
         public override void ClearLocalIndexes()
@@ -87,13 +105,29 @@ namespace CD.DLS.Parse.Mssql.Ssas
             _localReferrablesDictionary.Clear();
         }
 
+        public void SetContextTable(string tableName)
+        {
+            ClearLocalIndexes();
+
+            var table = _tabularDb.Tables.First(x => x.Caption == tableName);
+            foreach (var measure in table.Measures)
+            {
+                AddLocalMeasure(table.Caption, measure.Caption, measure);
+            }
+
+            foreach (var column in table.Columns)
+            {
+                AddLocalColumn(column.Caption, column);
+            }
+        }
+
         public SsasTabularDatabaseIndex()
         {
             QueryMode = SsasQueryMode.DAX;
             _ssasType = SsasTypeEnum.Tabular;
 
-            _referrablesDictionary = new Dictionary<string, SsasModelElement>();
-            _localReferrablesDictionary = new Dictionary<string, SsasModelElement>();
+            _referrablesDictionary = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
+            _localReferrablesDictionary = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
         }
 
         public SsasTabularDatabaseIndex(SsasTabularDatabaseElement databaseElement)
@@ -101,10 +135,10 @@ namespace CD.DLS.Parse.Mssql.Ssas
             QueryMode = SsasQueryMode.DAX;
             _ssasType = SsasTypeEnum.Tabular;
 
-            _referrablesDictionary = new Dictionary<string, SsasModelElement>();
-            _localReferrablesDictionary = new Dictionary<string, SsasModelElement>();
+            _referrablesDictionary = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
+            _localReferrablesDictionary = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
             
-            AddDatabase(databaseElement);
+            SetDatabase(databaseElement);
         }
 
         public SsasTabularDatabaseIndex(SsasTabularDatabaseElement databaseElement, GraphManager graphManager, ProjectConfig projectConfig)
@@ -122,11 +156,17 @@ namespace CD.DLS.Parse.Mssql.Ssas
             var dbWithContents = (SsasTabularDatabaseElement)sh.LoadElementModel(databaseElement.RefPath.Path);
 
 
-            AddDatabase(dbWithContents);
+            SetDatabase(dbWithContents);
         }
 
-        private void AddDatabase(SsasTabularDatabaseElement databaseElement)
+        private void SetDatabase(SsasTabularDatabaseElement databaseElement)
         {
+            _tabularDb = databaseElement;
+
+            _relationships = databaseElement.Relationships.ToList();
+            _relationshipsFromTable = _relationships.GroupBy(x => x.FromColumn.Table).ToDictionary(x => x.Key.Caption, x => x.ToList());
+            _relationshipsToTable = _relationships.GroupBy(x => x.ToColumn.Table).ToDictionary(x => x.Key.Caption, x => x.ToList());
+
             foreach (var table in databaseElement.Tables)
             {
                 var tableId = string.Format("'{0}'", table.Caption);
@@ -160,7 +200,17 @@ namespace CD.DLS.Parse.Mssql.Ssas
 
         public void AddLocalVariable(string variableName, SsasModelElement expressionElement)
         {
-            _localReferrablesDictionary.Add(variableName, expressionElement);
+            if (!_localReferrablesDictionary.ContainsKey(variableName))
+            {
+                _localReferrablesDictionary.Add(variableName, expressionElement);
+            }
+            var variableNameNormalized = string.Format("[{0}]", variableName);
+            if (!_localReferrablesDictionary.ContainsKey(variableNameNormalized))
+            {
+                _localReferrablesDictionary.Add(variableNameNormalized, expressionElement);
+            }
+
+
             //AddMappedElement(expressionElement);
         }
 
@@ -174,7 +224,7 @@ namespace CD.DLS.Parse.Mssql.Ssas
 
             if (!_localReferrablesDictionary.ContainsKey(measureShortId))
             {
-                _referrablesDictionary.Add(measureShortId, measureExpressionElement);
+                _localReferrablesDictionary.Add(measureShortId, measureExpressionElement);
             }
         }
 

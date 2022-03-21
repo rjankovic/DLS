@@ -258,6 +258,12 @@ namespace CD.DLS.Parse.Mssql.Ssas
             return parent.NamedChild("Annotation", annotationName);
         }
 
+        internal RefPath GetUrnRelationship(string relationshipName, RefPath parent)
+        {
+
+            return parent.NamedChild("Relationship", relationshipName);
+        }
+
         internal RefPath GetUrnHierarchy(String hierarchyName, RefPath parent)
         {
 

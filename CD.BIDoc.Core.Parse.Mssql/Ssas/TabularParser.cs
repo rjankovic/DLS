@@ -13,6 +13,7 @@ using System.Linq;
 using CD.DLS.Parse.Mssql.Ssas;
 using CD.DLS.Model.Mssql.Ssas;
 using CD.DLS.Core.Parse.Mssql.PowerQuery;
+using TM = CD.DLS.Model.Mssql.Tabular;
 
 namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
@@ -66,7 +67,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
             var model = (TabularModel)_stageManager.GetExtractItems(_extractId, componentID, ExtractTypeEnum.TabularModel)[0];
 
-            List<Tuple<TabularTableMeasure, SsasTabularMeasureElement>> measureList = new List<Tuple<TabularTableMeasure, SsasTabularMeasureElement>>();
+            //List<Tuple<TabularTableMeasure, SsasTabularMeasureElement>> measureList = new List<Tuple<TabularTableMeasure, SsasTabularMeasureElement>>();
             //ConfigManager.Log.Important("Tabular parser, Tabular Probe 4");
 
             TabularDB tdb = (TabularDB)database;
@@ -82,7 +83,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
             {
                 var annotationRefPath = _urnBuilder.GetUrnAnnotation(annotation.Name, dbRefPath);
 
-                SsasTabularAnnotationElement pAnnotation = new SsasTabularAnnotationElement(annotationRefPath, annotation.Name, annotation.Value);
+                SsasTabularAnnotationElement pAnnotation = new SsasTabularAnnotationElement(annotationRefPath, annotation.Name, annotation.Value, tDatabaseElement);
                 tDatabaseElement.AddChild(pAnnotation);
             }
 
@@ -135,8 +136,8 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
                 Dictionary<string, SsasTabularTableColumnElement> tableSourceColumnsToColumns = new Dictionary<string, SsasTabularTableColumnElement>();
 
-                DaxScriptModelExtractor columnCalculationsExtractor = new DaxScriptModelExtractor();
-                SsasTabularDatabaseIndex columnCalculationsIndex = new SsasTabularDatabaseIndex();
+                //DaxScriptModelExtractor columnCalculationsExtractor = new DaxScriptModelExtractor();
+                //SsasTabularDatabaseIndex columnCalculationsIndex = new SsasTabularDatabaseIndex();
 
                 Dictionary<TabularTableColumn, SsasTabularTableColumnElement> columnsToElements = new Dictionary<TabularTableColumn, SsasTabularTableColumnElement>();
 
@@ -144,22 +145,16 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                 {
                     //ConfigManager.Log.Important("Tabular parser, Tabular Probe 7");
                     var columnRefPath = _urnBuilder.GetUrnColumn(column.Name, tableRefPath);
-                    SsasTabularTableColumnElement columnElement = new SsasTabularTableColumnElement(columnRefPath, column.Name, column.DataType, tableElement);
+                    
+                    SsasTabularTableColumnElement columnElement = new SsasTabularTableColumnElement(columnRefPath, column.Name, string.IsNullOrEmpty(column.Expression) ?  column.DataType : column.Expression, tableElement);
                     columnsToElements.Add(column, columnElement);
 
                     if (column.ColumnType == TabularTableColumnTypeEnum.Data)
                     {
                         tableSourceColumnsToColumns.Add(column.SourceColumn, columnElement);
                     }
-                    //else if (column.ColumnType == TabularTableColumnTypeEnum.Calculated)
-                    //{
-                    //    var calculatedColumnExpression = column.Expression;
-                    //    Dictionary<string, SsasModelElement> resultColumns;
-                    //    columnCalculationsExtractor.ExtractDaxScript(calculatedColumnExpression, columnCalculationsIndex, columnElement, out resultColumns);
-                    //    columnElement.Reference = resultColumns.First().Value;
-                    //}
-
-                    columnCalculationsIndex.AddLocalColumn(column.Name, columnElement);
+                    
+                    //columnCalculationsIndex.AddLocalColumn(column.Name, columnElement);
 
                     foreach (var annotation in column.Annotations)
                     {
@@ -191,23 +186,23 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                     tableElement.AddChild(columnElement);
                 }
 
-                foreach (var column in table.Columns)
-                {
-                    var columnElement = columnsToElements[column];
-                    if (column.ColumnType == TabularTableColumnTypeEnum.Calculated)
-                    {
-                        var calculatedColumnExpression = column.Expression;
-                        Dictionary<string, SsasModelElement> resultColumns;
-                        var scriptModel = columnCalculationsExtractor.ExtractDaxScript(calculatedColumnExpression, columnCalculationsIndex, columnElement, out resultColumns);
-                        if (scriptModel == null)
-                        {
-                            ConfigManager.Log.Warning("Failed to parse " + columnElement.RefPath.Path);
-                            continue;
-                        }
-                        columnElement.AddChild(scriptModel);
-                        columnElement.Reference = resultColumns.First().Value;
-                    }
-                }
+                //foreach (var column in table.Columns)
+                //{
+                //    var columnElement = columnsToElements[column];
+                //    if (column.ColumnType == TabularTableColumnTypeEnum.Calculated)
+                //    {
+                //        var calculatedColumnExpression = column.Expression;
+                //        Dictionary<string, SsasModelElement> resultColumns;
+                //        var scriptModel = columnCalculationsExtractor.ExtractDaxScript(calculatedColumnExpression, columnCalculationsIndex, columnElement, out resultColumns);
+                //        if (scriptModel == null)
+                //        {
+                //            ConfigManager.Log.Warning("Failed to parse " + columnElement.RefPath.Path);
+                //            continue;
+                //        }
+                //        columnElement.AddChild(scriptModel);
+                //        columnElement.Reference = resultColumns.First().Value;
+                //    }
+                //}
 
                 //ConfigManager.Log.Important("Tabular parser, Tabular Probe 10");
 
@@ -336,7 +331,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                     SsasTabularMeasureElement measureElement = new SsasTabularMeasureElement(measureRefPath, measure.Name, measure.Expression, tableElement);
                     tableElement.AddChild(measureElement);
 
-                    measureList.Add(new Tuple<TabularTableMeasure, SsasTabularMeasureElement>(measure, measureElement));
+                    //measureList.Add(new Tuple<TabularTableMeasure, SsasTabularMeasureElement>(measure, measureElement));
                     //Debug.WriteLine("MEASURE  " + measure.Expression);
                     foreach (var annotation in measure.Annotations)
                     {
@@ -351,36 +346,120 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                 tDatabaseElement.AddChild(tableElement);
             }
 
-            var databaseIndex = new SsasTabularDatabaseIndex(tDatabaseElement);
-            var measureExtractor = new DaxScriptModelExtractor();
+            SsasTabularDatabaseIndex tabularIndex = new SsasTabularDatabaseIndex(tDatabaseElement);
 
-            foreach (var measure in measureList)
+            // create relationships
+            foreach (var relationship in model.Relationships)
             {
-                // columnCalculationsIndex.AddLocalColumn(column.Name, columnElement);
-
-                databaseIndex.ClearLocalIndexes();
-                var measureExpression = measure.Item1.Expression;
-                var measureElement = measure.Item2;
-                var table = measureElement.Parent as SsasTabularTableElement;
-
-                if (table != null)
+                var sourceColumn = tabularIndex.FindColumn(relationship.FromTable, relationship.FromColumn);
+                var targetColumn = tabularIndex.FindColumn(relationship.ToTable, relationship.ToColumn);
+                TM.TabularRelationshipEndCardinality fromCardinality = (TM.TabularRelationshipEndCardinality)Enum.Parse(typeof(TM.TabularRelationshipEndCardinality), relationship.FromCardinality.ToString());
+                TM.TabularRelationshipEndCardinality toCardinality = (TM.TabularRelationshipEndCardinality)Enum.Parse(typeof(TM.TabularRelationshipEndCardinality), relationship.ToCardinality.ToString());
+                var urn = _urnBuilder.GetUrnRelationship(relationship.Name, tDatabaseElement.RefPath);
+                var relationshipElement = new SsasTabularRelationshipElement(urn, relationship.Name, null, tDatabaseElement);
+                tDatabaseElement.AddChild(relationshipElement);
+                relationshipElement.FromColumn = tabularIndex.FindColumn(relationship.FromTable, relationship.FromColumn);
+                relationshipElement.ToColumn = tabularIndex.FindColumn(relationship.ToTable, relationship.ToColumn);
+                relationshipElement.FromColumnCardinality = fromCardinality;
+                relationshipElement.ToColumnCardinality = toCardinality;
+                relationshipElement.IsActive = relationship.IsActive;
+                
+                foreach (var annotation in relationship.Annotations)
                 {
-                    foreach (var column in table.Columns)
-                    {
-                        databaseIndex.AddLocalColumn(column.Caption, column);
-                    }
+                    var annotationRefPath = _urnBuilder.GetUrnAnnotation(annotation.Name, relationshipElement.RefPath);
+                    SsasTabularAnnotationElement pAnnotation = new SsasTabularAnnotationElement(annotationRefPath, annotation.Name, annotation.Value, relationshipElement);
+                    relationshipElement.AddChild(pAnnotation);
                 }
-
-                Dictionary<string, SsasModelElement> resultColumns;
-                var scriptModel = measureExtractor.ExtractDaxScript(measureExpression, databaseIndex, measureElement, out resultColumns);
-                if (scriptModel == null)
-                {
-                    ConfigManager.Log.Warning("Failed to parse " + measureElement.RefPath.Path);
-                    continue;
-                }
-                measureElement.AddChild(scriptModel);
-                measureElement.Reference = resultColumns.First().Value;
             }
+
+            // refresh the index to include the relationship
+            tabularIndex = new SsasTabularDatabaseIndex(tDatabaseElement);
+
+            // parse calculated columns and measures
+            DaxScriptModelExtractor daxExtractor = new DaxScriptModelExtractor();
+            foreach (var modelTable in tDatabaseElement.Tables)
+            {
+                var extractTable = model.TabularTables.First(x => x.Name == modelTable.Caption);
+                tabularIndex.SetContextTable(extractTable.Name);
+
+                foreach (var modelColumn in modelTable.Columns)
+                {
+                    var extractColumn = extractTable.Columns.First(x => x.Name == modelColumn.Caption);
+                    if (extractColumn.ColumnType != TabularTableColumnTypeEnum.Calculated)
+                    {
+                        continue;
+                    }
+
+                    var calculatedColumnExpression = extractColumn.Expression;
+                    Dictionary<string, SsasModelElement> resultColumns;
+                    var scriptModel = daxExtractor.ExtractDaxScript(calculatedColumnExpression, tabularIndex, modelColumn, out resultColumns);
+                    if (scriptModel == null)
+                    {
+                        ConfigManager.Log.Warning("Failed to parse " + modelColumn.RefPath.Path);
+                        continue;
+                    }
+                    modelColumn.AddChild(scriptModel);
+                    modelColumn.Reference = resultColumns.First().Value;
+
+                }
+
+                foreach (var modelMeasure in modelTable.Measures)
+                {
+                    var extractMeasure = extractTable.Measures.First(x => x.Name == modelMeasure.Caption);
+                    var measureExpression = extractMeasure.Expression;
+
+                    if (string.IsNullOrEmpty(measureExpression))
+                    {
+                        continue;
+                    }
+
+                    Dictionary<string, SsasModelElement> resultColumns;
+                    var scriptModel = daxExtractor.ExtractDaxScript(measureExpression, tabularIndex, modelMeasure, out resultColumns);
+                    if (scriptModel == null)
+                    {
+                        ConfigManager.Log.Warning("Failed to parse " + modelMeasure.RefPath.Path);
+                        continue;
+                    }
+                    modelMeasure.AddChild(scriptModel);
+                    modelMeasure.Reference = resultColumns.First().Value;
+                }
+
+
+            }
+
+            tabularIndex.ClearLocalIndexes();
+
+            //var databaseIndex = new SsasTabularDatabaseIndex(tDatabaseElement);
+            //var measureExtractor = new DaxScriptModelExtractor();
+
+            //foreach (var measure in measureList)
+            //{
+            //    // columnCalculationsIndex.AddLocalColumn(column.Name, columnElement);
+
+            //    databaseIndex.ClearLocalIndexes();
+            //    var measureExpression = measure.Item1.Expression;
+            //    var measureElement = measure.Item2;
+            //    var table = measureElement.Parent as SsasTabularTableElement;
+
+            //    if (table != null)
+            //    {
+            //        foreach (var column in table.Columns)
+            //        {
+            //            databaseIndex.AddLocalColumn(column.Caption, column);
+            //            //databaseIndex.add
+            //        }
+            //    }
+
+            //    Dictionary<string, SsasModelElement> resultColumns;
+            //    var scriptModel = measureExtractor.ExtractDaxScript(measureExpression, databaseIndex, measureElement, out resultColumns);
+            //    if (scriptModel == null)
+            //    {
+            //        ConfigManager.Log.Warning("Failed to parse " + measureElement.RefPath.Path);
+            //        continue;
+            //    }
+            //    measureElement.AddChild(scriptModel);
+            //    measureElement.Reference = resultColumns.First().Value;
+            //}
 
             ConfigManager.Log.Important("Tabular parser, DB parsed!");
 

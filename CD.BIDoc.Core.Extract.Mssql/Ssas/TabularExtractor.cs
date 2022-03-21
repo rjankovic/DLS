@@ -346,8 +346,17 @@ namespace CD.DLS.Extract.Mssql.Ssas
                         rs.Name = r.Name;
                         rs.FromTable = r.FromTable.Name;
                         rs.ToTable = r.ToTable.Name;
+                        rs.IsActive = r.IsActive;
 
-
+                        if (r is SingleColumnRelationship)
+                        {
+                            var scr = r as SingleColumnRelationship;
+                            rs.FromColumn = scr.FromColumn.Name;
+                            rs.ToColumn = scr.ToColumn.Name;
+                            rs.FromCardinality = (TabularRelationshipEndCardinality)Enum.Parse(typeof(TabularRelationshipEndCardinality), scr.FromCardinality.ToString());
+                            rs.ToCardinality = (TabularRelationshipEndCardinality)Enum.Parse(typeof(TabularRelationshipEndCardinality), scr.ToCardinality.ToString());
+                        }
+                        
                         foreach (Microsoft.AnalysisServices.Tabular.Annotation an in r.Annotations)
                         {
                             TabularAnnotation ta = new TabularAnnotation();
@@ -356,7 +365,7 @@ namespace CD.DLS.Extract.Mssql.Ssas
                             rs.Annotations.Add(ta);
                         }
 
-                        tbm.relationships.Add(rs);
+                        tbm.Relationships.Add(rs);
                     }
 
                     foreach (Microsoft.AnalysisServices.Tabular.Perspective p in db.Model.Perspectives)

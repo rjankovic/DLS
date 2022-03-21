@@ -7,6 +7,13 @@ using System.Runtime.Serialization;
 
 namespace CD.DLS.Model.Mssql.Tabular
 {
+    public enum TabularRelationshipEndCardinality
+    {
+        None = 0,
+        One = 1,
+        Many = 2
+    }
+
     abstract public class TabularModelElement : SsasModelElement
     {
         protected TabularModelElement(RefPath refPath, string caption, string definition, MssqlModelElement parent = null)
@@ -32,6 +39,8 @@ namespace CD.DLS.Model.Mssql.Tabular
         public string Collation { get; set; }
 
         public IEnumerable<SsasTabularTableElement> Tables { get { return ChildrenOfType<SsasTabularTableElement>(); } }
+
+        public IEnumerable<SsasTabularRelationshipElement> Relationships { get { return ChildrenOfType<SsasTabularRelationshipElement>(); } }
 
     }
 
@@ -78,6 +87,7 @@ namespace CD.DLS.Model.Mssql.Tabular
         }
 
         
+        public SsasTabularTableElement Table { get => (SsasTabularTableElement)Parent; }
 
         //[ModelLink]
         //public MssqlModelElement SqlColumn { get; set; }
@@ -144,6 +154,21 @@ namespace CD.DLS.Model.Mssql.Tabular
             : base(refPath, caption, definition, parent)
         {
         }
+
+        [ModelLink]
+        public SsasTabularTableColumnElement FromColumn { get; set; }
+
+        [ModelLink]
+        public SsasTabularTableColumnElement ToColumn { get; set; }
+
+        [DataMember]
+        public TabularRelationshipEndCardinality FromColumnCardinality { get; set; }
+
+        [DataMember]
+        public TabularRelationshipEndCardinality ToColumnCardinality { get; set; }
+
+        [DataMember]
+        public bool IsActive { get; set; }
     }
 
     public class SsasTabularPerspectiveElement : TabularModelElement

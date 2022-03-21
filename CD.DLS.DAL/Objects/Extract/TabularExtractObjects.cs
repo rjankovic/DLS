@@ -42,7 +42,7 @@ namespace CD.DLS.DAL.Objects.Extract
         {
             TabularDataSources = new List<TabularDataSource>();
             TabularTables = new List<TabularTable>();
-            relationships = new List<TabularRelationship>();
+            Relationships = new List<TabularRelationship>();
             Perspectives = new List<TabularPerspective>();
             Cultures = new List<TabularCulture>();
             Annotations = new List<TabularAnnotation>();
@@ -53,7 +53,7 @@ namespace CD.DLS.DAL.Objects.Extract
         public string DBName;
         public List<TabularDataSource> TabularDataSources;
         public List<TabularTable> TabularTables;
-        public List<TabularRelationship> relationships;
+        public List<TabularRelationship> Relationships;
         public List<TabularPerspective> Perspectives;
         public List<TabularCulture> Cultures;
         public override ExtractTypeEnum ExtractType => ExtractTypeEnum.TabularModel;
@@ -98,6 +98,12 @@ namespace CD.DLS.DAL.Objects.Extract
     }
 
     public enum TabularTableColumnTypeEnum { RowNumber = 1, Data = 2, Calculated = 3, CalculatedTableColumn = 4 }
+    public enum TabularRelationshipEndCardinality
+    {
+        None = 0,
+        One = 1,
+        Many = 2
+    }
 
     public class TabularTableColumn
     {
@@ -174,6 +180,12 @@ namespace CD.DLS.DAL.Objects.Extract
         public string Name;
         public string FromTable;
         public string ToTable;
+        public bool IsActive;
+        public string FromColumn;
+        public string ToColumn;
+        public TabularRelationshipEndCardinality FromCardinality;
+        public TabularRelationshipEndCardinality ToCardinality;
+
         public List<TabularAnnotation> Annotations;
 
     }

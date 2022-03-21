@@ -80,8 +80,8 @@ namespace CD.DLS.Parse.Mssql.Pbi
                         case "AnalysisServices.Databases":
                         case "analysisServicesDatabaseLive":
                             var splitConnString = connection.Source.Split('\\');
-                            connElement.Database = splitConnString[1];
-                            connElement.Server = CD.DLS.Common.Tools.ConnectionStringTools.NormalizeServerName(splitConnString[0]);
+                            connElement.Database = splitConnString.Last();
+                            connElement.Server = CD.DLS.Common.Tools.ConnectionStringTools.NormalizeServerName(string.Join("\\", splitConnString.Take(splitConnString.Length-1)));
                             break;
                     }
 
