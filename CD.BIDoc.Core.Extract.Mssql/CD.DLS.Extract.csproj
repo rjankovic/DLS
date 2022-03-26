@@ -259,6 +259,7 @@
     <Compile Include="PowerBi\PowerBiAPI\Pod.cs" />
     <Compile Include="PowerBi\PowerBiAPI\ResourcePackage.cs" />
     <Compile Include="PowerBi\PowerBiAPI\Section.cs" />
+    <Compile Include="PowerBi\PowerBiAPI\VisualContainerExtensionMeasure.cs" />
     <Compile Include="PowerBi\PowerBiAPI\VisualContainer.cs" />
     <Compile Include="PowerBi\PowerBiAPI\VisualContainerConfig.cs" />
     <Compile Include="PowerBi\PowerBiExtractor.cs" />

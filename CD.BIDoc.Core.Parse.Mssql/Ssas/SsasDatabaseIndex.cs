@@ -41,7 +41,7 @@ namespace CD.DLS.Parse.Mssql.Ssas
             var serverName = ((ServerElement)database.Parent).Caption;
             if (!_databasesPerServerDictionary.ContainsKey(serverName))
             {
-                _databasesPerServerDictionary.Add(serverName, new Dictionary<string, SsasDatabaseIndex>());
+                _databasesPerServerDictionary.Add(serverName, new Dictionary<string, SsasDatabaseIndex>(StringComparer.OrdinalIgnoreCase));
             }
             if (database.SsasType == SsasTypeEnum.Multidimensional)
             {

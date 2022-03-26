@@ -38,6 +38,7 @@ namespace CD.DLS.Extract.PowerBi.PowerBiAPI
         public double Height { get; set; }
         public string Config { get; set; }
         public string Filters { get; set; }
+        public List<VisualContainerExtensionMeasure> ExtensionMeasures { get; set; } = new List<VisualContainerExtensionMeasure>();
 
 
         public VisualContainerConfig GetConfig()

@@ -18,6 +18,7 @@ using System.Xml;
 using Microsoft.SqlServer.ReportingServices2010;
 using System.Net;
 using System.Security.Principal;
+using Newtonsoft.Json.Linq;
 
 namespace CD.DLS.Extract.PowerBi
 {
@@ -661,6 +662,91 @@ namespace CD.DLS.Extract.PowerBi
         {
             string json = File.ReadAllText(jsonPath, Encoding.Unicode);
             Layout layout = JsonConvert.DeserializeObject<Layout>(json);
+            foreach (var section in layout.Sections)
+            {
+                foreach (var visualContainer in section.VisualContainers)
+                {
+                    visualContainer.ExtensionMeasures = new List<VisualContainerExtensionMeasure>();
+
+                    if (visualContainer.Query != null)
+                    {
+                        var queryParsed = JObject.Parse(visualContainer.Query);
+                        var commands = queryParsed.GetValue("Commands") as JArray;
+                        if (commands == null)
+                        {
+                            continue;
+                        }
+                        if (commands.Count > 1)
+                        {
+                            ConfigManager.Log.Error("Unexpected multiple commands in PBI visual container query definition");
+                            //continue;
+                        }
+
+                        var cmd = (JObject)commands.First;
+                        var semanticCommand = cmd.GetValue("SemanticQueryDataShapeCommand") as JObject;
+                        if (semanticCommand == null)
+                        {
+                            continue;
+                        }
+
+                        var extension = semanticCommand.GetValue("Extension") as JObject;
+                        if (extension == null)
+                        {
+                            continue;
+                        }
+
+                        var entities = extension.GetValue("Entities") as JArray;
+                        if (entities == null)
+                        {
+                            continue;
+                        }
+
+                        //var names = new string[] { "Extends", "Name", "Measures" };
+
+                        foreach (JObject entity in entities)
+                        {
+                            var entityExtends = entity.GetValue("Extends").Value<string>();
+                            var measures = entity.GetValue("Measures") as JArray;
+                            if (measures == null)
+                            {
+                                continue;
+                            }
+
+                            foreach (JObject measure in measures)
+                            {
+                                var measureName = measure.GetValue("Name").Value<string>();
+                                var measureExpression = measure.GetValue("Expression").Value<string>();
+
+                                var extensionMeasure = new VisualContainerExtensionMeasure()
+                                {
+                                    Expression = measureExpression,
+                                    MeasureName = measureName,
+                                    TableName = entityExtends
+                                };
+                                visualContainer.ExtensionMeasures.Add(extensionMeasure);
+
+                            }
+
+                            //var entityName = entity.GetValue("Name").Value<string>();
+
+                            //if (extends != entityName)
+                            //{ 
+                            
+                            //}
+                            //foreach (JProperty child in entity.Children())
+                            //{
+                            //    var name = child.Name;
+                            //    if (!names.Contains(name))
+                            //    { 
+                                
+                            //    }
+                            //}
+                        }
+
+
+                    }
+                }
+            }
             return layout;
         }
 
