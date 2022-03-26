@@ -73,6 +73,11 @@ namespace CD.DLS.Parse.Mssql.Pbi
             return parent.RefPath.NamedChild("Report section", reportSection.Displayname + $"_{parent.Children.Count() + 1}");
         }
 
+        public RefPath GetMeasureExtensionUrn(string tableName, string measureName, MssqlModelElement parent)
+        {
+            return parent.RefPath.NamedChild("ExtensionMeasure", $"{tableName}_{measureName}");
+        }
+
 
 
     }

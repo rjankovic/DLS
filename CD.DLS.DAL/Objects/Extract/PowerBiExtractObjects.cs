@@ -95,7 +95,17 @@ namespace CD.DLS.DAL.Objects.Extract
         public override ExtractTypeEnum ExtractType => ExtractTypeEnum.PowerBiVisual;
 
         public override string Name => Type;
+
+        public List<VisualExtensionMeasure> ExtensionMeasures { get; set; } = new List<VisualExtensionMeasure>();
     }
+
+    public class VisualExtensionMeasure
+    {   public string TableName { get; set; }
+        public string MeasureName { get; set; }
+        public string Expression { get; set; }
+    }
+
+
     public class PbiTable : ExtractObject
     {
         public PbiTable(string name)

@@ -1,8 +1,11 @@
 ﻿using CD.DLS.Common.Structures;
+using CD.DLS.DAL.Configuration;
 using CD.DLS.DAL.Managers;
 using CD.DLS.DAL.Objects.Extract;
 using CD.DLS.Model.Mssql;
 using CD.DLS.Model.Mssql.Pbi;
+using CD.DLS.Model.Mssql.Ssas;
+using CD.DLS.Model.Mssql.Tabular;
 using CD.DLS.Model.Serialization;
 using CD.DLS.Parse.Mssql.Db;
 using CD.DLS.Parse.Mssql.Ssas;
@@ -200,10 +203,45 @@ namespace CD.DLS.Parse.Mssql.Pbi
 
                     foreach (var visual in reportSection.Visuals)
                     {
+                        _connectLiveDbIndex.ClearLocalIndexes();
+                        if (visual.ExtensionMeasures.Any())
+                        {
+                            var table = visual.ExtensionMeasures.First().TableName;
+                            _connectLiveDbIndex.SetContextTable(table);
+                        }
+
                         var visualRefPath = _urnBuiler.GetVisualUrn(visual, reportSectionElement);
                         VisualElement visualElement = new VisualElement(visualRefPath, visual.Name, null, reportSectionElement);
                         visualElement.Type = visual.Type;
                         reportSectionElement.AddChild(visualElement);
+
+
+                        var extensionMeasures = new List<SsasTabularMeasureElement>();
+                        DaxScriptModelExtractor daxExtractor = new DaxScriptModelExtractor();
+
+                        foreach (var extensionMeasure in visual.ExtensionMeasures)
+                        {
+                            _connectLiveDbIndex.AddLocalMeasure(extensionMeasure.TableName, extensionMeasure.MeasureName, null);
+
+                            var measureRefPath = _urnBuiler.GetMeasureExtensionUrn(extensionMeasure.TableName, extensionMeasure.MeasureName, visualElement);
+                            SsasTabularMeasureElement measureElement = new SsasTabularMeasureElement(measureRefPath, extensionMeasure.MeasureName, extensionMeasure.Expression, visualElement);
+                            extensionMeasures.Add(measureElement);
+                            visualElement.AddChild(measureElement);
+                            _connectLiveDbIndex.AddLocalMeasure(extensionMeasure.TableName, extensionMeasure.MeasureName, measureElement);
+                        }
+
+                        foreach (var measureElement in extensionMeasures)
+                        {
+                            Dictionary<string, SsasModelElement> resultColumns;
+                            var scriptModel = daxExtractor.ExtractDaxScript(measureElement.Definition, _connectLiveDbIndex, measureElement, out resultColumns);
+                            if (scriptModel == null)
+                            {
+                                ConfigManager.Log.Warning("Failed to parse " + measureElement.RefPath.Path);
+                                continue;
+                            }
+                            measureElement.AddChild(scriptModel);
+                            measureElement.Reference = resultColumns.First().Value;
+                        }
 
                         foreach (var projection in visual.Projections)
                         {
@@ -220,6 +258,8 @@ namespace CD.DLS.Parse.Mssql.Pbi
                             visualElement.AddChild(visualFilterElement);
                             MapColumnsToFilter(visualFilter.Reference, visualFilterElement, currentReportAllColumns);
                         }
+
+                        //_connectLiveDbIndex.ClearLocalIndexes();
                     }
 
                     foreach (var sectionFilter in reportSection.Filters)

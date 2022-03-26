@@ -50,7 +50,7 @@ namespace CD.DLS.Extract.PowerBi
             this.relativePathBase = relativePathBase;
 
             this.userName = userName;
-            this.password = password;         
+            this.password = password;
         }
 
         public void Extract()
@@ -86,7 +86,7 @@ namespace CD.DLS.Extract.PowerBi
 
         private void ExtractReportZip(string pbixPath, string dirExtract)
         {
-            
+
             using (ZipArchive archive = ZipFile.OpenRead(pbixPath))
             {
                 foreach (ZipArchiveEntry entry in archive.Entries)
@@ -103,8 +103,8 @@ namespace CD.DLS.Extract.PowerBi
                         entry.ExtractToFile(destinationPath);
                     }
                     else
-                    { 
-                    
+                    {
+
                     }
                     //if (entry.Name .FullName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
                     //{
@@ -147,7 +147,7 @@ namespace CD.DLS.Extract.PowerBi
                     {
                         Credentials = CredentialCache.DefaultCredentials,
                         Url = url
-                    };                  
+                    };
                     var items = rs.FindItems(powerBiProject.ReportServerFolder, BooleanOperatorEnum.Or, new Microsoft.SqlServer.ReportingServices2010.Property[] { }, new SearchCondition[] { });
 
                     foreach (var item in items)
@@ -156,7 +156,7 @@ namespace CD.DLS.Extract.PowerBi
                         {
                             var uniqueItemName = GetUniqueReportItemName(dir, item.Name);
                             this.currentReportName = item.Name;
-                            var file = Path.Combine(dir, uniqueItemName /*item.Name*/ + ".zip");                          
+                            var file = Path.Combine(dir, uniqueItemName /*item.Name*/ + ".zip");
                             url = String.Format("{0}/api/v2.0/catalogitems({1})/Content/$value", powerBiProject.ReportServerURL, item.ID);
                             client.DownloadFile(url, file);
                             var dirExtract = Path.Combine(dir, uniqueItemName /*item.Name*/);
@@ -200,7 +200,7 @@ namespace CD.DLS.Extract.PowerBi
             {
                 var name = Path.GetFileNameWithoutExtension(pbix);
                 name = GetUniqueReportItemName(dir, name);
-                
+
                 this.currentReportName = name;
                 //var file = Path.Combine(dir, name + ".zip");
 
@@ -263,15 +263,15 @@ namespace CD.DLS.Extract.PowerBi
                 var uniqueItemName = GetUniqueReportItemName(dir, r.Name);
                 var file = Path.Combine(dir, uniqueItemName /*r.Name*/ + ".zip");
                 try
-                {                  
+                {
                     r.Export(file);
                     this.currentReportName = r.Name;
                 }
-                catch 
+                catch
                 {
                     continue;
                 }
-                
+
 
                 var dirExtract = Path.Combine(dir, uniqueItemName /*r.Name*/);
                 ExtractReportZip(file, dirExtract);
@@ -320,7 +320,7 @@ namespace CD.DLS.Extract.PowerBi
                     connections = ExtractConnectionsLiveConnection();
 
                 }
-               
+
                 List<ReportSection> sections = ExtractSections(GetVisualLayout(reportLayoutPath), connections);
                 Filter[] filters = GetVisualLayout(reportLayoutPath).GetFilters();
                 string name = Path.GetFileName(inputDirPath); // this.currentReportName;
@@ -347,7 +347,7 @@ namespace CD.DLS.Extract.PowerBi
             return reports.First();
         }
 
-        private  XmlDocument LoadXml(string dir)
+        private XmlDocument LoadXml(string dir)
         {
             if (!File.Exists(dir))
             {
@@ -399,7 +399,7 @@ namespace CD.DLS.Extract.PowerBi
                 return connections;
             }
 
-            for (int i = 0; i<liveConnection.Connections.Length; i++)
+            for (int i = 0; i < liveConnection.Connections.Length; i++)
             {
                 Connection conn = new Connection(i, null, null, null);
                 conn.Type = liveConnection.Connections[i].ConnectionType;
@@ -412,7 +412,7 @@ namespace CD.DLS.Extract.PowerBi
                     var catalogSplit = split.FirstOrDefault(x => x.Contains("Catalog="));
                     if (catalogSplit != null)
                     {
-                        catalog = catalogSplit.Substring(catalogSplit.LastIndexOf("=")+1).Trim();
+                        catalog = catalogSplit.Substring(catalogSplit.LastIndexOf("=") + 1).Trim();
                     }
                 }
                 conn.Source = dataSource + "\\" + catalog;
@@ -422,7 +422,7 @@ namespace CD.DLS.Extract.PowerBi
             return connections;
         }
 
-        private  List<Connection> ExtractConnectionsImportMode(List<string> entry)
+        private List<Connection> ExtractConnectionsImportMode(List<string> entry)
         {
             List<Connection> connections = new List<Connection>();
             for (int i = 0; i < entry.Count; i++)
@@ -460,7 +460,7 @@ namespace CD.DLS.Extract.PowerBi
             {
                 return tmp;
             }
-            var jsonString = System.IO.File.ReadAllText(diagramLayoutPath,Encoding.Unicode);
+            var jsonString = System.IO.File.ReadAllText(diagramLayoutPath, Encoding.Unicode);
             jsonString = jsonString.Replace(" ", "");
             Example table = JsonConvert.DeserializeObject<Example>(jsonString);
             foreach (Diagram d in table.diagrams)
@@ -486,7 +486,7 @@ namespace CD.DLS.Extract.PowerBi
             switch (con.Type)
             {
                 case "Sql.Databases":
-                //case "Sql.Database":
+                    //case "Sql.Database":
                     var splitDb = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None)[3].Trim(' ');
                     tableName = Regex.Match(splitDb, "(?<=).+?(?= )", RegexOptions.CultureInvariant).Value;
                     break;
@@ -505,9 +505,9 @@ namespace CD.DLS.Extract.PowerBi
                     tableName = System.IO.Path.GetFileNameWithoutExtension(splitPath[splitPath.Length - 2]);
                     break;
                 case "AnalysisServices.Databases":
-                //case "AnalysisServices.Database":
+                    //case "AnalysisServices.Database":
                     var splitAs = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None)[4];
-                    tableName = Regex.Match(splitAs, "(?<=Id=).+?(?=])", RegexOptions.Multiline).Value.Trim('\'', '\\'); 
+                    tableName = Regex.Match(splitAs, "(?<=Id=).+?(?=])", RegexOptions.Multiline).Value.Trim('\'', '\\');
                     break;
             }
             return tableName;
@@ -610,7 +610,7 @@ namespace CD.DLS.Extract.PowerBi
             return tablesList;
         }
 
-        private  List<string> ExtractCustomCollumnQuery(string entry)
+        private List<string> ExtractCustomCollumnQuery(string entry)
         {
             List<string> query = new List<string>();
             var splits = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None);
@@ -639,7 +639,7 @@ namespace CD.DLS.Extract.PowerBi
                     break;
 
                 case "AnalysisServices.Databases":
-                //case "AnalysisServices.Database":
+                    //case "AnalysisServices.Database":
                     var splitsAs = entry.Split(new string[] { "\\r\\n" }, StringSplitOptions.None);
                     var ssas = Regex.Match(entry, "(= Cube).+?(}\\))", RegexOptions.CultureInvariant).Value;
                     query = Regex.Replace(ssas, @"\\r\\n", String.Empty);
@@ -662,91 +662,6 @@ namespace CD.DLS.Extract.PowerBi
         {
             string json = File.ReadAllText(jsonPath, Encoding.Unicode);
             Layout layout = JsonConvert.DeserializeObject<Layout>(json);
-            foreach (var section in layout.Sections)
-            {
-                foreach (var visualContainer in section.VisualContainers)
-                {
-                    visualContainer.ExtensionMeasures = new List<VisualContainerExtensionMeasure>();
-
-                    if (visualContainer.Query != null)
-                    {
-                        var queryParsed = JObject.Parse(visualContainer.Query);
-                        var commands = queryParsed.GetValue("Commands") as JArray;
-                        if (commands == null)
-                        {
-                            continue;
-                        }
-                        if (commands.Count > 1)
-                        {
-                            ConfigManager.Log.Error("Unexpected multiple commands in PBI visual container query definition");
-                            //continue;
-                        }
-
-                        var cmd = (JObject)commands.First;
-                        var semanticCommand = cmd.GetValue("SemanticQueryDataShapeCommand") as JObject;
-                        if (semanticCommand == null)
-                        {
-                            continue;
-                        }
-
-                        var extension = semanticCommand.GetValue("Extension") as JObject;
-                        if (extension == null)
-                        {
-                            continue;
-                        }
-
-                        var entities = extension.GetValue("Entities") as JArray;
-                        if (entities == null)
-                        {
-                            continue;
-                        }
-
-                        //var names = new string[] { "Extends", "Name", "Measures" };
-
-                        foreach (JObject entity in entities)
-                        {
-                            var entityExtends = entity.GetValue("Extends").Value<string>();
-                            var measures = entity.GetValue("Measures") as JArray;
-                            if (measures == null)
-                            {
-                                continue;
-                            }
-
-                            foreach (JObject measure in measures)
-                            {
-                                var measureName = measure.GetValue("Name").Value<string>();
-                                var measureExpression = measure.GetValue("Expression").Value<string>();
-
-                                var extensionMeasure = new VisualContainerExtensionMeasure()
-                                {
-                                    Expression = measureExpression,
-                                    MeasureName = measureName,
-                                    TableName = entityExtends
-                                };
-                                visualContainer.ExtensionMeasures.Add(extensionMeasure);
-
-                            }
-
-                            //var entityName = entity.GetValue("Name").Value<string>();
-
-                            //if (extends != entityName)
-                            //{ 
-                            
-                            //}
-                            //foreach (JProperty child in entity.Children())
-                            //{
-                            //    var name = child.Name;
-                            //    if (!names.Contains(name))
-                            //    { 
-                                
-                            //    }
-                            //}
-                        }
-
-
-                    }
-                }
-            }
             return layout;
         }
 
@@ -773,6 +688,7 @@ namespace CD.DLS.Extract.PowerBi
                     continue;
                 }
                 Visual visual = new Visual(vc.Id, config.SingleVisual1.VisualType, vc.GetFilters());
+                visual.ExtensionMeasures = ExtractExtensionMeasures(vc);
                 PropertyInfo[] properties = typeof(VisualContainerConfig.Projections).GetProperties();
                 if (config.SingleVisual1.Projections == null)
                 {
@@ -785,7 +701,7 @@ namespace CD.DLS.Extract.PowerBi
                     {
                         foreach (var projection in projections)
                         {
-                            visual.Projections.Add(new Projection(projection.QueryRef,property.Name));
+                            visual.Projections.Add(new Projection(projection.QueryRef, property.Name));
                         }
                     }
                 }
@@ -794,5 +710,72 @@ namespace CD.DLS.Extract.PowerBi
             return visuals;
         }
 
+        private List<VisualExtensionMeasure> ExtractExtensionMeasures(VisualContainer visualContainer)
+        {
+            List<VisualExtensionMeasure> res = new List<VisualExtensionMeasure>();
+            if (visualContainer.Query == null)
+            {
+                return res;
+            }
+            var queryParsed = JObject.Parse(visualContainer.Query);
+            var commands = queryParsed.GetValue("Commands") as JArray;
+            if (commands == null)
+            {
+                return res;
+            }
+
+            if (commands.Count > 1)
+            {
+                ConfigManager.Log.Error("Unexpected multiple commands in PBI visual container query definition");
+            }
+
+            var cmd = (JObject)commands.First;
+            var semanticCommand = cmd.GetValue("SemanticQueryDataShapeCommand") as JObject;
+            if (semanticCommand == null)
+            {
+                return res;
+            }
+
+            var extension = semanticCommand.GetValue("Extension") as JObject;
+            if (extension == null)
+            {
+                return res;
+            }
+
+            var entities = extension.GetValue("Entities") as JArray;
+            if (entities == null)
+            {
+                return res;
+            }
+            //var names = new string[] { "Extends", "Name", "Measures" };
+
+            foreach (JObject entity in entities)
+            {
+                var entityExtends = entity.GetValue("Extends").Value<string>();
+                var measures = entity.GetValue("Measures") as JArray;
+                if (measures == null)
+                {
+                    continue;
+                }
+
+                foreach (JObject measure in measures)
+                {
+                    var measureName = measure.GetValue("Name").Value<string>();
+                    var measureExpression = measure.GetValue("Expression").Value<string>();
+
+                    var extensionMeasure = new VisualExtensionMeasure()
+                    {
+                        Expression = measureExpression,
+                        MeasureName = measureName,
+                        TableName = entityExtends
+                    };
+                    res.Add(extensionMeasure);
+
+                }
+
+            }
+            
+            return res;
+        }
     }
 }
