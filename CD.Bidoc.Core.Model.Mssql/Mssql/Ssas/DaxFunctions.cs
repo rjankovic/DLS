@@ -1111,10 +1111,13 @@ namespace CD.DLS.Model.Mssql.Ssas
             var arguments = CollectArgumentList();
             var condition = arguments[0].FragmentElement;
             var trueValue = arguments[1].FragmentElement;
-            var falseValue = arguments[2].FragmentElement;
             AddDataFlowLink(condition);
             AddDataFlowLink(trueValue);
-            AddDataFlowLink(falseValue);
+            if (arguments.Count > 2)
+            {
+                var falseValue = arguments[2].FragmentElement;
+                AddDataFlowLink(falseValue);
+            }
         }
     }
 

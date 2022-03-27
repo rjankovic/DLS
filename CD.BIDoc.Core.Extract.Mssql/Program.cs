@@ -67,7 +67,7 @@ namespace CD.DLS.Extract.Mssql
                 foreach (var sqlComponent in projectConfig.DatabaseComponents)
                 {
                     // remove later
-                    continue;
+                    //continue;
 
                     string serverName = sqlComponent.ServerName;
                     int serverVersion = FindServerVersion(serverName);

@@ -102,6 +102,11 @@ namespace Irony.Samples.SSIS
         public DaxGrammar()
             : base(false)
         {
+            var comment = new CommentTerminal("comment", "/*", true, "*/");
+            var lineCommentSlash = new CommentTerminal("line_comment", "//", "\n", "\r\n");
+            NonGrammarTerminals.Add(comment);
+            NonGrammarTerminals.Add(lineCommentSlash);
+
             var EVALUATE = ToTerm("EVALUATE");
             var MEASURE = ToTerm("MEASURE");
             var VAR = ToTerm("VAR");
@@ -146,7 +151,7 @@ namespace Irony.Samples.SSIS
             //var identifier = CreateDaxColumnIdentifier();
 
             // identifiers
-            var id_unquoted = new IdentifierTerminal("id_unquoted");
+            var id_unquoted = new IdentifierTerminal("id_unquoted", "@$_'.?-", "@$_");
             id_unquoted.Priority = TerminalPriority.High;
             var id = new NonTerminal(NONTERM_ID);
             var columnId = CreateDaxColumnIdentifier();

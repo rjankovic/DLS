@@ -21,6 +21,8 @@ namespace CD.DLS.Parse.Mssql.Ssas
     public class SsasTabularDatabaseIndex : SsasDatabaseIndex
     {
         private Dictionary<string, SsasModelElement> _referrablesDictionary = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, SsasModelElement> _tempReferrablesDictionary = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, List<SsasModelElement>> _tempReferrablesByTable = new Dictionary<string, List<SsasModelElement>>(StringComparer.OrdinalIgnoreCase);
         private Dictionary<string, SsasModelElement> _localReferrablesDictionary = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
         private List<SsasTabularRelationshipElement> _relationships = new List<SsasTabularRelationshipElement>();
         Dictionary<string, List<SsasTabularRelationshipElement>> _relationshipsFromTable = new Dictionary<string, List<SsasTabularRelationshipElement>>();
@@ -44,6 +46,24 @@ namespace CD.DLS.Parse.Mssql.Ssas
             }
         }
 
+        public void AddTempMeasure(string tableName, string measureName, SsasModelElement measureElement)
+        {
+            if (!_tempReferrablesByTable.ContainsKey(tableName))
+            {
+                _tempReferrablesByTable.Add(tableName, new List<SsasModelElement>());
+            }
+            _tempReferrablesByTable[tableName].Add(measureElement);
+
+            var measureFullId = string.Format("'{0}'[{1}]", tableName, measureName);
+            _tempReferrablesDictionary.Add(measureFullId, measureElement);
+        }
+
+        public void ClearTempMeasures()
+        {
+            _tempReferrablesByTable.Clear();
+            _tempReferrablesDictionary.Clear();
+        }
+
         public override Dictionary<MssqlModelElement, int> GetPremappedIds()
         {
             return PremappedElements;
@@ -65,6 +85,11 @@ namespace CD.DLS.Parse.Mssql.Ssas
                 return _localReferrablesDictionary[normalizedIdentifier];
             }
 
+            if (_tempReferrablesDictionary.ContainsKey(normalizedIdentifier))
+            {
+                return _tempReferrablesDictionary[normalizedIdentifier];
+            }
+
             if (_referrablesDictionary.ContainsKey(normalizedIdentifier))
             {
                 return _referrablesDictionary[normalizedIdentifier];
@@ -78,6 +103,11 @@ namespace CD.DLS.Parse.Mssql.Ssas
                 if (_localReferrablesDictionary.ContainsKey(normalizedTableIdentifier))
                 {
                     return _localReferrablesDictionary[normalizedTableIdentifier];
+                }
+
+                if (_tempReferrablesDictionary.ContainsKey(normalizedTableIdentifier))
+                {
+                    return _tempReferrablesDictionary[normalizedTableIdentifier];
                 }
 
                 if (_referrablesDictionary.ContainsKey(normalizedTableIdentifier))
@@ -109,7 +139,12 @@ namespace CD.DLS.Parse.Mssql.Ssas
         {
             ClearLocalIndexes();
 
-            var table = _tabularDb.Tables.First(x => x.Caption == tableName);
+            var table = _tabularDb.Tables.FirstOrDefault(x => x.Caption == tableName);
+            if (table == null)
+            {
+                return;
+            }
+
             foreach (var measure in table.Measures)
             {
                 AddLocalMeasure(table.Caption, measure.Caption, measure);
@@ -118,6 +153,14 @@ namespace CD.DLS.Parse.Mssql.Ssas
             foreach (var column in table.Columns)
             {
                 AddLocalColumn(column.Caption, column);
+            }
+
+            if (_tempReferrablesByTable.ContainsKey(tableName))
+            {
+                foreach (var tempMeasure in _tempReferrablesByTable[tableName])
+                {
+                    AddLocalMeasure(tableName, tempMeasure.Caption, tempMeasure);
+                }
             }
         }
 
