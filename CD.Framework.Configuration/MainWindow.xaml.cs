@@ -47,7 +47,18 @@ namespace CD.DLS.Configuration
 
         private void ConnectionStringBuilder_OnConnectionSuccessful(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var connstring = connectionStringBuilder.ConnectionString.ToString();
+            string errors;
+            if (!ConfigureOnPremises(connstring, out errors))
+            {
+                MessageBox.Show(errors, "Configuration failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                MessageBox.Show("Configuration finished successfully", "Configuration successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                Close();
+            }
+            //throw new NotImplementedException();
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -125,7 +136,7 @@ namespace CD.DLS.Configuration
             }
             catch (Exception ex)
             {
-                errorMessage = ex.Message + (ex.InnerException == null ? string.Empty : (Environment.NewLine + ex.InnerException.Message)) + Environment.NewLine + ex.StackTrace;
+                errorMessage = ex.Message + (ex.InnerException == null ? string.Empty : (Environment.NewLine + ex.InnerException.Message)); //+ Environment.NewLine + ex.StackTrace;
                 return false;
             }
 
