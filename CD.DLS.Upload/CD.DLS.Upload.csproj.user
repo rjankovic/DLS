@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>cfg sample "02629169-41C7-4D0C-ADF4-21A3D3E6670F" "C:\DLS_Extract\sample.json"</StartArguments>
-  </PropertyGroup>
-</Project>

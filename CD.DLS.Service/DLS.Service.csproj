@@ -7,7 +7,7 @@
     <ProjectGuid>{635434D7-7597-4E87-A75F-F1ED5591AD4E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>CD.DLS.Service</RootNamespace>
-    <AssemblyName>CD.DLS.Service</AssemblyName>
+    <AssemblyName>DLS.Service</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

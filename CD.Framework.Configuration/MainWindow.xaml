@@ -7,7 +7,7 @@
         xmlns:SqlConnection1="clr-namespace:CD.DLS.Clients.Controls.Dialogs.SqlConnection;assembly=CD.DLS.Clients.Controls"
         xmlns:dialogs="clr-namespace:CD.DLS.Clients.Controls.Dialogs;assembly=CD.DLS.Clients.Controls"
         mc:Ignorable="d"
-        Title="Datawut Configuration" Width="800" MaxWidth="1000" Height="600">
+        Title="DLS Configuration" Width="800" MaxWidth="1000" Height="600">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -22,7 +22,7 @@
         <!--<Image Source="Resources\DLS_banner.png" Margin="100 50 100 0" Grid.Row="0" />-->
 
 
-        <SqlConnection1:SqlConnectionStringBuilder MinHeight="200" Grid.Column="0" Header="Your Datawut Database Connection" x:Name="connectionStringBuilder" ConnectionString="{Binding ElementName=_this, Path=Test}" Grid.Row="2" />
+        <SqlConnection1:SqlConnectionStringBuilder MinHeight="200" Grid.Column="0" Header="Your DLS Database Connection" x:Name="connectionStringBuilder" ConnectionString="{Binding ElementName=_this, Path=Test}" Grid.Row="2" />
         <TextBlock x:Name="connectionStringTb" Text="{Binding ElementName=_this, Path=Test, StringFormat='Produced Connection String: {0}'}" Grid.Column="0" Grid.Row="3" Visibility="Collapsed" />
 
         
