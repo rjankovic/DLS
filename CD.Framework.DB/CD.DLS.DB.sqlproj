@@ -470,6 +470,9 @@
     <Build Include="Inspect\TableFunctions\Inspect.f_GetGraphNodesExtended_ForceSeek.sql" />
     <Build Include="BIDoc\Procedures\BIDoc.sp_SetElementSubtreeContents.sql" />
     <Build Include="Adm\Procedures\Adm.sp_GetRequestsNotWaiting.sql" />
+    <Build Include="Adm\Tables\Adm.DatabaseVersions.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_CheckAppliedDbVersion.sql" />
+    <Build Include="Adm\Procedures\Adm.sp_AddAppliedDbVersion.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CDFramework_VD.publish.xml" />
@@ -488,6 +491,7 @@
     <None Include="localhost.DLS.publish.xml" />
     <None Include="CD.DLS.DB.publish.xml" />
     <None Include="CD.DLS.DB_ITR_SQL05.publish.xml" />
+    <None Include="DLS2.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql">

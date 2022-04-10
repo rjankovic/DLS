@@ -8368,6 +8368,17 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_3AEF0FE1AC844E3794F3B466C908AD66"
+                    {
+                    "Name" = "8:uploader"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_2D5CE2E659094BD9869DD459A5A81529"
+                        "Folders"
+                        {
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_3BC981EC30CD4532B95AC69563C9ED45"
                     {
                     "Name" = "8:client"
@@ -8375,6 +8386,28 @@
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
                     "Property" = "8:_8565705E04E74B0FA95F8D9CAAAE55AB"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_5B2CCA520FA54E34868F35FF99A905CD"
+                    {
+                    "Name" = "8:service"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_79E42D54C2CE44FCB25A6C0F1FB22720"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_5FD4F1218FEA413D9F08A8DB3D977DB5"
+                    {
+                    "Name" = "8:extractor"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_A0B1D96485CC41B29AAD47325171C4AE"
                         "Folders"
                         {
                         }
@@ -8420,7 +8453,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DLS"
         "ProductCode" = "8:{4E077BEE-68DC-4983-973B-2550EF32C53A}"
-        "PackageCode" = "8:{0AB00B7A-A042-4258-8DA6-DE0A333DBFC5}"
+        "PackageCode" = "8:{AE684824-518D-4D1C-9691-C3CB9D3D26BF}"
         "UpgradeCode" = "8:{89851C45-0823-4F56-A93A-462459B3C82C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

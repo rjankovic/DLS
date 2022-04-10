@@ -24,7 +24,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\client\</OutputPath>
+    <OutputPath>..\bin\configuration\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -121,6 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\DLS_banner.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DeployScripts\DLS.publish.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
