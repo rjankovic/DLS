@@ -210,9 +210,17 @@ namespace CD.DLS.Configuration
                 Log("Registry setup failed");
                 return;
             }
-            Log("Configuration successfull");
+            Log("Configuration finished successfully.");
+
+            ConfigButton.Content = "Close";
+            ConfigButton.Click -= ConfigButton_Click;
+            ConfigButton.Click += CloseButton_Click1;
         }
 
+        private void CloseButton_Click1(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
 
         private bool ConfigureDb()
         {
