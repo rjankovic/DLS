@@ -134,7 +134,7 @@
                 </StackPanel>
             </GroupBox>
             <DockPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2">
-                <Button DockPanel.Dock="Left"  Style="{StaticResource OrangeButton}" Content="Test Connection" Click="TestConnectionButton_Click" />
+                <Button DockPanel.Dock="Left"  Style="{StaticResource OrangeButton}" Content="Test Connection" x:Name="testButton" Click="TestConnectionButton_Click" />
             </DockPanel>
             <ContentPresenter Grid.Column="0"
                               Grid.Row="4"

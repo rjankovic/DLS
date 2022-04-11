@@ -1,19 +1,11 @@
-﻿using CD.DLS.Clients.Controls.Dialogs.SqlConnection;
-using CD.DLS.Common.Tools;
+﻿using CD.DLS.Common.Tools;
 using CD.DLS.DAL.Configuration;
 using CD.DLS.DAL.Engine;
-using CD.DLS.DAL.Identity;
 using CD.DLS.DAL.Managers;
-using CD.DLS.DAL.Misc;
-using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using System;
-using System.Configuration.Install;
-using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -25,7 +17,8 @@ namespace CD.DLS.Configuration
     public partial class MainWindow : Window
     {
         private string _preconfiguredConnectionString;
-        private SqlConnectionString _setConnectionString;
+        private string _sqlConnection;
+        private string _databaseName;
         public MainWindow()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -48,16 +41,27 @@ namespace CD.DLS.Configuration
         private void ConnectionStringBuilder_OnConnectionSuccessful(object sender, EventArgs e)
         {
             var connstring = connectionStringBuilder.ConnectionString.ToString();
-            string errors;
-            if (!ConfigureOnPremises(connstring, out errors))
-            {
-                MessageBox.Show(errors, "Configuration failed", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            else
-            {
-                MessageBox.Show("Configuration finished successfully", "Configuration successful", MessageBoxButton.OK, MessageBoxImage.Information);
-                Close();
-            }
+            _databaseName = connectionStringBuilder.ConnectionString.Database;
+            logViewer.Info("Connection successful");
+            logViewer.Info(connstring);
+            ConfigButton.IsEnabled = true;
+            _sqlConnection = connstring;
+            //ConfigButton.Foreground = Brushes.White;
+            //var color = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F18719"));
+            //ConfigButton.Background = color;
+            
+            //string errors;
+            
+            
+            //if (!ConfigureOnPremises(connstring, out errors))
+            //{
+            //    MessageBox.Show(errors, "Configuration failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Configuration finished successfully", "Configuration successful", MessageBoxButton.OK, MessageBoxImage.Information);
+            //    Close();
+            //}
             //throw new NotImplementedException();
         }
 
@@ -99,33 +103,35 @@ namespace CD.DLS.Configuration
         //    }
         //}
 
-        private bool ConfigureOnPremises(string connectionString, out string errorMessage)
+        private bool ConfigureRegistry()
         {
+            Log("Configuring registry...");
+            string errorMessage;
             try
             {
-                var connstringWithoutDb = new SqlConnectionString(connectionString.ToString());
-                connstringWithoutDb.Database = string.Empty;
-                var setConnstring = new SqlConnectionString(connectionString.ToString());
+                //var connstringWithoutDb = new SqlConnectionString(connectionString.ToString());
+                //connstringWithoutDb.Database = string.Empty;
+                //var setConnstring = new SqlConnectionString(connectionString.ToString());
 
-                // test connection
-                using (SqlConnection conn = new SqlConnection(connstringWithoutDb))
-                {
-                    try
-                    {
-                        conn.Open();
-                    }
-                    catch (Exception ex)
-                    {
-                        errorMessage = ex.Message + (ex.InnerException == null ? string.Empty : (Environment.NewLine + ex.InnerException.Message));
-                        //MessageBox.Show(ex.Message + (ex.InnerException == null ? string.Empty : (Environment.NewLine + ex.InnerException.Message)), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return false;
-                    }
-                }
+                //// test connection
+                //using (SqlConnection conn = new SqlConnection(connstringWithoutDb))
+                //{
+                //    try
+                //    {
+                //        conn.Open();
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        errorMessage = ex.Message + (ex.InnerException == null ? string.Empty : (Environment.NewLine + ex.InnerException.Message));
+                //        //MessageBox.Show(ex.Message + (ex.InnerException == null ? string.Empty : (Environment.NewLine + ex.InnerException.Message)), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //        return false;
+                //    }
+                //}
 
-                Registry.SetConfigValue6432(StandardConfigManager.KV_DLS_CUSTOMER_CONNECTION_STRING, connectionString);
+                Registry.SetConfigValue6432(StandardConfigManager.KV_DLS_CUSTOMER_CONNECTION_STRING, _sqlConnection);
 
                 NetBridge nb = new NetBridge(true);
-                nb.SetConnectionString(connectionString);
+                nb.SetConnectionString(_sqlConnection);
                 ProjectConfigManager pcm = new ProjectConfigManager(nb);
                 var svcReceiverId = pcm.GetServiceReceiverId();
 
@@ -137,6 +143,7 @@ namespace CD.DLS.Configuration
             catch (Exception ex)
             {
                 errorMessage = ex.Message + (ex.InnerException == null ? string.Empty : (Environment.NewLine + ex.InnerException.Message)); //+ Environment.NewLine + ex.StackTrace;
+                Log(errorMessage);
                 return false;
             }
 
@@ -146,7 +153,7 @@ namespace CD.DLS.Configuration
 
         private void ConfigureExtractorPath()
         {
-            var installDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var installDir = Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
             var extractorFileName = "CD.DLS.Extract.exe";
             var expectedExtractorPath = Path.Combine(installDir, "extractor", extractorFileName);
             if (File.Exists(expectedExtractorPath))
@@ -170,6 +177,103 @@ namespace CD.DLS.Configuration
             }
         }
 
+        private async void ConfigButton_Click(object sender, RoutedEventArgs e)
+        {
+            //DbDeploymentManager deploymentManager = new DbDeploymentManager(logViewer);
+            //deploymentManager.ConnectionInfoMessage += DeploymentManager_ConnectionInfoMessage1;
+            //try
+            //{
+            //    deploymentManager.CheckAppliedDbVersion(0);
+            //    InitDb();
+            //}
+            //catch
+            //{
+            //    logViewer.Info("DB is already initialized");
+            //}
+            Task<bool> dbTask = new Task<bool>(ConfigureDb);
+            Task<bool> registryTask = new Task<bool>(ConfigureRegistry);
+
+
+            dbTask.Start();
+            await dbTask;
+            var dbSuccess = dbTask.Result;
+            if (!dbSuccess)
+            {
+                Log("DB initialization failed");
+                return;
+            }
+            registryTask.Start();
+            await registryTask;
+            var registrySuccess = registryTask.Result;
+            if (!registrySuccess)
+            {
+                Log("Registry setup failed");
+                return;
+            }
+            Log("Configuration successfull");
+        }
+
+
+        private bool ConfigureDb()
+        {
+
+            DbDeploymentManager deploymentManager = new DbDeploymentManager(logViewer);
+            deploymentManager.ConnectionInfoMessage += DeploymentManager_ConnectionInfoMessage1;
+            try
+            {
+                deploymentManager.CheckAppliedDbVersion(0);
+                InitDb();
+            }
+            catch
+            {
+                Log("DB is already initialized");
+            }
+            return true;
+        }
+
+
+        private void InitDb()
+        {
+            var binLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var sqlPath = Path.Combine(binLocation, "DeployScripts", "DLS.publish_1.sql");
+            var sqlTemplate = File.ReadAllText(sqlPath);
+            var sql = sqlTemplate.Replace("$(DatabaseName)", _databaseName);
+            Log($"Running deploy script on {_databaseName}");
+            using (Microsoft.Data.SqlClient.SqlConnection conn = new Microsoft.Data.SqlClient.SqlConnection(_sqlConnection))
+            {
+                Microsoft.SqlServer.Management.Common.ServerConnection svrConnection = new Microsoft.SqlServer.Management.Common.ServerConnection(conn);
+                conn.Open();
+                //svrConnection.ServerMessage += SvrConnection_ServerMessage;
+                //svrConnection.InfoMessage += DeploymentManager_ConnectionInfoMessage;
+                conn.InfoMessage += DeploymentManager_ConnectionInfoMessage;
+                Server server = new Server(svrConnection);
+                server.ConnectionContext.ExecuteNonQuery(sql);
+                conn.Close();
+            }
+
+            //ServerConnection svrConnection = new ServerConnection(connection);
+            //Server server = new Server(svrConnection);
+            //server.ConnectionContext.ExecuteNonQuery(script);
+        }
+
+        //private void SvrConnection_ServerMessage(object sender, Microsoft.SqlServer.Management.Common.ServerMessageEventArgs e)
+        //{
+        //    logViewer.Info(e.Error.Message);
+        //}
+
+        private void DeploymentManager_ConnectionInfoMessage(object sender, Microsoft.Data.SqlClient.SqlInfoMessageEventArgs e)
+        {
+            Dispatcher.Invoke(() => logViewer.Info(e.Message), System.Windows.Threading.DispatcherPriority.Background);
+        }
+        private void DeploymentManager_ConnectionInfoMessage1(object sender, System.Data.SqlClient.SqlInfoMessageEventArgs e)
+        {
+            Dispatcher.Invoke(() => logViewer.Info(e.Message), System.Windows.Threading.DispatcherPriority.Background);
+        }
+
+        private void Log(string log)
+        {
+            Dispatcher.Invoke(() => logViewer.Info(log), System.Windows.Threading.DispatcherPriority.Background);
+        }
 
     }
 }

@@ -276,7 +276,7 @@ namespace CD.DLS.Clients.Controls.Dialogs.SqlConnection
         }
 
         private string _connectText = "Test Connection";
-        public string ConnectText { get => _connectText; set => _connectText = value; }
+        public string ConnectText { get => _connectText; set { _connectText = value; testButton.Content = value; } }
         public bool ShowConnectionSuccessfulMessage { get => _showConnectionSuccessfulMessage; set => _showConnectionSuccessfulMessage = value; }
 
         public event EventHandler OnConnectionSuccessful;

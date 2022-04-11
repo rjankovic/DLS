@@ -8,11 +8,20 @@
         xmlns:dialogs="clr-namespace:CD.DLS.Clients.Controls.Dialogs;assembly=CD.DLS.Clients.Controls"
         mc:Ignorable="d"
         Title="DLS Configuration" Width="800" MaxWidth="1000" Height="600">
+    <!--<Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name ="Default" Source="/CD.DLS.Configuration;component/Resources/DefaultResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -23,10 +32,10 @@
 
 
         <SqlConnection1:SqlConnectionStringBuilder MinHeight="200" Grid.Column="0" Header="Your DLS Database Connection" x:Name="connectionStringBuilder" ConnectionString="{Binding ElementName=_this, Path=Test}" Grid.Row="2" />
-        <TextBlock x:Name="connectionStringTb" Text="{Binding ElementName=_this, Path=Test, StringFormat='Produced Connection String: {0}'}" Grid.Column="0" Grid.Row="3" Visibility="Collapsed" />
+        <TextBlock x:Name="connectionStringTb" Text="{Binding ElementName=_this, Path=Test, StringFormat='Produced Connection String: {0}'}" Grid.Column="0" Grid.Row="3" Visibility="Visible" />
+        <dialogs:LogViewer x:Name="logViewer" Grid.Column="0" Grid.Row="4" Margin="10" />
+        <Button x:Name="ConfigButton" Content="Configure DLS" Padding="5" Grid.Row="5" Click="ConfigButton_Click"  IsEnabled="False" Margin="10" />
 
-        
-        
         <!--<Button x:Name="configureButton" Content="Configure Client Tools" Width="200" Margin="0 20 0 0" Padding="5" Grid.Row="4" Click="ConfigureButton_Click" />-->
     </Grid>
 </Window>

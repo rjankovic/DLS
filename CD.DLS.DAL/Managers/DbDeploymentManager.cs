@@ -34,7 +34,7 @@ namespace CD.DLS.DAL.Managers
 
         public DbDeploymentManager(ILogger logger)
         {
-            _netBridge = new NetBridge();
+            _netBridge = new NetBridge(true);
             _logger = logger;
             _netBridge.ConnectionInfoMessage += NetBridge_ConnectionInfoMessage;
         }
@@ -58,10 +58,25 @@ namespace CD.DLS.DAL.Managers
 
         public void CheckAppliedDbVersion(int appliedVersion)
         {
-            NetBridge.ExecuteProcedure("Adm.sp_CheckAppliedDbVersion", new Dictionary<string, object>()
+            try
+            {
+                NetBridge.ExecuteProcedure("Adm.sp_CheckAppliedDbVersion", new Dictionary<string, object>()
             {
                 { "appliedVersion", appliedVersion }
             });
+            }
+            catch (SqlException sqlex)
+            {
+                if (appliedVersion == 0 && sqlex.Message.ToLower().Contains("could not find"))
+                {
+                    return;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
         }
 
     }

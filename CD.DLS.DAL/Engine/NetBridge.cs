@@ -30,6 +30,7 @@ namespace CD.DLS.DAL.Engine
 
         public NetBridge(bool suppressBrokerConnection = false, bool setConnectionString = true)
         {
+            SuppressBrokerConnection = suppressBrokerConnection;
             if (setConnectionString)
             {
                 if (ConfigManager.DeploymentMode == DeploymentModeEnum.OnPremises || ConfigManager.ApplicationClass == ApplicationClassEnum.Client || ConfigManager.ApplicationClass == ApplicationClassEnum.WebClient)
@@ -37,7 +38,6 @@ namespace CD.DLS.DAL.Engine
                         SetConnectionString(ConfigManager.CustomerDatabaseConnectionString);                             
                }
             }
-            SuppressBrokerConnection = suppressBrokerConnection;
         }
 
 
