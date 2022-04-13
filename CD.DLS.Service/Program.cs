@@ -22,13 +22,34 @@ namespace CD.DLS.Service
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
             ConfigManager.ApplicationClass = ApplicationClassEnum.Service;
             ConfigManager.DeploymentMode = DeploymentModeEnum.OnPremises;
 
             bool runInWindow = ConfigManager.ServiceRunsInConsole;
-            if (runInWindow)
+
+
+            if (Environment.UserInteractive && args.Length == 1)
+            {
+                DLS s1 = new DLS();
+                //if (args.Length == 1)
+                //{
+                    switch (args[0])
+                    {
+                        case "-install":
+                            s1.InstallService();
+                            return;
+                        case "-uninstall":
+
+                            s1.UninstallService();
+                            return;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                //}
+            }
+            else if (runInWindow)
             {
                 DLS service = new DLS();
                 ConfigManager.Log.Important("Starting in window");

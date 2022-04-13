@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace CD.DLS.Service
 {
-    public partial class DLS : ServiceBase
+    public partial class DLS : InstallableServiceBase // ServiceBase
     {
         private Receiver _receiver;
         private MessageProcessor _processor;
@@ -22,6 +22,16 @@ namespace CD.DLS.Service
         public DLS()
         {
             InitializeComponent();
+            this.ServiceName = "DLS";
+        }
+
+        new internal void InstallService()
+        {
+            base.InstallService();
+        }
+        new internal void UninstallService()
+        {
+            base.UninstallService();
         }
 
         protected override void OnStart(string[] args)
