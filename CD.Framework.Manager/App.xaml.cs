@@ -6,7 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Windows;
@@ -49,6 +52,40 @@ namespace CD.DLS.Manager
             {
                 this.Shutdown();
             }
+
+            StartServiceIfNeeded();
+
+
+            
+        }
+
+        private void StartServiceIfNeeded()
+        {
+            var serviceInConsole = ConfigManager.ServiceRunsInConsole;
+            if (!serviceInConsole)
+            {
+                return;
+            }
+
+            var runningProcessByName = Process.GetProcessesByName("DLS.Service");
+            if (runningProcessByName.Any())
+            {
+                return;
+            }
+
+
+            var clientFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var svcFile = Path.Combine(Path.GetDirectoryName(clientFolder), "service", "DLS.Service.exe");
+            ProcessStartInfo si = new ProcessStartInfo(svcFile);
+            si.WindowStyle = ProcessWindowStyle.Hidden;
+            var process = Process.Start(si);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+
+
+
         }
     }
 }
