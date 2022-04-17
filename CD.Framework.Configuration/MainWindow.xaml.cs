@@ -22,38 +22,52 @@ namespace CD.DLS.Configuration
         private string _sqlConnection;
         private string _databaseName;
         private bool _serviceInConsole = true;
-        
+
 
         public bool ServiceInConsole { get => _serviceInConsole; set => _serviceInConsole = value; }
-        
+
         public MainWindow()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             //throw new Exception("AAAA");
-            InitializeComponent();
-
-            _preconfiguredConnectionString = Registry.GetConfigValue(StandardConfigManager.KV_DLS_CUSTOMER_CONNECTION_STRING);
-
-            if (_preconfiguredConnectionString != null)
+            try
             {
-                connectionStringBuilder.ConnectionString = new Clients.Controls.Dialogs.SqlConnection.SqlConnectionString(_preconfiguredConnectionString);
+                InitializeComponent();
+
+                _preconfiguredConnectionString = Registry.GetConfigValue(StandardConfigManager.KV_DLS_CUSTOMER_CONNECTION_STRING);
+
+                if (_preconfiguredConnectionString != null)
+                {
+                    connectionStringBuilder.ConnectionString = new Clients.Controls.Dialogs.SqlConnection.SqlConnectionString(_preconfiguredConnectionString);
+                }
+
+                //connectionStringBuilder.PropertyChanged += ConnectionStringBuilder_PropertyChanged;
+                connectionStringBuilder.ConnectText = "Connect";
+                connectionStringBuilder.ShowConnectionSuccessfulMessage = false;
+                connectionStringBuilder.OnConnectionSuccessful += ConnectionStringBuilder_OnConnectionSuccessful;
+
+                ServiceInConsole = ConfigManager.ServiceRunsInConsole;
+                if (ServiceInConsole)
+                {
+                    RadioServiceRunsInConsole.IsChecked = true;
+                    RadioServiceRunsInWin.IsChecked = false;
+                }
+                else
+                {
+                    RadioServiceRunsInConsole.IsChecked = false;
+                    RadioServiceRunsInWin.IsChecked = true;
+                }
             }
-
-            //connectionStringBuilder.PropertyChanged += ConnectionStringBuilder_PropertyChanged;
-            connectionStringBuilder.ConnectText = "Connect";
-            connectionStringBuilder.ShowConnectionSuccessfulMessage = false;
-            connectionStringBuilder.OnConnectionSuccessful += ConnectionStringBuilder_OnConnectionSuccessful;
-
-            ServiceInConsole = ConfigManager.ServiceRunsInConsole;
-            if (ServiceInConsole)
+            catch (Exception ex)
             {
-                RadioServiceRunsInConsole.IsChecked = true;
-                RadioServiceRunsInWin.IsChecked = false;
-            }
-            else
-            {
-                RadioServiceRunsInConsole.IsChecked = false;
-                RadioServiceRunsInWin.IsChecked = true;
+                var errMsg = "Main Window Init Error: " + ex.Message;
+                var iex = ex;
+                while (iex.InnerException != null)
+                {
+                    errMsg += Environment.NewLine + iex.InnerException.Message;
+                    iex = iex.InnerException;
+                }
+                throw new Exception(errMsg);
             }
         }
 
@@ -68,10 +82,10 @@ namespace CD.DLS.Configuration
             //ConfigButton.Foreground = Brushes.White;
             //var color = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F18719"));
             //ConfigButton.Background = color;
-            
+
             //string errors;
-            
-            
+
+
             //if (!ConfigureOnPremises(connstring, out errors))
             //{
             //    MessageBox.Show(errors, "Configuration failed", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -269,7 +283,7 @@ namespace CD.DLS.Configuration
                 Log("DB initialization failed");
                 return;
             }
-            
+
             registryTask.Start();
             await registryTask;
             var registrySuccess = registryTask.Result;

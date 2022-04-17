@@ -44,7 +44,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <RadioButton Content="DLS Service Runs Locally" Name="RadioServiceRunsInConsole" Checked="RadioServiceRunsInConsole_Checked" Grid.Column="1" />
+            <RadioButton Content="Run DLS Service Embedded" Name="RadioServiceRunsInConsole" Checked="RadioServiceRunsInConsole_Checked" Grid.Column="1" />
             <RadioButton Content="Install DLS Windows Service" Name="RadioServiceRunsInWin" Checked="RadioServiceRunsInWin_Checked" Grid.Column="2" />
         </Grid>
         <Button x:Name="ConfigButton" Content="Configure DLS" Padding="5" Grid.Row="6" Click="ConfigButton_Click"  IsEnabled="False" Margin="10" />
