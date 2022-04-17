@@ -76,6 +76,13 @@ namespace CD.DLS.Manager
 
             var clientFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var svcFile = Path.Combine(Path.GetDirectoryName(clientFolder), "service", "DLS.Service.exe");
+
+            if (!File.Exists(svcFile))
+            {
+                var err = $"Service EXE not found: {svcFile}!";
+                MessageBox.Show(err, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                throw new FileNotFoundException(err);
+            }
             ProcessStartInfo si = new ProcessStartInfo(svcFile);
             si.WindowStyle = ProcessWindowStyle.Hidden;
             var process = Process.Start(si);

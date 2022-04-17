@@ -4,8 +4,10 @@ using CD.DLS.DAL.Engine;
 using CD.DLS.DAL.Managers;
 using Microsoft.SqlServer.Management.Smo;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -19,6 +21,11 @@ namespace CD.DLS.Configuration
         private string _preconfiguredConnectionString;
         private string _sqlConnection;
         private string _databaseName;
+        private bool _serviceInConsole = true;
+        
+
+        public bool ServiceInConsole { get => _serviceInConsole; set => _serviceInConsole = value; }
+        
         public MainWindow()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -36,6 +43,18 @@ namespace CD.DLS.Configuration
             connectionStringBuilder.ConnectText = "Connect";
             connectionStringBuilder.ShowConnectionSuccessfulMessage = false;
             connectionStringBuilder.OnConnectionSuccessful += ConnectionStringBuilder_OnConnectionSuccessful;
+
+            ServiceInConsole = ConfigManager.ServiceRunsInConsole;
+            if (ServiceInConsole)
+            {
+                RadioServiceRunsInConsole.IsChecked = true;
+                RadioServiceRunsInWin.IsChecked = false;
+            }
+            else
+            {
+                RadioServiceRunsInConsole.IsChecked = false;
+                RadioServiceRunsInWin.IsChecked = true;
+            }
         }
 
         private void ConnectionStringBuilder_OnConnectionSuccessful(object sender, EventArgs e)
@@ -137,6 +156,7 @@ namespace CD.DLS.Configuration
 
                 Registry.SetConfigValue6432(StandardConfigManager.DLS_SERVICERECEIVERID, svcReceiverId.ToString());
                 Registry.SetConfigValue6432(StandardConfigManager.DLS_DEPLOYMENT_MODE, DeploymentModeEnum.OnPremises.ToString());
+                Registry.SetConfigValue6432(StandardConfigManager.DLS_SERVICE_IN_CONSOLE, ServiceInConsole.ToString());
 
                 ConfigureExtractorPath();
             }
@@ -177,6 +197,52 @@ namespace CD.DLS.Configuration
             }
         }
 
+        private bool ConfigureService()
+        {
+            Log("Configuring service...");
+            try
+            {
+                if (ServiceInConsole)
+                {
+                    return true;
+                }
+
+                var installDir = Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+                var serviceFileName = "DLS.Service.exe";
+                var servicePath = Path.Combine(installDir, "service", serviceFileName);
+                if (!File.Exists(servicePath))
+                {
+                    Log($"Service not found: {servicePath}!");
+                    return false;
+                }
+
+                ProcessStartInfo si = new ProcessStartInfo(servicePath);
+                si.Arguments = "-install";
+                var process = Process.Start(si);
+                process.WaitForExit();
+
+                ServiceController service = new ServiceController("DLS");
+                if ((service.Status.Equals(ServiceControllerStatus.Stopped)) ||
+                    (service.Status.Equals(ServiceControllerStatus.StopPending)))
+                {
+                    Log("Starting service...");
+                    service.Start();
+                }
+                else
+                {
+                    Log("Service already up and running");
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.Message + (ex.InnerException == null ? string.Empty : (Environment.NewLine + ex.InnerException.Message)); //+ Environment.NewLine + ex.StackTrace;
+                Log(errorMessage);
+                return false;
+            }
+
+            return true;
+        }
+
         private async void ConfigButton_Click(object sender, RoutedEventArgs e)
         {
             //DbDeploymentManager deploymentManager = new DbDeploymentManager(logViewer);
@@ -192,6 +258,7 @@ namespace CD.DLS.Configuration
             //}
             Task<bool> dbTask = new Task<bool>(ConfigureDb);
             Task<bool> registryTask = new Task<bool>(ConfigureRegistry);
+            Task<bool> serviceTask = new Task<bool>(ConfigureService);
 
 
             dbTask.Start();
@@ -202,6 +269,7 @@ namespace CD.DLS.Configuration
                 Log("DB initialization failed");
                 return;
             }
+            
             registryTask.Start();
             await registryTask;
             var registrySuccess = registryTask.Result;
@@ -210,6 +278,16 @@ namespace CD.DLS.Configuration
                 Log("Registry setup failed");
                 return;
             }
+
+            serviceTask.Start();
+            await serviceTask;
+            var serviceSuccess = registryTask.Result;
+            if (!serviceSuccess)
+            {
+                Log("Service setup failed");
+                return;
+            }
+
             Log("Configuration finished successfully.");
 
             ConfigButton.Content = "Close";
@@ -283,5 +361,14 @@ namespace CD.DLS.Configuration
             Dispatcher.Invoke(() => logViewer.Info(log), System.Windows.Threading.DispatcherPriority.Background);
         }
 
+        private void RadioServiceRunsInConsole_Checked(object sender, RoutedEventArgs e)
+        {
+            ServiceInConsole = true;
+        }
+
+        private void RadioServiceRunsInWin_Checked(object sender, RoutedEventArgs e)
+        {
+            ServiceInConsole = false;
+        }
     }
 }
