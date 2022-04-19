@@ -67,7 +67,7 @@ namespace CD.DLS.Manager
         /// </summary>
         public MainRibbon()
         {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            //AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Uploader.UploadProgress += UploadProgress_Uploaded;
             this.InitializeComponent();
 
@@ -186,19 +186,19 @@ namespace CD.DLS.Manager
             AdminBusinessLinksTypeButton.Visibility = permissionHash.Contains(PermissionEnum.EditAnnotations) ? Visibility.Visible : Visibility.Hidden;
         }
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            var ex = ((Exception)e.ExceptionObject);
-            var err = ex.Message + Environment.NewLine + Environment.NewLine + ((ex.InnerException == null) ? string.Empty : (ex.InnerException.Message + Environment.NewLine));
-            ConfigManager.Log.Error(err);
+        //private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        //{
+        //    var ex = ((Exception)e.ExceptionObject);
+        //    var err = ex.Message + Environment.NewLine + Environment.NewLine + ((ex.InnerException == null) ? string.Empty : (ex.InnerException.Message + Environment.NewLine));
+        //    ConfigManager.Log.Error(err);
 
-            // not a real user action, just a RIP record
-            ConfigManager.Log.LogUserAction(Common.Interfaces.UserActionEventType.Error, null, null, null);
+        //    // not a real user action, just a RIP record
+        //    ConfigManager.Log.LogUserAction(Common.Interfaces.UserActionEventType.Error, null, null, null);
 
-            ConfigManager.Log.FlushMessages();
-            MessageBox.Show(err, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            Close();
-        }
+        //    ConfigManager.Log.FlushMessages();
+        //    MessageBox.Show(err, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    Close();
+        //}
         
         private void OpenProjectButton_Click(object sender, RoutedEventArgs e)
         {

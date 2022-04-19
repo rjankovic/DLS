@@ -5127,6 +5127,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_72CB62461B024ED9B668B98BAEC0697B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_730F83841D1E6A5B900EB8328F21EC49"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -6353,6 +6359,12 @@
         {
         "MsmKey" = "8:_93CF0455FC8D393C1F838D3B61AF43F8"
         "OwnerKey" = "8:_810BB9265CFF4747939A5165BA0C31F2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9442D0DDDC394B23BFEB916275E0261A"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -12053,6 +12065,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_063D4151D66E79DB6F27A96C324CF53D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_9442D0DDDC394B23BFEB916275E0261A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -19084,6 +19102,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_72CB62461B024ED9B668B98BAEC0697B"
+            {
+            "SourcePath" = "8:..\\bin\\client\\Xceed.Wpf.AvalonDock.pdb"
+            "TargetName" = "8:Xceed.Wpf.AvalonDock.pdb"
+            "Tag" = "8:"
+            "Folder" = "8:_3BC981EC30CD4532B95AC69563C9ED45"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_730F83841D1E6A5B900EB8328F21EC49"
             {
             "AssemblyRegister" = "3:1"
@@ -19981,6 +20019,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9442D0DDDC394B23BFEB916275E0261A"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Xceed.Wpf.AvalonDock, Version=3.7.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_9442D0DDDC394B23BFEB916275E0261A"
+                    {
+                    "Name" = "8:Xceed.Wpf.AvalonDock.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\bin\\client\\Xceed.Wpf.AvalonDock.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_3BC981EC30CD4532B95AC69563C9ED45"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9454DF3EB702D5B6817A6D272AE530D9"
@@ -24776,7 +24845,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DLS"
         "ProductCode" = "8:{4E077BEE-68DC-4983-973B-2550EF32C53A}"
-        "PackageCode" = "8:{3EF389BD-3674-4EAC-AD9E-AB11E8311979}"
+        "PackageCode" = "8:{815C352A-CD96-4602-94F3-1EA435A0815B}"
         "UpgradeCode" = "8:{89851C45-0823-4F56-A93A-462459B3C82C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

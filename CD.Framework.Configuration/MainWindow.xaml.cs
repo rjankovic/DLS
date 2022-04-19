@@ -28,7 +28,7 @@ namespace CD.DLS.Configuration
 
         public MainWindow()
         {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            //AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             //throw new Exception("AAAA");
             try
             {
@@ -98,12 +98,12 @@ namespace CD.DLS.Configuration
             //throw new NotImplementedException();
         }
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            var ex = ((Exception)e.ExceptionObject);
-            MessageBox.Show(ex.Message + Environment.NewLine + Environment.NewLine + ((ex.InnerException == null) ? string.Empty : (ex.InnerException.Message + Environment.NewLine)) /* + ex.StackTrace */, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            Close();
-        }
+        //private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        //{
+        //    var ex = ((Exception)e.ExceptionObject);
+        //    MessageBox.Show(ex.Message + Environment.NewLine + Environment.NewLine + ((ex.InnerException == null) ? string.Empty : (ex.InnerException.Message + Environment.NewLine)) /* + ex.StackTrace */, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    Close();
+        //}
 
         //private async void ConfigureButton_Click(object sender, RoutedEventArgs e)
         //{

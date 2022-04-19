@@ -44,8 +44,17 @@ namespace CD.DLS.Manager
             //                            accent,
             //                            theme.Item1);
 
+            //var x = MessageBox.Show("A");
+
+            this.DispatcherUnhandledException += Application_DispatcherUnhandledException;
+
             base.OnStartup(e);
             ConfigManager.ApplicationClass = ApplicationClassEnum.Client;
+
+            
+     //       AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+     //ShowUnhandledException(args.ExceptionObject as Exception, "AppDomain.CurrentDomain.UnhandledException");
+
 
             IdentityProvider.Login();
             if (IdentityProvider.GetCurrentUser() == null)
@@ -58,6 +67,55 @@ namespace CD.DLS.Manager
 
             
         }
+
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
+
+
+            var messageBoxTitle = $"Error";
+            var msg = e.Exception.Message + Environment.NewLine;
+            if (e.Exception.InnerException != null)
+            {
+                msg += e.Exception.InnerException.Message + Environment.NewLine;
+            }
+            msg += e.Exception.StackTrace;
+            //var messageBoxButtons = MessageBoxButton.OK;
+            var res = MessageBox.Show(msg, messageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);
+            this.Shutdown();
+
+        }
+
+
+        //void ShowUnhandledException(Exception e, string unhandledExceptionType)
+        //{
+        //    var messageBoxTitle = $"Unexpected Error Occurred: {unhandledExceptionType}";
+        //    var msg = e.Message + Environment.NewLine;
+        //    if (e.InnerException != null)
+        //    {
+        //        msg += e.InnerException.Message + Environment.NewLine;
+        //    }
+        //    msg += e.StackTrace;
+        //    var messageBoxButtons = MessageBoxButton.OK;
+
+
+        //    // Let the user decide if the app should die or not (if applicable).
+        //    MessageBox.Show(msg, messageBoxTitle, messageBoxButtons);
+        //}
+
+        //private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        //{
+        //    e.Handled = true;
+        //    var msg = e.Exception.Message + Environment.NewLine;
+        //    if (e.Exception.InnerException != null)
+        //    {
+        //        msg += e.Exception.InnerException.Message + Environment.NewLine;
+        //    }
+        //    msg += e.Exception.StackTrace;
+
+        //    //var res = MessageBox.Show(msg, "Error", MessageBoxButton.OK);
+        //    Dispatcher.Invoke(() => MessageBox.Show(msg, "Error", MessageBoxButton.OK), System.Windows.Threading.DispatcherPriority.Send);
+        //}
 
         private void StartServiceIfNeeded()
         {
