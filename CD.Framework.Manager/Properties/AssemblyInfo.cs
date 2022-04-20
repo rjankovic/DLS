@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("CD.Framework.Manager")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Clever Decision")]
-[assembly: AssemblyProduct("CD DLS Manager")]
-[assembly: AssemblyCopyright("Copyright © DATA LINEAGE SERVICES 2019")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("DLS Manager")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

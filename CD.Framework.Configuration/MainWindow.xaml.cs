@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,6 +23,7 @@ namespace CD.DLS.Configuration
         private string _sqlConnection;
         private string _databaseName;
         private bool _serviceInConsole = true;
+        private string _extractorPath = null;
 
 
         public bool ServiceInConsole { get => _serviceInConsole; set => _serviceInConsole = value; }
@@ -162,6 +164,7 @@ namespace CD.DLS.Configuration
                 //}
 
                 Registry.SetConfigValue6432(StandardConfigManager.KV_DLS_CUSTOMER_CONNECTION_STRING, _sqlConnection);
+                Registry.SetConfigValue6432(StandardConfigManager.DLS_UPLOADER_CONNECTION_STRING, _sqlConnection);
 
                 NetBridge nb = new NetBridge(true);
                 nb.SetConnectionString(_sqlConnection);
@@ -193,6 +196,7 @@ namespace CD.DLS.Configuration
             if (File.Exists(expectedExtractorPath))
             {
                 Registry.SetConfigValue6432(StandardConfigManager.DLS_EXTRACTOR_PATH, expectedExtractorPath);
+                _extractorPath = expectedExtractorPath;
                 return;
             }
 
@@ -207,6 +211,7 @@ namespace CD.DLS.Configuration
                 if (result.Value)
                 {
                     Registry.SetConfigValue6432(StandardConfigManager.DLS_EXTRACTOR_PATH, ofd.FileName);
+                    _extractorPath = ofd.FileName;
                 }
             }
         }
@@ -272,6 +277,7 @@ namespace CD.DLS.Configuration
             //}
             Task<bool> dbTask = new Task<bool>(ConfigureDb);
             Task<bool> registryTask = new Task<bool>(ConfigureRegistry);
+            Task<bool> folderTask = new Task<bool>(ConfigureFolderAccess);
             Task<bool> serviceTask = new Task<bool>(ConfigureService);
 
 
@@ -290,6 +296,15 @@ namespace CD.DLS.Configuration
             if (!registrySuccess)
             {
                 Log("Registry setup failed");
+                return;
+            }
+
+            folderTask.Start();
+            await folderTask;
+            var folderSuccess = folderTask.Result;
+            if (!folderSuccess)
+            {
+                Log("Folder access setup failed");
                 return;
             }
 
@@ -316,21 +331,77 @@ namespace CD.DLS.Configuration
 
         private bool ConfigureDb()
         {
-
-            DbDeploymentManager deploymentManager = new DbDeploymentManager(logViewer);
+            DbDeploymentManager deploymentManager = new DbDeploymentManager(logViewer, _sqlConnection);
             deploymentManager.ConnectionInfoMessage += DeploymentManager_ConnectionInfoMessage1;
             try
             {
                 deploymentManager.CheckAppliedDbVersion(0);
-                InitDb();
             }
             catch
             {
                 Log("DB is already initialized");
+                return true;
             }
+            InitDb();
             return true;
         }
 
+        private bool ConfigureFolderAccess()
+        {
+            var configPath = Path.Combine(System.IO.Path.GetDirectoryName(_extractorPath), "config");
+            Log($"Configuring access to {configPath}");
+            var success = SetAclFullAccess(configPath);
+            if (success)
+            {
+                return true;
+            }
+            Log($"Could not set permissions to {configPath}");
+            return false;
+        }
+
+        private bool SetAclFullAccess(string destinationDirectory)
+        {
+            FileSystemRights Rights = (FileSystemRights)0;
+            Rights = FileSystemRights.FullControl;
+
+            // *** Add Access Rule to the actual directory itself
+            FileSystemAccessRule AccessRule = new FileSystemAccessRule("Users", Rights,
+                                        InheritanceFlags.None,
+                                        PropagationFlags.NoPropagateInherit,
+                                        AccessControlType.Allow);
+
+            if (!Directory.Exists(destinationDirectory))
+            {
+                Directory.CreateDirectory(destinationDirectory);
+            }
+            DirectoryInfo Info = new DirectoryInfo(destinationDirectory);
+            DirectorySecurity Security = Info.GetAccessControl(AccessControlSections.Access);
+
+            bool Result = false;
+            Security.ModifyAccessRule(AccessControlModification.Set, AccessRule, out Result);
+
+            if (!Result)
+                return false;
+
+            // *** Always allow objects to inherit on a directory
+            InheritanceFlags iFlags = InheritanceFlags.ObjectInherit;
+            iFlags = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+
+            // *** Add Access rule for the inheritance
+            AccessRule = new FileSystemAccessRule("Users", Rights,
+                                        iFlags,
+                                        PropagationFlags.InheritOnly,
+                                        AccessControlType.Allow);
+            Result = false;
+            Security.ModifyAccessRule(AccessControlModification.Add, AccessRule, out Result);
+
+            if (!Result)
+                return false;
+
+            Info.SetAccessControl(Security);
+
+            return true;
+        }
 
         private void InitDb()
         {

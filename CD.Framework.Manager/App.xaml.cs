@@ -23,6 +23,7 @@ namespace CD.DLS.Manager
     public partial class App : Application
     {
         private WindowsIdentity _windowsIdentity;
+        private Process _serviceProcess = null;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -71,7 +72,6 @@ namespace CD.DLS.Manager
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             e.Handled = true;
-
 
             var messageBoxTitle = $"Error";
             var msg = e.Exception.Message + Environment.NewLine;
@@ -142,13 +142,31 @@ namespace CD.DLS.Manager
                 throw new FileNotFoundException(err);
             }
             ProcessStartInfo si = new ProcessStartInfo(svcFile);
+            //si.RedirectStandardInput = true;
+            //si.RedirectStandardOutput = true;
+            //si.UseShellExecute = false;
             si.WindowStyle = ProcessWindowStyle.Hidden;
-            var process = Process.Start(si);
+            _serviceProcess = Process.Start(si);
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
+            if (_serviceProcess == null)
+            {
+                return;
+            }
 
+
+            //_serviceProcess.StandardInput.Write('\u001b');
+
+
+            //_serviceProcess.WaitForExit();
+
+            if (_serviceProcess.HasExited == false)
+            {
+                _serviceProcess.Kill();
+            }
+            //var output = _serviceProcess.StandardOutput.ReadToEnd();
 
 
         }

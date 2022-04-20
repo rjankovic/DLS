@@ -300,6 +300,8 @@ namespace CD.DLS.Manager
 
         private void AddProjectButton_Click(object sender, RoutedEventArgs e)
         {
+            CloseAllOpenProjectPanes();
+
             List<ProjectConfig> configs = ProjectConfigManager.ListProjectConfigs();
             var usednames = configs.Select(x => x.Name).ToList();
             
@@ -565,6 +567,28 @@ namespace CD.DLS.Manager
             mainDocumentPaneGroup.Children.Add(la);
             la.IsSelected = true;
             return la;
+        }
+
+        private void CloseAllOpenProjectPanes()
+        {
+            // "Select project"
+            var layout = dockingManager.Layout;
+            var anchorableGroup = layout.RootPanel.Children.First(x => x is LayoutDocumentPaneGroup) as LayoutDocumentPaneGroup;
+            var panes = anchorableGroup.Children.OfType<LayoutDocumentPane>().ToList();
+            if (!panes.Any())
+            {
+                return;
+            }
+            var anchorables = panes.First().Children.OfType<LayoutAnchorable>().ToList();
+
+            foreach (var anchorable in anchorables)
+            {
+                if (anchorable.Title.Contains("Select project"))
+                {
+                    anchorable.Close();
+                }
+            }
+
         }
 
         private RequestMessage CreateEmptyRequest()

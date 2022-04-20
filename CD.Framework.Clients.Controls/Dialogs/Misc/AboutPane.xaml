@@ -11,13 +11,19 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <Label x:Name="AssemblyProductLabel" Grid.Row="0" />
-        <Label x:Name="AssemblyVersionLabel" Grid.Row="1" />
-        <Label x:Name="AssemblyCopyrightLabel" Grid.Row="2" />
+        <Label x:Name="AssemblyProductLabel" Grid.Row="0" Visibility="Collapsed"  />
+        <Label x:Name="AssemblyVersionLabel" Grid.Row="1" Visibility="Collapsed" />
+        <Label x:Name="AssemblyCopyrightLabel" Grid.Row="2" Visibility="Collapsed" />
+        <Label Grid.Row="3">
+            <Hyperlink NavigateUri="https://rjankovic.github.io/DLS/" RequestNavigate="Hyperlink_RequestNavigate">
+                https://rjankovic.github.io/DLS/
+            </Hyperlink>
+        </Label>
     </Grid>
 </UserControl>

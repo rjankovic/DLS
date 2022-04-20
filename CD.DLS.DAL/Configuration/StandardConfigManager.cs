@@ -66,6 +66,10 @@ namespace CD.DLS.DAL.Configuration
                 if (_deploymentMode == DeploymentModeEnum.NA)
                 {
                     var configVal = GetConfiguredValueFromRegistryOrAppConfig(DLS_DEPLOYMENT_MODE);
+                    if (configVal == null)
+                    {
+                        return DeploymentModeEnum.OnPremises;
+                    }
                     try
                     {
                         _deploymentMode = (DeploymentModeEnum)Enum.Parse(typeof(DeploymentModeEnum), configVal);
@@ -124,6 +128,10 @@ namespace CD.DLS.DAL.Configuration
             get
             {
                 var val = GetConfiguredValueFromRegistryOrAppConfig(DLS_SERVICE_IN_CONSOLE);
+                if (val == null)
+                {
+                    return true;
+                }
                 return bool.Parse(val);
             }
         }

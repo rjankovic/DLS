@@ -210,7 +210,7 @@ namespace CD.DLS.Common.Structures
             return null;
         }
     }
-    
+
     public class Credential
     {
         public int ComponentId { get; set; }

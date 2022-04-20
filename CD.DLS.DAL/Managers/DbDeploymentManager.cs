@@ -32,9 +32,10 @@ namespace CD.DLS.DAL.Managers
             _logger = logger;
         }
 
-        public DbDeploymentManager(ILogger logger)
+        public DbDeploymentManager(ILogger logger, string connectionString)
         {
-            _netBridge = new NetBridge(true);
+            _netBridge = new NetBridge(true, false);
+            _netBridge.SetConnectionString(connectionString);
             _logger = logger;
             _netBridge.ConnectionInfoMessage += NetBridge_ConnectionInfoMessage;
         }
