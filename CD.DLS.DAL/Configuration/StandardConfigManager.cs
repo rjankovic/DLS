@@ -194,7 +194,6 @@ namespace CD.DLS.DAL.Configuration
         /// </summary>
         public string AzureTenant
         {
-            //get { return "lukasmatejovskycleverdecisi.onmicrosoft.com"; }
             get { return GetConfiguredValueFromRegistryOrAppConfig(DLS_AZURE_TENANT); }
         }
 
@@ -211,7 +210,6 @@ namespace CD.DLS.DAL.Configuration
         /// </summary>
         public string AadRedirectUri
         {
-            //get { return "9RLBIRBujkzMW2FpjWaqiZ0qwqAB3mD7SqueAzWZnDG6TRpLmknnEZAkqWUFO3CIh50Weafd8hiFjExrWH6JpPDXE1Tt8oH+wOOOovPJgWoiMLFP5yiS6bhulypB8g2tGmMm4ljSwmyjlLVEOjaa8FTUVvprJK3ML/msT98TCi8=";  }
             get { return GetConfiguredValueFromRegistryOrAppConfig(DLS_AAD_REDIRECT_URI); }
         }
 
