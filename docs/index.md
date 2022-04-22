@@ -14,4 +14,4 @@ Currently, these technologies are supported:
   - Analysis Services (Tabular and Multidimensional)
   - SQL Server Integration Services
   - SQL Server Reporting Services
-  - Power BI
+  - Power BI (when connected to SSAS)
