@@ -330,6 +330,14 @@ namespace CD.DLS.Parse.Mssql.Pbi
             if (_connectLiveDbIndex != null)
             {
                 var resolution = _connectLiveDbIndex.TryResolveIdentifier(projection.Definition, TabularReferenceType.Column);
+                if (resolution == null && projection.Definition.EndsWith(")") && projection.Definition.Contains("("))
+                {
+                    var d = projection.Definition;
+                    var unwrappedDef = d.Substring(d.IndexOf('(') + 1).TrimEnd(')');
+                    //ConfigManager.Log.Important(d);
+                    //ConfigManager.Log.Important(unwrappedDef);
+                    resolution = _connectLiveDbIndex.TryResolveIdentifier(unwrappedDef, TabularReferenceType.Column);
+                }
                 projection.Column = resolution;
             }
             else

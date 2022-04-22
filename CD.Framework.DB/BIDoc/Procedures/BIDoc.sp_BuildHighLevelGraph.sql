@@ -43,19 +43,24 @@ INNER JOIN BIDoc.BasicGraphNodes fld ON fld.BasicGraphNodeId = n.ParentId
 INNER JOIN BIDoc.ModelElements e ON e.ModelElementId = n.SourceElementId
 WHERE e.Type = N'CD.DLS.Model.Mssql.Ssis.ProjectElement' AND n.ProjectConfigId = @projectconfigid AND n.GraphKind = @grphDf
 
-INSERT INTO @highNodes(SourceGraphNodeId, [Name], NodeType, Description, ParentId, SourceElementId) 
-SELECT n.BasicGraphNodeId, n.Name, n.NodeType, n.Name Description, NULL ParentId, n.SourceElementId
-FROM BIDoc.BasicGraphNodes n
-INNER JOIN BIDoc.BasicGraphNodes fld ON fld.BasicGraphNodeId = n.ParentId
-INNER JOIN BIDoc.ModelElements e ON e.ModelElementId = n.SourceElementId
-WHERE e.Type = N'CD.DLS.Model.Mssql.Ssas.CubeElement' AND n.ProjectConfigId = @projectconfigid AND n.GraphKind = @grphDf
 
 INSERT INTO @highNodes(SourceGraphNodeId, [Name], NodeType, Description, ParentId, SourceElementId) 
 SELECT n.BasicGraphNodeId, n.Name, n.NodeType, n.Name Description, NULL ParentId, n.SourceElementId
 FROM BIDoc.BasicGraphNodes n
-INNER JOIN BIDoc.BasicGraphNodes fld ON fld.BasicGraphNodeId = n.ParentId
 INNER JOIN BIDoc.ModelElements e ON e.ModelElementId = n.SourceElementId
 WHERE e.Type = N'CD.DLS.Model.Mssql.Pbi.TenantElement' AND n.ProjectConfigId = @projectconfigid AND n.GraphKind = @grphDf
+
+INSERT INTO @highNodes(SourceGraphNodeId, [Name], NodeType, Description, ParentId, SourceElementId) 
+SELECT n.BasicGraphNodeId, n.Name, n.NodeType, n.Name Description, NULL ParentId, n.SourceElementId
+FROM BIDoc.BasicGraphNodes n
+INNER JOIN BIDoc.ModelElements e ON e.ModelElementId = n.SourceElementId
+WHERE e.Type = N'CD.DLS.Model.Mssql.Tabular.SsasTabularDatabaseElement' AND n.ProjectConfigId = @projectconfigid AND n.GraphKind = @grphDf
+
+INSERT INTO @highNodes(SourceGraphNodeId, [Name], NodeType, Description, ParentId, SourceElementId) 
+SELECT n.BasicGraphNodeId, n.Name, n.NodeType, n.Name Description, NULL ParentId, n.SourceElementId
+FROM BIDoc.BasicGraphNodes n
+INNER JOIN BIDoc.ModelElements e ON e.ModelElementId = n.SourceElementId
+WHERE e.Type = N'CD.DLS.Model.Mssql.Ssas.CubeElement' AND n.ProjectConfigId = @projectconfigid AND n.GraphKind = @grphDf
 
 
 ;WITH ssrsFolders AS

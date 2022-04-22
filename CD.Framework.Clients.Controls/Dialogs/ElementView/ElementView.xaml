@@ -39,11 +39,11 @@
             <TabItem x:Name="customViewTab" Header="Custom View" Visibility="Collapsed">
                 
             </TabItem>
-            <TabItem Header="Business View" IsSelected="True">
-                <local:ElementBusinessView x:Name="businessView" />
-            </TabItem>
-            <TabItem x:Name="techViewTab" Header="Tech View">
+            <TabItem x:Name="techViewTab" Header="Tech View" IsSelected="True">
                 <local:ElementTechView x:Name="techView" />
+            </TabItem>
+            <TabItem Header="Business View">
+                <local:ElementBusinessView x:Name="businessView" />
             </TabItem>
             <TabItem Header="Data View">
                 <local:ElementDataView x:Name="dataView" />
