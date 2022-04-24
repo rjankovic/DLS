@@ -15,3 +15,8 @@ Currently, these technologies are supported:
   - SQL Server Integration Services
   - SQL Server Reporting Services
   - Power BI (when connected to SSAS)
+
+What you will need to run DLS:
+ - Windows with current .NET Framework
+ - a SQL Server instance to host the DLS database. This must support SQL Service Broker, so no Azure SQL DB. You can use the developer edition if needed
+ - the account you use to connect to databases needs to have READ DEFINITION permissions
