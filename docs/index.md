@@ -1,4 +1,6 @@
-## Quickstart video
+Automatically document and analyze Microsoft BI solutions. Save time & **light the blackbox!**
+
+## DLS Quickstart
 
 <video src="https://github.com/rjankovic/DLS/blob/main/docs/DLS_220422_v2.mp4?raw=true" data-canonical-src="https://github.com/rjankovic/DLS/blob/main/docs/DLS_220422_v2.mp4?raw=true" controls="controls" class="d-block rounded-bottom-2 width-fit" style="max-height:640px;" ></video>
 
@@ -23,5 +25,5 @@ What you will need to run DLS:
 
 
 
-
- [TEST](test)
+ [Installation guide](install_guide)
+ [User guide](user_guide)
