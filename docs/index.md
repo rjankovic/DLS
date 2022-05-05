@@ -24,4 +24,4 @@ What you will need to run DLS:
 
 
 
- [TEST](/test)
+ [TEST](test)
