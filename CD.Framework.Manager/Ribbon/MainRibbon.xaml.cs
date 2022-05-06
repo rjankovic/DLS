@@ -95,10 +95,28 @@ namespace CD.DLS.Manager
             else if (ConfigManager.DeploymentMode == DeploymentModeEnum.OnPremises)
             {
                 _receiver = new Receiver(Guid.NewGuid(), "Desktop app - " + IdentityProvider.GetCurrentUser().Identity);
+                ((Receiver)_receiver).MessageReceived += MainRibbon_MessageReceived;
             }
             //_receiver.BroadcastMessageReceived += BroadcastMessageReceived;
             // global permissions
             SetVisibilityBasedOnPermissions();
+        }
+
+        private void MainRibbon_MessageReceived(RequestMessage message)
+        {
+            if (message.MessageType != MessageTypeEnum.RequestProcessed)
+            {
+                return;
+            }
+            var request = _requestManager.GetCreationForRequest(message.RequestId);
+            var deser = DLSApiMessage.Deserialize(request.Content);
+            if (!(deser is UpdateModelRequest))
+            {
+                return;
+            }
+            var updateModelrequest = (UpdateModelRequest)deser;
+            var project = _projectConfigManager.GetProjectConfig(message.MessageToProjectId);
+            MessageBox.Show($"The project {project.Name} has been updated successfully.", $"{project.Name} updated", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         //private void BroadcastMessageReceived(BroadcastMessage message)
