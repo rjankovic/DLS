@@ -4,7 +4,7 @@ Automatically document and analyze Microsoft BI solutions. Save time & **light t
 
 <video src="https://github.com/rjankovic/DLS/blob/main/docs/DLS_220422_v2.mp4?raw=true" data-canonical-src="https://github.com/rjankovic/DLS/blob/main/docs/DLS_220422_v2.mp4?raw=true" controls="controls" class="d-block rounded-bottom-2 width-fit" style="max-height:640px;" ></video>
 
- [Download MSI installer here](https://github.com/rjankovic/DLS/releases/download/dls/DLS.Setup.1.0.msi)
+ **[Download MSI installer here](https://github.com/rjankovic/DLS/releases/download/dls/DLS.Setup.1.0.msi)**
   
   Data Lineage Services (DLS) helps data analysts and developers navigate BI solutions. It 
    - automates dependency and impact analysis
@@ -25,5 +25,6 @@ What you will need to run DLS:
 
 
 
- [Installation guide](install_guide)  
- [User guide](user_guide)  
+ **[Installation guide](install_guide)**  
+ **[User guide](user_guide)**  
+ **[Report an issue](https://github.com/rjankovic/DLS/issues)**  
