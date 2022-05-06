@@ -107,16 +107,18 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem Header="Admin Panel" x:Name="RibbonAdminTab" Style="{StaticResource TabItemStyle1}" Background="#71616C" BorderBrush="#71616C" ActiveTabBackground="#91819C"  FontSize="12">
-                <Fluent:RibbonGroupBox>
-                    <Image Source="{StaticResource TitleMonitoringIcon}"  Margin="0,0,0,-18.6"></Image>
+                <Fluent:RibbonGroupBox Header="Monitoring">
+                    <!--<Image Source="{StaticResource TitleMonitoringIcon}"  Margin="0,0,0,-18.6"></Image>-->
                     <Fluent:Button x:Name="ServiceMessagesButton" Click="ServiceMessagesButton_Click" Header="Service Messages" LargeIcon="{StaticResource RequestIcon}" Template="{DynamicResource ButtonControlTemplate1}"/>
                     <Fluent:Button x:Name="DbMessagesButton" Click="DbMessagesButton_Click" Header="DB Messages" LargeIcon="{StaticResource DbIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
                 </Fluent:RibbonGroupBox>
-                <Fluent:RibbonGroupBox>
+                
+                <Fluent:RibbonGroupBox Visibility="Collapsed">
                     <Image Source="{StaticResource TitleSecurityIcon}" Margin="0,0,0,-18.6"></Image>
                     <Fluent:Button x:Name="UserPermissionButton" Click="UserPermissionButton_Click" Header="User Permissions" LargeIcon="{StaticResource SecurityIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
                     <Fluent:Button x:Name="UserSyncButton" Click="UserSyncButton_Click"  Header="Add Users from AAD" LargeIcon="{StaticResource UserIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
                 </Fluent:RibbonGroupBox>
+                
                 <Fluent:RibbonGroupBox Header="Business Dictionary">
                     <Fluent:Button x:Name="AdminDictionaryViewFieldsButton" Click="AdminDictionaryViewFieldsButton_Click"  Header="Views" LargeIcon="{StaticResource BookIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
                     <Fluent:Button x:Name="AdminDictionaryFieldsButton" Click="AdminDictionaryFieldsButton_Click"  Header="Fields" LargeIcon="{StaticResource BookIcon}" IsEnabled="False" Template="{DynamicResource ButtonControlTemplate1}"/>
