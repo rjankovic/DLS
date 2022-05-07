@@ -1,6 +1,16 @@
-- [Heading 1](#heading-1)
-- [Heading 1](#heading-1)
-  - [Heading 1](#heading-1)
+- [MSI Installer](#msi-installer)
+  - [Folder Structure](#folder-structure)
+- [Configuration App](#configuration-app)
+  - [Connecting to DB](#connecting-to-db)
+  - [Registry Entries](#registry-entries)
+  - [Service Configuration](#service-configuration)
+- [Create a Project](#creating-a-project)
+  - [SQL Databases](#sql-databases)
+  - [SSIS](#ssis)
+  - [SSAS](#ssas)
+  - [SSRS](#ssrs)
+  - [Power BI](#power-bi)
+- [Next Steps](#next-steps)
 
 
 
@@ -34,7 +44,7 @@ a
 a  
 a  
 a  
-## Heading 1  
+## MSI Installer 
 a  
 a  
 a  
