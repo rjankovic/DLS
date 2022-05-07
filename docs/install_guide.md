@@ -31,8 +31,8 @@ The default folder structure after installation is as follows:
 ![image](https://user-images.githubusercontent.com/2221666/167270789-68862a86-b044-4c30-9bff-19870ec01776.png)
  - **client** contains the main client application (DLS Manager). Here is where you can configure projects and explore data lineage. The installer also created a shortcut to this client on the desktop.
  - **configuration** contains the configuration application that was launched at the end of the installation. If the installation fails or if you need to reconfigure, you can run it later at any point.
- - **extractor** is a console app for extracting the metadata of databases, reports, etc.. It saves these metadata in text files, which are then processed by the DLS service
- - **service** is the backend of the app - it parses the metadata and provides lineage info to client apps. It can run as a Windows service or as a background process within the client or as an independent Windows service. (see [Service Configuration](#service-configuration))
+ - **extractor** is a console app for extracting the metadata of databases, reports, etc.. It saves these metadata in text files, which are then processed by the DLS service.
+ - **service** is the backend of the app - it parses the metadata and provides lineage info to client apps. It can run as a Windows service or as a background process within the client or as an independent Windows service. (see [Service Configuration](#service-configuration)).
 
 
 a  
