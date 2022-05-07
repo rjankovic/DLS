@@ -40,7 +40,7 @@ namespace CD.DLS.Service
             ConfigManager.Log.Important("Starting service");
             ConfigManager.Log.Important("Deployment mode: " + ConfigManager.DeploymentMode.ToString());
             var receiverId = ConfigManager.ServiceReceiverId;
-            _receiver = new Receiver(receiverId, "CDFramework Service");
+            _receiver = new Receiver(receiverId, "DLS Service");
             _receiver.MessageReceived += this.Receiver_MessageReceived;
             _processor = new MessageProcessor(_receiver);
             base.OnStart(args);
