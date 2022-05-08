@@ -1,4 +1,4 @@
-# DLS Installation
+# Installation
 
 This guide describes how to install Data Lineage Services and configure a data lineage project.
 
