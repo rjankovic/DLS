@@ -16,6 +16,7 @@ This guide describes how to install Data Lineage Services and configure a data l
   - [SSAS](#ssas)
   - [SSRS](#ssrs)
   - [Power BI](#power-bi)
+  - [Test the Configuration](#test-the-configuration)
 - [Next Steps](#next-steps)
 
 ## MSI Installer
@@ -68,82 +69,46 @@ By default, the servie runs in background within the client. However, you may wa
 
 ## Create Project
 
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-## MSI Installer 
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-## Heading 2
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-a  
-## heading 3
+The project is configured from the client application "DLS.Manager.exe", the Project tab in the top menu.   
+Add a project, pick a name, then click Open and select the project. Now click Configure to set the connections to the components of your solution, whoose data flow you want to analyse.  
+
+![image](https://user-images.githubusercontent.com/2221666/167292860-d0a5d3ba-2a7f-4a7d-9e7a-b4bebee7dc32.png)  
+
+after you have configured the components, click Save. If you want to add / change some components, you can do that at any time. The next time you refresh the lineage data, the metadata model will be cleared and rebuilt from scratch.  
+
+On each tab of the project configuration, you can Add new items, Edit the selected row, or Remove it.
+
+### SQL Databases
+For SQL databases, simply set the server and DB name, and enter the credentials as needed. The account that is used to extract metadata needs the permissions to extract the DB definitions. If you use Windows authentication and refresh the lineage from the client app, the credentials of the user running the DLS Manager will be used.
+
+### SSIS
+SSIS projects are extracted from the SSIS catalog. Simply select the server name, click Connect and select the project.
+
+### SSAS
+Simply select the server name, click Connect and select the SSAS database. DLS can process both tabular and multidimensional models.
+
+### SSRS
+You can either connect to SSRS in native mode (Report Server) or in SharePoint. Enter the report server root path (e.g. **http://localhost/reportserver**) or the sharepoint site URL for SharePoint mode. You can then also further specify the folder containing the reports to be processed. All the subfolders of the selected folder will be traversed and processed.
+
+### Power BI
+The easiest option here is to have the reports stored in a folder where they can be extract from. If this is the case, just select Disk Folder and locate the folder. All the subfolders of this folder will be searched for .pbix files to process.  
+  
+The other option is to connect to the Power BI Service. Here, the Power BI REST API will be used to extract the report definitions. For that, you need to register an app in Azure with access to the REST API. You can use hte app registration tool here: [https://dev.powerbi.com/apps](https://dev.powerbi.com/apps). Then use the app ID in the configuration and enter the neccessary credentials. If you want to connect to a specific Workspace, you can find the workspace ID in the URL - app.powerbi.com/groups/**WorkspaceID**/.  
+  
+Finally, you can also connect to the Report Server (similarly to SSRS) and extract Power BI Files from there.  
+### Test the configuration
+After you have finished and saved the configuration, you should test the metadata extract. Go to the Lineage panel and click Updte. After confirmation, the extractor window should appear:  
+![image](https://user-images.githubusercontent.com/2221666/167294542-3071cf3e-85a6-4fde-a0fd-34c30bb4c981.png)  
+This extracts the metadata to a folder in AppData\Local\Temp\DLS_extract. If the extractor finishes in good order, you have configured the project correctly. If there are some issues and it looks like the app's fault, please submit and issue to https://github.com/rjankovic/DLS/issues
+
+If the extract goes well, you will see the backend activity in the log window. In the end, a message will be displayed confirming that the lineage model has been updated:
+
+![image](https://user-images.githubusercontent.com/2221666/167295094-53d5833b-0502-46ac-8bf7-472f27de87ab.png)
+
+## Next Steps
+
+**[User guide](user_guide)**  
+**[Report an issue](https://github.com/rjankovic/DLS/issues)**
 
 
 
