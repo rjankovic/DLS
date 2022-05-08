@@ -10,7 +10,7 @@ This guide describes how to install Data Lineage Services and configure a data l
   - [Connecting to DB](#connecting-to-db)
   - [Registry Entries](#registry-entries)
   - [Service Configuration](#service-configuration)
-- [Create a Project](#create-a-project)
+- [Create Project](#create-project)
   - [SQL Databases](#sql-databases)
   - [SSIS](#ssis)
   - [SSAS](#ssas)
@@ -66,7 +66,7 @@ By default, the servie runs in background within the client. However, you may wa
 
 ![image](https://user-images.githubusercontent.com/2221666/167292105-aa14b71f-3303-4b1b-b980-784211de4f73.png)
 
-## Create a Project
+## Create Project
 
 a  
 a  
