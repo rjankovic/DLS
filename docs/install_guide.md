@@ -10,7 +10,7 @@ This guide describes how to install Data Lineage Services and configure a data l
   - [Connecting to DB](#connecting-to-db)
   - [Registry Entries](#registry-entries)
   - [Service Configuration](#service-configuration)
-- [Create a Project](#creating-a-project)
+- [Create a Project](#create-a-project)
   - [SQL Databases](#sql-databases)
   - [SSIS](#ssis)
   - [SSAS](#ssas)
@@ -54,8 +54,19 @@ After the connection succeeds, you can just click Configure DLS to finish the co
 
 ### Registry Entries
 
+The configuration app also sets a few registry entries in **HKLM\HKEY_LOCAL_MACHINE\SOFTWARE\DLS**. These include
+ - **CustomerDatabaseConnectionString** Connection string to the DLS database.
+ - **ExtractorPath** Path to the metadata extractor in the extractor subdir of the install dir.
+ - **ServiceRunsInConsole** True if the backend service runs as a backend process within the client app; False if it runs as a Windows service.
+ - **UploaderConnectionString** Not used now, later this will be used to separate the metadata extract and processing.
+
 ### Service Configuration
 
+By default, the servie runs in background within the client. However, you may want to use the same instance of the service instance for all the users. In that case, you can install the DLS Windows service. Then the configuration app will ask for the credentials which the service should use:
+
+![image](https://user-images.githubusercontent.com/2221666/167292105-aa14b71f-3303-4b1b-b980-784211de4f73.png)
+
+## Create a Project
 
 a  
 a  
