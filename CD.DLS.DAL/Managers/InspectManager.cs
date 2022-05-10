@@ -777,7 +777,7 @@ SELECT se.ModelElementId SourceElementId, ce.ModelElementId, ce.Caption ColumnNa
                 DfSourceColumn col = new DfSourceColumn()
                 {
                     ColumnName = (string)r["ColumnName"],
-                    DataType = (string)r["DataType"],
+                    DataType = (string)(r["DataType"] == DBNull.Value? "" : (string)r["DataType"]),
                     Length = int.Parse(r["Length"] == DBNull.Value ? "0" : (string)r["Length"]),
                     Precision = int.Parse((string)r["Precision"]),
                     Scale = int.Parse((string)r["Scale"]),
