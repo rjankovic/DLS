@@ -55,7 +55,7 @@ After the connection succeeds, you can just click Configure DLS to finish the co
 
 ### Registry Entries
 
-The configuration app also sets a few registry entries in **HKLM\HKEY_LOCAL_MACHINE\SOFTWARE\DLS**. These include
+The configuration app also sets a few registry entries in **HKEY_LOCAL_MACHINE\SOFTWARE\DLS**. These include
  - **CustomerDatabaseConnectionString** Connection string to the DLS database.
  - **ExtractorPath** Path to the metadata extractor in the extractor subdir of the install dir.
  - **ServiceRunsInConsole** True if the backend service runs as a backend process within the client app; False if it runs as a Windows service.
