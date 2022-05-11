@@ -50,7 +50,7 @@ Now in the Type Selection tab you pick the type of objects between which the lin
 
 ![image](https://user-images.githubusercontent.com/2221666/167945552-69c6d942-a215-41c8-927b-e35b10d488dd.png)
 
-## Lineage Map
+### Lineage Map
 After you have selected the source roor and target and the obejct types to tract, the Lineage Map will be enabled:
   
 ![image](https://user-images.githubusercontent.com/2221666/167949394-dc4e1160-16fc-4f19-bdf1-8f015b4cef1c.png)
