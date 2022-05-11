@@ -44,12 +44,15 @@ Conversely, if you want to find all the uses of the SampleDSA.CPS.address table 
 
 Or you can just select the whole soure DB and target DB to view all the lineage between the 2...depends on what you need.
 
-## Lineage Map
-
 You've noticed that the source-target panel has multiple tabs - Root Selection, Type Selection, Lineage Map and others. The idea is that you make you way from left to right: selecting the source and target root sets the boundaries for the lineage search. That enables the Type Selection tab.
   
 Now in the Type Selection tab you pick the type of objects between which the lineage is to be searched. For example, if you selected a SQL database as the source, you could be interested in source tables, views or columns (in both tables and views). So to set the detail level you want to view.
 
 ![image](https://user-images.githubusercontent.com/2221666/167945552-69c6d942-a215-41c8-927b-e35b10d488dd.png)
+
+## Lineage Map
+After you have selected the source roor and target and the obejct types to tract, the Lineage Map will be enabled:
+  
+![image](https://user-images.githubusercontent.com/2221666/167949394-dc4e1160-16fc-4f19-bdf1-8f015b4cef1c.png)
 
 
