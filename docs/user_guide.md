@@ -88,3 +88,10 @@ These descriptive tags can help you build a knowledge base of the objects in you
 When adding a business link, you need to first select the type of link to add (which first needs to be created in the Admin Panel). You then have to locate the element you want to link to. This uses the [Search](#search) module.
 
 ## Overview Screen
+
+The Overview screen in the Lineage tab provides a quick glance at what data flows have been found. It does not, though, go into any further detail. You can use other options from the Lineage menu for that.
+  
+![image](https://user-images.githubusercontent.com/2221666/168116760-224ddb8d-abb3-4f6c-9e74-db65d084e1ec.png)
+
+## Search
+
