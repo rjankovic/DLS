@@ -127,3 +127,18 @@ This is a specific feature aimed at the cases when a change in the source system
 By clicking Update in the Lineage tab, you can refresh the entire lineage model based on current metadata from the somponents in your model. For more details, see the [install guide](https://rjankovic.github.io/DLS/install_guide#test-the-configuration).
   
 Make sure you have sufficient permissions for extracting the metadata (when using Windows authentication),
+## Business Dictionary
+In DLS Manager, the business dictionary is visible from the Business View tab in the [Element View](#element-view). The define the annotation fields and "business links", use the Admin Panel.
+
+![image](https://user-images.githubusercontent.com/2221666/168180640-8ba430e0-f5e3-4199-8743-94701cfdd99f.png)
+  
+While performing a [model updte](#model-update) refreshes all metadata from the source systems, the annotations and links in the business dictionary stay in the model between updates and will be linked to the refreshed versions of the lineage model elements. In short, you won't lose the business ditionary when you update the model. Tha would not be nice.
+### Fields
+By default, two fields are enabled for all element types: Name and Description. To add or remove annotation fields, click Fields.
+### Views
+Here you can select which fields are available for each element type.
+
+![image](https://user-images.githubusercontent.com/2221666/168180917-e473cd91-827a-46a2-a96c-a1cb3d239d0e.png)
+
+### Business Links
+Here you can add or remove business link types, which can then be added to an element's metadata from the [Element View](#element-view).
