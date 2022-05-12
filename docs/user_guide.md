@@ -19,7 +19,7 @@ This describes the features of the "DLS Manager", the main client app of DLS. It
 - [Business Dictionary](#business-dictionary)
   - [Fields](#fields)
   - [Views](#views)
-  - [Business Links](#business-links)
+  - [Business Link Types](#business-link-types)
 
 ## Select Project
 If you haven't created a project yet, you need to first configure one - see [this section in the installation guide](https://rjankovic.github.io/DLS/install_guide#create-project).
@@ -140,5 +140,5 @@ Here you can select which fields are available for each element type.
 
 ![image](https://user-images.githubusercontent.com/2221666/168180917-e473cd91-827a-46a2-a96c-a1cb3d239d0e.png)
 
-### Business Links
+### Business Link Types
 Here you can add or remove business link types, which can then be added to an element's metadata from the [Element View](#element-view).
