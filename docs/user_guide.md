@@ -1,6 +1,6 @@
 # User Guide
 
-This describes the features of the "DLS Manager", the main client app of DLS. It can be found on the desktop or in the client folder of the install directory as DLS.Manager.exe.
+This describes the features of the "DLS Manager", the main client app of DLS. It can be found on the desktop or in the client folder of the install directory as DLS.Manager.exe. If something doesn't work, please [report an issue](https://github.com/rjankovic/DLS/issues).
 
 ## Contents
 
