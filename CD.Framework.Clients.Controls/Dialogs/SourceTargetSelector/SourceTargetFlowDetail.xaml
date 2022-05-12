@@ -26,7 +26,7 @@
             <ColumnDefinition Width="*" MinWidth="50" />
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Background="#DFDFDF">
-            <Label Content="View level" Margin="10 0 10 0" />
+            <Label Content="Detail level" Margin="10 0 10 0" />
             <ComboBox x:Name="detailLevelCombo" SelectionChanged="DetailSelectionChanged" IsEnabled="False">
                 <ComboBoxItem Content="High" />
                 <ComboBoxItem Content="Medium" IsSelected="True" />
