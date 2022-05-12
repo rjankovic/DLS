@@ -15,11 +15,11 @@ This describes the features of the "DLS Manager", the main client app of DLS. It
   - [Search Results](#search-results)
 - [Data Sources](#data-sources)
 - [Warnings](#warnings)
+- [Model Update](#model-update)
 - [Business Dictionary](#business-dictionary)
   - [Fields](#fields)
   - [Views](#views)
   - [Business Links](#business-links)
-- [Model Update](#model-update)
 
 ## Select Project
 If you haven't created a project yet, you need to first configure one - see [this section in the installation guide](https://rjankovic.github.io/DLS/install_guide#create-project).
@@ -123,4 +123,7 @@ You can also expand the lines in the list to view the columns that were detected
 ## Warnings
 
 This is a specific feature aimed at the cases when a change in the source systems can cause an issue in your SSIS dataflow. If the length of the source type is longer than the column in the SSIS dataflow, a truncation can occur, failing the dataflow. This view in DLS lists the SSIS packages where this kind of issue was detected.
-
+## Model Update
+By clicking Update in the Lineage tab, you can refresh the entire lineage model based on current metadata from the somponents in your model. For more details, see the [install guide](https://rjankovic.github.io/DLS/install_guide#test-the-configuration).
+  
+Make sure you have sufficient permissions for extracting the metadata (when using Windows authentication),
