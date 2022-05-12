@@ -122,3 +122,5 @@ You can also expand the lines in the list to view the columns that were detected
 
 ## Warnings
 
+This is a specific feature aimed at the cases when a change in the source systems can cause an issue in your SSIS dataflow. If the length of the source type is longer than the column in the SSIS dataflow, a truncation can occur, failing the dataflow. This view in DLS lists the SSIS packages where this kind of issue was detected.
+
