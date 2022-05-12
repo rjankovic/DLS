@@ -94,4 +94,31 @@ The Overview screen in the Lineage tab provides a quick glance at what data flow
 ![image](https://user-images.githubusercontent.com/2221666/168116760-224ddb8d-abb3-4f6c-9e74-db65d084e1ec.png)
 
 ## Search
+  
+DLS indexes all elements based on their name, as well as the annotations associated with it (entered in the Business View of the Element View). You open the search panel by clicking Lineage > Search and then you can simply type what you are looking for and press Enter.
+  
+If you are getting too many results, you can expand the Filters and try limiting the results to a set of object types or a specific database / SSIS project:
+  
+![image](https://user-images.githubusercontent.com/2221666/168171151-9d6878bb-8d4f-479e-8be2-9f050f083331.png)
+  
+### Search Results
+![image](https://user-images.githubusercontent.com/2221666/168172599-880223b7-3cba-4b31-9079-82216e0160b3.png)
+
+The search results are sorted by relevance. Double-clicking any of the results will point you to the [element view](#element-view) of the selected item.
+  
+In this view, you can also right-click an element and display the lineage (incoming dataflow) / imapct (outgoing dataflow) of this object. If any such element is found, it will be added to the displayed graph:
+
+![image](https://user-images.githubusercontent.com/2221666/168173125-2403c38d-b95e-4cc1-a05e-f7532c63fbed.png)
+![image](https://user-images.githubusercontent.com/2221666/168174257-e43d118f-0823-4122-9b32-3802fd510dd3.png)
+  
+You can the continue going through the lineage upstream / impact downstream from the added elements as needed. If there are too many steps in the data flow, try switching to a lower detail level in the top left corner.
+
+## Data Sources
+This view lists the external data sources that were detected in the solution (if any). By external sources we mean databases or files from which this solution pulls data that are not part of the lineage model. For example, if you are using an Excel file as a source for the SSIS, the file is not parsed by DLS, but it's detected when parsing the SSIS packages.
+  
+![image](https://user-images.githubusercontent.com/2221666/168175085-a55e6e59-e20c-42ee-8360-0e374ffae204.png)
+  
+You can also expand the lines in the list to view the columns that were detected.
+
+## Warnings
 
