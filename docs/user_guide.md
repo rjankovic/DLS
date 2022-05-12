@@ -1,1 +1,90 @@
 # User Guide
+
+This describes the features of the "DLS Manager", the main client app of DLS. It can be found on the desktop or in the client folder of the install directory as DLS.Manager.exe.
+
+## Contents
+
+- [Select Project](#select-project)
+- [Source - Target Flow](#source---target-flow)
+  - [Selection](#selection)
+  - [Lineage Map](#lineage-map)
+  - [Flow Detail](#flow-detail)
+  - [Element View](#element-view)
+- [Overview Screen](#overview-screen)
+- [Search](#search)
+  - [Search Results](#search-results)
+- [Data Sources](#data-sources)
+- [Warnings](#warnings)
+- [Business Dictionary](#business-dictionary)
+  - [Fields](#fields)
+  - [Views](#views)
+  - [Business Links](#business-links)
+- [Model Update](#model-update)
+
+## Select Project
+If you haven't created a project yet, you need to first configure one - see [this section in the installation guide](https://rjankovic.github.io/DLS/install_guide#create-project).
+  
+After you've configured your project, it will show up in the project list after launching the client. Alternatively, you can go to Project > Open to switch between projects.
+  
+![image](https://user-images.githubusercontent.com/2221666/167940535-e97c3c28-e100-427f-9c02-355d3255988d.png)
+
+## Source - Target Flow
+  
+This is one of the most useful tools of DLS. You start by selecting the part of your solution from which and to which you want to explore the lineage. The app then lists all the dataflow connections that were found going from the source componnet (e.g. the stage database) to the destination (e.g. a Power BI Report). This way you can find all the lineage that leads to the report.
+
+### Selection
+
+For example, this selection would find all the data flows leading from SampleDSA to Report1.  
+  
+![image](https://user-images.githubusercontent.com/2221666/167944261-256cec46-660f-414b-9bcb-688ba0c3be0e.png)  
+  
+Conversely, if you want to find all the uses of the SampleDSA.CPS.address table in SSAS model, you caould use this selection to perform impact analysis.  
+  
+![image](https://user-images.githubusercontent.com/2221666/167944519-2fca5f4e-1767-47d5-98d4-a1784600be5a.png)
+
+Or you can just select the whole soure DB and target DB to view all the lineage between the 2...depends on what you need.
+
+You've noticed that the source-target panel has multiple tabs - Root Selection, Type Selection, Lineage Map and others. The idea is that you make you way from left to right: selecting the source and target root sets the boundaries for the lineage search. That enables the Type Selection tab.
+  
+Now in the Type Selection tab you pick the type of objects between which the lineage is to be searched. For example, if you selected a SQL database as the source, you could be interested in source tables, views or columns (in both tables and views). So to set the detail level you want to view.
+
+![image](https://user-images.githubusercontent.com/2221666/167945552-69c6d942-a215-41c8-927b-e35b10d488dd.png)
+
+### Lineage Map
+After you have selected the source roor and target and the obejct types to tract, the Lineage Map will be enabled:
+  
+![image](https://user-images.githubusercontent.com/2221666/167949394-dc4e1160-16fc-4f19-bdf1-8f015b4cef1c.png)
+  
+The lineage map lists the data flows that were found based on the source and target selection. When you click on a line in the table, the Flow Detail tab will be enabled, where you can see the details of the flow.
+
+### Flow Detail
+  
+![image](https://user-images.githubusercontent.com/2221666/168092968-c2a65d9e-6ae9-41c9-a413-a492bd3758a5.png)
+
+The flow detail shows ste steps that lead from the source to destination. You can select the nodes on the left to view their detail. You can also rearrange the steps by dragging them. 
+  
+Note the Detail level dropdown in the top left corner. In our example, we were looking for data flow between SQL tables and tabular model tables. That's on the medium level of detail. However, you can switch to the High detail level, which shows the column detail level:
+  
+![image](https://user-images.githubusercontent.com/2221666/168094151-5b817125-b7e9-431f-876b-db2a9b8df536.png)
+  
+### Element View
+By element view, we mean the right side of the Flow Detail tab. You will also see this view elsewhere, for example in search results. The top of this view shows the location of the element you are viewing. Below that, there are tree tabs:
+ - Tech View
+ - Business View
+ - Data View
+ 
+The tech view shows the SQL code of the selected element. If it's a part of a script, the concerned part will be highlighted, as seen above. The tech view adapts to the different types of elements. For example, for a SQL table it shows the table definition. For an SSIS package dataflow component, the tech view shows the package design, with the selected component highlighted:
+  
+![image](https://user-images.githubusercontent.com/2221666/168098716-1ededf3d-a5a2-4e49-bafe-8e0b3593100b.png)
+
+The second tab, the Business View, enables you to add annotations to the elements. Here, the name and description for the SSIS package is filled.
+  
+![image](https://user-images.githubusercontent.com/2221666/168100436-0585834a-5b90-46a5-8eec-9cf0c689fbb0.png)
+  
+These descriptive tags can help you build a knowledge base of the objects in you solution. By default, the Name and Description fields are available for all elements. You can create custom fields and define where they will be used in the Admin Panel (see [Business Dictionary](#business-dictionary)). Once there, you can also define business links. These links could be used to create a reference to an object that does not have a technical data lineage connection to this element, but is related to this object from the business logic point of view:
+  
+![image](https://user-images.githubusercontent.com/2221666/168102981-be94e8f2-8ace-42e2-9600-ec54a904b32c.png)
+  
+When adding a business link, you need to first select the type of link to add (which first needs to be created in the Admin Panel). You then have to locate the element you want to link to. This uses the [Search](#search) module.
+
+## Overview Screen
