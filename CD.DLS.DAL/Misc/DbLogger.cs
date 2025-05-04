@@ -66,6 +66,10 @@ namespace CD.DLS.DAL.Misc
         
         public void Write(string message, object[] args, LogTypeEnum type)
         {
+            if (message.Contains("WriteLogBatch")){
+                return;
+            }
+
             var messageFormatted = message;
             StackTrace stackTrace = new StackTrace();
 

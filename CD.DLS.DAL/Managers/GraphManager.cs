@@ -11,6 +11,7 @@ using CD.DLS.DAL.Objects.BIDoc;
 using CD.DLS.DAL.Configuration;
 using CD.DLS.DAL.Objects;
 using CD.DLS.DAL.Objects.SsrsStructures;
+using System.Threading;
 
 namespace CD.DLS.DAL.Managers
 {
@@ -104,6 +105,9 @@ namespace CD.DLS.DAL.Managers
         {
             var elementsDt = FlattenModelElements(elements);
 
+            //Console.WriteLine("Saving elements to DB: " + elementsDt.AsEnumerable().Count());
+            ConfigManager.Log.Info("Saving elements to DB: " + elementsDt.AsEnumerable().Count());
+
             string elementsSpName = "[BIDoc].[sp_AddOrUpdateElements]";
             if (!enableUpdate)
             {
@@ -122,6 +126,7 @@ namespace CD.DLS.DAL.Managers
                 elementIdMap = ReadInsertedElementIds(elemIdMapDt);
             }
 
+
             foreach (var link in links)
             {
                 // if the endpoint is premapped (already saved to DB), the link source / target does not need to be mapped
@@ -136,10 +141,15 @@ namespace CD.DLS.DAL.Managers
             }
             var linksDt = FlattenModelLinks(links);
 
+            //Console.WriteLine("Saving links to DB: " + linksDt.AsEnumerable().Count());
+            ConfigManager.Log.Info("Saving links to DB: " + linksDt.AsEnumerable().Count());
+
             NetBridge.ExecuteProcedure("BIDoc.sp_AddLinksToModel", new Dictionary<string, object>()
             {
                 { "links", linksDt }
             });
+
+            Console.WriteLine("Done");
 
             return elementIdMap;
         }
@@ -205,11 +215,46 @@ namespace CD.DLS.DAL.Managers
 
         public void SetRefPathIntervals(Guid projectId, Guid? requestId = null)
         {
-            NetBridge.ExecuteProcedureAsync("BIDoc.sp_SetRefPathIntervals", new Dictionary<string, object>()
+
+            try
+            {
+                NetBridge.ExecuteProcedureAsync("BIDoc.sp_SetRefPathIntervals", new Dictionary<string, object>()
             {
                 { "projectconfigid", projectId },
                 { "requestId", requestId }
             });
+
+            }
+            catch (Exception ex)
+            {
+                ConfigManager.Log.Error("Error setting ref path intervals", ex);
+                ConfigManager.Log.Important("Waiting 120 s");
+                Thread.Sleep(120000);
+                ConfigManager.Log.Important("Retry");
+
+                try
+                {
+                    NetBridge.ExecuteProcedureAsync("BIDoc.sp_SetRefPathIntervals", new Dictionary<string, object>()
+            {
+                { "projectconfigid", projectId },
+                { "requestId", requestId }
+            });
+
+                }
+                catch (Exception ex2)
+                {
+                    ConfigManager.Log.Error("Error setting ref path intervals", ex2);
+                    ConfigManager.Log.Important("Waiting 300 s");
+                    Thread.Sleep(300000);
+                    ConfigManager.Log.Important("Retry");
+
+                    NetBridge.ExecuteProcedureAsync("BIDoc.sp_SetRefPathIntervals", new Dictionary<string, object>()
+            {
+                { "projectconfigid", projectId },
+                { "requestId", requestId }
+            });
+                }
+            }
         }
 
         public void ClearGraph(Guid projectId, DependencyGraphKind graphKind)

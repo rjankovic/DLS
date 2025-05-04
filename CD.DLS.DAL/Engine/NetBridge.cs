@@ -184,6 +184,11 @@ namespace CD.DLS.DAL.Engine
             {
                 parameters = new Dictionary<string, object>();
             }
+
+            //ConfigManager.Log.Info("Executing " + name);
+            Console.WriteLine(DateTime.Now.ToString() + ": Executing " + name);
+
+
             using (SqlConnection conn = new SqlConnection(_connString))
             {
                 conn.InfoMessage += MessageHandler;
@@ -204,6 +209,11 @@ namespace CD.DLS.DAL.Engine
             {
                 parameters = new Dictionary<string, object>();
             }
+
+            Console.WriteLine(DateTime.Now.ToString() + ": Executing " + name);
+            //ConfigManager.Log.Info("Executing " + name);
+            //Console.WriteLine("Executing " + name);
+
             using (SqlConnection conn = new SqlConnection(_connString))
             {
                 conn.InfoMessage += MessageHandler;
@@ -223,6 +233,11 @@ namespace CD.DLS.DAL.Engine
             {
                 inputParameters = new Dictionary<string, object>();
             }
+
+            //ConfigManager.Log.Info("Executing " + name);
+            //Console.WriteLine("Executing " + name);
+            Console.WriteLine(DateTime.Now.ToString() + ": Executing " + name);
+
             Dictionary<string, object> results = new Dictionary<string, object>();
             using (SqlConnection conn = new SqlConnection(_connString))
             {
@@ -250,6 +265,11 @@ namespace CD.DLS.DAL.Engine
             {
                 parameters = new Dictionary<string, object>();
             }
+
+            //ConfigManager.Log.Info("Executing " + name);
+            //Console.WriteLine("Executing " + name);
+            Console.WriteLine(DateTime.Now.ToString() + ": Executing " + name);
+
             object result;
             using (SqlConnection conn = new SqlConnection(_connString))
             {
@@ -268,6 +288,10 @@ namespace CD.DLS.DAL.Engine
         public DataTable ExecuteProcedureTable(string name, Dictionary<string, object> parameters = null)
         {
             DataTable res = new DataTable();
+
+            //ConfigManager.Log.Info("Executing " + name);
+            //Console.WriteLine("Executing " + name);
+            Console.WriteLine(DateTime.Now.ToString() + ": Executing " + name);
 
             if (parameters == null)
             {

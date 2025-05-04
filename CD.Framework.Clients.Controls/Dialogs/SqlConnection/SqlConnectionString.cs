@@ -7,7 +7,8 @@ namespace CD.DLS.Clients.Controls.Dialogs.SqlConnection
         private readonly System.Data.SqlClient.SqlConnectionStringBuilder _builder = new System.Data.SqlClient.SqlConnectionStringBuilder
                                                                    {
                                                                        Pooling = false,
-                                                                       IntegratedSecurity = true
+                                                                       IntegratedSecurity = true,
+                                                                       TrustServerCertificate = true
                                                                    };
 
         public SqlConnectionString()

@@ -113,7 +113,9 @@ namespace CD.DLS.Parse.Mssql.Db
             StringCollection scripts = new StringCollection();
             foreach (var scriptExtract in objectExtract.DefinitionScripts)
             {
-                scripts.Add(scriptExtract);
+                // TODO OPTIMIZE_FOR_SEQUENTIAL_KEY
+                var scriptExtractM = scriptExtract.Replace(", OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF", "").Replace(", OPTIMIZE_FOR_SEQUENTIAL_KEY = ON", "");
+                scripts.Add(scriptExtractM);
             }
 
             foreach (var script in scripts)

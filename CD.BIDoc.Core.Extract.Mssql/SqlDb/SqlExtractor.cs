@@ -2,6 +2,7 @@
 using CD.DLS.Common.Tools;
 using CD.DLS.DAL.Configuration;
 using CD.DLS.DAL.Objects.Extract;
+using Microsoft.SharePoint.ApplicationPages;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using System;
@@ -46,7 +47,37 @@ namespace CD.DLS.Extract.Mssql.SqlDb
 
             Directory.CreateDirectory(_outputDirPath);
 
-            ServerConnection connection = new ServerConnection(_dbComponent.ServerName);
+            ServerConnection connection = null;
+            if (string.IsNullOrEmpty(_dbComponent.Username))
+            {
+                connection = new ServerConnection(_dbComponent.ServerName);
+            }
+            else
+            {
+                var connectionInfo = new SqlConnectionInfo()
+                {
+                    ServerName = _dbComponent.ServerName,
+                    UserName = _dbComponent.Username,
+                    Password = _dbComponent.Password,
+
+                    // Append TrustServerCertificate to the connection string
+                    // You can also add Encrypt=True here if needed
+                    AdditionalParameters = "TrustServerCertificate=True;"
+                };
+
+                // Create a ServerConnection using that info
+                connection = new ServerConnection(connectionInfo);
+
+                // Create the SMO Server object
+                //var server = new Server(serverConnection);
+            }
+            
+
+            // var connectionString = String.Format(@"Data Source={0};Integrated Security=True;TrustServerCertificate=Yes", serverName);
+
+
+
+
             var server = new Server(connection);
             _server = server;
             

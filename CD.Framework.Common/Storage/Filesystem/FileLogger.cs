@@ -71,7 +71,7 @@ namespace CD.DLS.Common.Storage.FileSystem
             {
                 _unwrittenMessages.Add(msg);
             }
-            if (type == LogTypeEnum.Important || type == LogTypeEnum.Error)
+            if (type == LogTypeEnum.Important || type == LogTypeEnum.Error || type == LogTypeEnum.Info)
             {
                 var consoleMsg = DateTime.Now.ToString("u") + "\t" + _source + "\t" + messageFormatted;
                 Console.WriteLine(consoleMsg);

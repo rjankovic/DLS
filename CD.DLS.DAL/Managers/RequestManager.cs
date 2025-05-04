@@ -535,10 +535,20 @@ AS
                     NetBridge.BrokerConnection);
             _logger.Important("Waiting for messages: " + brokerCommand.CommandText + " (" + targetObjectId.ToString() + ")");
             brokerCommand.Parameters.AddWithValue("@objectId", targetObjectId);
+
+            //var brokerCommand = new SqlCommand(
+            //"SELECT [MessageId] FROM adm.RequestMessages WHERE Received = 0",
+            //        NetBridge.BrokerConnection);
+            //_logger.Important("Waiting for messages: " + brokerCommand.CommandText + " (" + targetObjectId.ToString() + ")");
+            ////brokerCommand.Parameters.AddWithValue("@objectId", targetObjectId);
+
+
+            //SqlDependency.Start(NetBridge.BrokerConnection.ConnectionString);
             var dependency = new SqlDependency(brokerCommand);
             using (SqlDataReader reader = brokerCommand.ExecuteReader())
             {
             }
+            
             return dependency;
         }
 

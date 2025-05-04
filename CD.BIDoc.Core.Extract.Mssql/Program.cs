@@ -70,8 +70,9 @@ namespace CD.DLS.Extract.Mssql
                     //continue;
 
                     string serverName = sqlComponent.ServerName;
-                    int serverVersion = FindServerVersion(serverName);
-                    if (serverVersion >= 13)
+                    int serverVersion = FindServerVersion(sqlComponent);
+                    ///// !!!!!!!! TODO FIX
+                    if (serverVersion >= 13 || true)
                     {
                         var sqlExtractor = new SqlDb.SqlExtractor(sqlComponent, mssqlDbDirPath, relativePathBase, manifest);
                         sqlExtractor.Extract();
@@ -235,8 +236,11 @@ namespace CD.DLS.Extract.Mssql
         }
 
         public static int FindServerVersion(string serverName)
-        {
-            var connectionString = String.Format(@"Data Source={0};Integrated Security=True", serverName);
+        {   
+            var connectionString = String.Format(@"Data Source={0};Integrated Security=True;TrustServerCertificate=Yes", serverName);
+
+
+
             var nb = new NetBridge(true);
             nb.SetConnectionString(connectionString);
             DataTable tab = new DataTable();
@@ -246,6 +250,35 @@ namespace CD.DLS.Extract.Mssql
             version = version.Split('.')[0];
             int res = int.Parse(version);
             ConfigManager.Log.Important("Server " + serverName + " version: " + res.ToString());
+            return res;
+        }
+
+
+
+        public static int FindServerVersion(MssqlDbProjectComponent db)
+        {
+            string connectionString = null;
+            if (string.IsNullOrEmpty(db.Username))
+            {
+                connectionString = String.Format(@"Data Source={0};Integrated Security=True;TrustServerCertificate=Yes", db.ServerName);
+            }
+            else
+            {
+                connectionString = String.Format(@"Data Source={0};Integrated Security=False;TrustServerCertificate=Yes;User Id={1};Password={2}", db.ServerName, db.Username, db.Password);
+            }
+            
+
+
+
+            var nb = new NetBridge(true);
+            nb.SetConnectionString(connectionString);
+            DataTable tab = new DataTable();
+            tab = nb.ExecuteSelectStatement("SELECT CONVERT(VARCHAR(128), SERVERPROPERTY ('productversion'))");
+            string version;
+            version = tab.Rows[0][0].ToString();
+            version = version.Split('.')[0];
+            int res = int.Parse(version);
+            ConfigManager.Log.Important("Server " + db.ServerName + " version: " + res.ToString());
             return res;
         }
     }
