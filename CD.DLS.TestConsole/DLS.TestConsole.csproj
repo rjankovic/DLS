@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression.FileSystem" />
@@ -50,11 +53,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CD.BIDoc.Core.Extract.Mssql\CD.DLS.Extract.csproj">
       <Project>{f8ed608d-896f-44af-a143-70f3e1e63cc6}</Project>
       <Name>CD.DLS.Extract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.Bidoc.Core.Model.Mssql\CD.DLS.Model.Mssql.csproj">
+      <Project>{2631F384-A3C2-4A93-B89E-D1DF45E806D2}</Project>
+      <Name>CD.DLS.Model.Mssql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CD.BIDoc.Core.Parse.Mssql\CD.DLS.Parse.Mssql.csproj">
+      <Project>{31A079A7-5ABA-406A-8D9D-1960F366358B}</Project>
+      <Name>CD.DLS.Parse.Mssql</Name>
     </ProjectReference>
     <ProjectReference Include="..\CD.DLS.DAL\CD.DLS.DAL.csproj">
       <Project>{2198F00A-7561-4950-AD48-4727F89F3C9A}</Project>

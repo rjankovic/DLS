@@ -49,8 +49,11 @@ namespace CD.DLS.DAL.Objects.Extract
         }
 
         public string modelName;
+        public string Id;
         public string Description;
         public string DBName;
+        public string WorkspaceName;
+        public string ContentProviderType;
         public List<TabularDataSource> TabularDataSources;
         public List<TabularTable> TabularTables;
         public List<TabularRelationship> Relationships;
@@ -71,6 +74,7 @@ namespace CD.DLS.DAL.Objects.Extract
 
         public string DSname;
         public string Description;
+        public string SourceType;
         public string ServerName;
         public string DatabaseName;
         public string ConnectionString;

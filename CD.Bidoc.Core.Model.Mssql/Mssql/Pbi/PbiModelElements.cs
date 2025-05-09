@@ -24,7 +24,15 @@ namespace CD.DLS.Model.Mssql.Pbi
     public class TenantElement : PbiModelElement
     {
         public TenantElement(RefPath refPath, string caption, string definition, MssqlModelElement parent = null)
-               : base(refPath, caption.ToString(), definition)
+               : base(refPath, caption.ToString(), definition, parent)
+        { }
+
+    }
+
+    public class WorkspaceElement : PbiModelElement
+    {
+        public WorkspaceElement(RefPath refPath, string caption, string definition, MssqlModelElement parent = null)
+               : base(refPath, caption.ToString(), definition, parent)
         { }
 
     }
