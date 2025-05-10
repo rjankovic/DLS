@@ -14,6 +14,7 @@ using CD.DLS.Parse.Mssql.Ssas;
 using CD.DLS.Model.Mssql.Ssas;
 using CD.DLS.Core.Parse.Mssql.PowerQuery;
 using TM = CD.DLS.Model.Mssql.Tabular;
+using System.Text.RegularExpressions;
 
 namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
@@ -58,6 +59,39 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
         }
 
+        private string NormalizeMQuery(string input)
+        {
+            //string result = Regex.Replace(input, @"\[(.*?)\]", match =>
+            //{
+            //    string listContent = match.Groups[1].Value;
+
+            //    string processed = Regex.Replace(listContent, @"(?<=^|,)\s*(?!\"")([A-Za-z0-9_]+(?:\s+[A-Za-z0-9_]+)+)\s*=", m =>
+            //    {
+            //        string key = m.Groups[1].Value;
+            //        string replacement = key.Replace(" ", "_") + " =";
+            //        // Keep prefix (empty or comma), don't add leading space
+            //        string prefix = m.Value.StartsWith(",") ? ", " : "";
+            //        return prefix + replacement;
+            //    });
+
+            //    return "[" + processed + "]";
+            //}, RegexOptions.Singleline);
+
+            string result = Regex.Replace(input, @"\[(.*?)\]", match =>
+            {
+                string listContent = match.Groups[1].Value;
+
+                // Match unquoted items (whether or not they are assignments)
+                string processed = Regex.Replace(listContent, @"(?<=^|,)\s*(?!\"")([A-Za-z0-9_]+(?:\s+[A-Za-z0-9_]+)+)(?=\s*(=|,|$))", m =>
+                {
+                    string item = m.Groups[1].Value;
+                    return item.Replace(" ", "_");
+                });
+
+                return "[" + processed + "]";
+            }, RegexOptions.Singleline);
+            return result;
+        }
 
         public void ExtractTabularModel(TabularModel model, SsasTabularDatabaseElement tDatabaseElement)
         {
@@ -77,7 +111,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
             foreach (var dataSource in model.TabularDataSources)
             {
-                ConfigManager.Log.Important("Tabular parser : Parsing data source  " + dataSource.DSname);
+                //ConfigManager.Log.Important("Tabular parser : Parsing data source  " + dataSource.DSname);
 
                 var dataSourceRefPath = _urnBuilder.GetUrnDataSource(dataSource.DSname, dbRefPath);
                 SsasTabularDataSourceElement dataSourceElement = new SsasTabularDataSourceElement(dataSourceRefPath, dataSource.DSname, dataSource.Description, tDatabaseElement);
@@ -140,25 +174,28 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                     }
 
                     //ConfigManager.Log.Important("Tabular parser, Tabular Probe 8");
-                    var hierarchyRefPath = _urnBuilder.GetUrnHierarchy(column.AttributeHierarchy.Name, columnRefPath);
-                    SsasTabularAttributeHierarchyElement pHierarchy = new SsasTabularAttributeHierarchyElement(hierarchyRefPath, column.AttributeHierarchy.Name, "Attribute hierarchy", columnElement);
-                    if (column.AttributeHierarchy != null && column.AttributeHierarchy.Annotations != null)
+                    if (column.AttributeHierarchy != null)
                     {
-                        //ConfigManager.Log.Important(string.Format("Annotations: {0}", column.AttributeHierarchy.Annotations));
-                        foreach (var annotation in column.AttributeHierarchy.Annotations)
+                        var hierarchyRefPath = _urnBuilder.GetUrnHierarchy(column.AttributeHierarchy.Name, columnRefPath);
+                        SsasTabularAttributeHierarchyElement pHierarchy = new SsasTabularAttributeHierarchyElement(hierarchyRefPath, column.AttributeHierarchy.Name, "Attribute hierarchy", columnElement);
+                        if (column.AttributeHierarchy != null && column.AttributeHierarchy.Annotations != null)
                         {
-                            //ConfigManager.Log.Important(string.Format("Annotation: {0}", annotation));
-                            if (annotation.Value != null)
+                            //ConfigManager.Log.Important(string.Format("Annotations: {0}", column.AttributeHierarchy.Annotations));
+                            foreach (var annotation in column.AttributeHierarchy.Annotations)
                             {
-                                var annotationRefPath = _urnBuilder.GetUrnAnnotation(annotation.Name, hierarchyRefPath);
-                                SsasTabularAnnotationElement pAnnotation = new SsasTabularAnnotationElement(annotationRefPath, annotation.Name, annotation.Value, pHierarchy);
-                                pHierarchy.AddChild(pAnnotation);
+                                //ConfigManager.Log.Important(string.Format("Annotation: {0}", annotation));
+                                if (annotation.Value != null)
+                                {
+                                    var annotationRefPath = _urnBuilder.GetUrnAnnotation(annotation.Name, hierarchyRefPath);
+                                    SsasTabularAnnotationElement pAnnotation = new SsasTabularAnnotationElement(annotationRefPath, annotation.Name, annotation.Value, pHierarchy);
+                                    pHierarchy.AddChild(pAnnotation);
+                                }
                             }
                         }
-                    }
 
-                    //ConfigManager.Log.Important("Tabular parser, Tabular Probe 9");
-                    columnElement.AddChild(pHierarchy);
+                        //ConfigManager.Log.Important("Tabular parser, Tabular Probe 9");
+                        columnElement.AddChild(pHierarchy);
+                    }
                     tableElement.AddChild(columnElement);
                 }
 
@@ -245,11 +282,18 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                             });
                         }
                         var mScript = partition.Expression;
+
+                        var mScriptNormalized = NormalizeMQuery(mScript);
                         //Model.SolutionModelElement fakeParent = new Model.SolutionModelElement(new RefPath(), "Root");
                         Dictionary<string, DLS.Model.Mssql.PowerQuery.OperationOutputColumnElement> powerQueryColumnsFromNames;
 
                         ConfigManager.Log.Info(string.Format("Parsing M partition {0} to table {1}", partitionElement.RefPath.Path, table.Name));
-                        var scriptModel = extractor.ExtractPowerQuery(mScript, _availableDatabaseModelIndex, partitionElement, out powerQueryColumnsFromNames);
+
+
+                        var scriptModel = extractor.ExtractPowerQuery(mScriptNormalized, _availableDatabaseModelIndex, partitionElement, out powerQueryColumnsFromNames);
+                        //var scriptModel = extractor.ExtractPowerQuery(mScript, _availableDatabaseModelIndex, partitionElement, out powerQueryColumnsFromNames);
+
+
                         outputColumnsFromNames = powerQueryColumnsFromNames.ToDictionary(x => x.Key, x => (MssqlModelElement)(x.Value));
                     }
                     else

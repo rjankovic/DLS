@@ -174,7 +174,7 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
             var conditionalExpression = new NonTerminal(NONTERM_CONDITIONAL_EXPRESSION);
             conditionalExpression.Rule = IF + expression + THEN + expression + ELSE + expression;
 
-            expression.Rule = boolOrExpression | EACH + boolOrExpression | conditionalExpression;
+            expression.Rule = boolOrExpression | EACH + expression | conditionalExpression;
 
             primaryExpression.Rule = functionCall | number | stringLiteral | recordExpression | listExpression | listAccessExpression | identifier | recordItemId;
 

@@ -858,9 +858,12 @@ namespace CD.DLS.Model.Mssql.Ssas
         {
             var arguments = CollectArgumentList();
             var defaultValue = arguments[0].FragmentElement;
-            var errorValue = arguments[1].FragmentElement;
             AddDataFlowLink(defaultValue);
-            AddDataFlowLink(errorValue);
+            if (arguments.Count > 1)
+            {
+                var errorValue = arguments[1].FragmentElement;
+                AddDataFlowLink(errorValue);
+            }
         }
     }
 

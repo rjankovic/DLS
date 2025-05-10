@@ -199,6 +199,12 @@ namespace CD.DLS.Common.Tools
             {
                 serverName = localhostInterpretation + serverName;
             }
+
+            serverName = (serverName.Split(',')[0]).Trim();
+
+            // ro normalize public / priavte SQL endpoints - remove later
+            serverName = serverName.Replace(".PUBLIC.", ".");
+
             return serverName;
         }
 

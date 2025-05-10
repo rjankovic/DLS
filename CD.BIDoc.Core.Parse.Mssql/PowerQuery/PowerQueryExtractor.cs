@@ -42,8 +42,8 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
         {
             _sqlDbIndex = sqlDbIndex;
             _localVariables = new Dictionary<string, MFragmentElement>();
+            _lastOperationOutputColumns = null;
 
-            
             resultColumns = new Dictionary<string, OperationOutputColumnElement>(StringComparer.OrdinalIgnoreCase);
             //var originalResultColumns = new Dictionary<string, SsasModelElement>(StringComparer.OrdinalIgnoreCase);
 
@@ -413,15 +413,25 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
 
             string query = queryItem.ItemValue.Definition;
             query = TrimLiteral(query);
+            
+            // dealing with JSON, but is this a good idea?
+            query = query.Replace("#(lf)", "\n")
+                    .Replace("#(tab)", "\t")
+                    .Replace("#(cr)", "\r");
+
 
             Dictionary<string, MssqlModelElement> outputColumns;
             ParseSqlQuery(serverNameNormalized, dbName, query, sqlDatabaseOperation, out outputColumns);
+            _lastOperationOutputColumns = new List<OperationOutputColumnElement>();
             foreach (var kv in outputColumns)
             {
                 var outputColumn = AddOutputColumn(sqlDatabaseOperation, kv.Key);
+                _lastOperationOutputColumns.Add(outputColumn);
                 outputColumn.Reference = kv.Value;
             }
         }
+
+        private List<OperationOutputColumnElement> _lastOperationOutputColumns = null;
 
         private void CreateDataFlowLinksAndOutputColumns(TableRowOperationElement operation)
         {
@@ -445,6 +455,12 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             else
             {
                 PassThroughTableColumns(operation, arg);
+            }
+
+            _lastOperationOutputColumns = new List<OperationOutputColumnElement>();
+            foreach (var o in operation.OutputColumns)
+            {
+                _lastOperationOutputColumns.Add(o);
             }
         }
 
@@ -738,6 +754,23 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
 
             if (input.ArgumentType != ArgumentType.Table)
             {
+                if (_lastOperationOutputColumns != null)
+                {
+                    List<OperationOutputColumnElement> res1 = new List<OperationOutputColumnElement>();
+                    foreach (var column in _lastOperationOutputColumns)
+                    {
+                        if (excludedColumns.Contains(column.Caption))
+                        {
+                            continue;
+                        }
+
+                        if (column is OperationOutputColumnElement)
+                        {
+                            res1.Add(PassThroughOutputColumn(targetOperation, column));
+                        }
+                    }
+                    return res1;
+                }
                 throw new InvalidOperationException("Only table argument columns can be passed through");
             }
 

@@ -4,6 +4,7 @@ using CD.DLS.DAL.Objects.Extract;
 using CD.DLS.Extract.PowerBi;
 using CD.DLS.Model;
 using CD.DLS.Model.Mssql.Pbi;
+using CD.DLS.Model.Mssql.Tabular;
 using CD.DLS.Model.Serialization;
 using CD.DLS.Parse.Mssql.Db;
 using CD.DLS.Parse.Mssql.Ssrs.Rdl2008;
@@ -14,6 +15,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CD.DLS.TestConsole
@@ -32,6 +34,35 @@ namespace CD.DLS.TestConsole
     {
         static void Main(string[] args)
         {
+
+
+            string input = @"let
+    a = [Client ID = 1, 
+\#""Client Name"" = 2],
+    b = something(Client ID = 3),
+    c = [Plain Field = [something = 5]]
+    d = [Client ID, User ID]
+    e = [Client ID]
+in
+    result";
+
+            string result = Regex.Replace(input, @"\[(.*?)\]", match =>
+            {
+                string listContent = match.Groups[1].Value;
+
+                // Match unquoted items (whether or not they are assignments)
+                string processed = Regex.Replace(listContent, @"(?<=^|,)\s*(?!\"")([A-Za-z0-9_]+(?:\s+[A-Za-z0-9_]+)+)(?=\s*(=|,|$))", m =>
+                {
+                    string item = m.Groups[1].Value;
+                    return item.Replace(" ", "_");
+                });
+
+                return "[" + processed + "]";
+            }, RegexOptions.Singleline);
+
+            //Console.WriteLine(result);
+
+
 
             var scanJson = File.ReadAllText(@"C:\projects\Metadata\scanResult.json");
             var extracts = ExtractWorkspacesScan(scanJson);
@@ -66,15 +97,32 @@ namespace CD.DLS.TestConsole
 
             Parse.Mssql.Ssas.UrnBuilder ssasUrnBuilder = new DLS.Parse.Mssql.Ssas.UrnBuilder();
 
+            AvailableDatabaseModelIndex sqlDatabaseIndex = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, graphManager);
+            BIDoc.Core.Parse.Mssql.Tabular.TabularParser tparser = new BIDoc.Core.Parse.Mssql.Tabular.TabularParser(sqlDatabaseIndex, projectConfig, Guid.Empty, null);
+
+
             foreach (var dataset in datasets)
             { 
                 var datasetUrn = pbiUrnBuilder.GetDatasetUrn(dataset.modelName, workspaceElement.RefPath);
                 var datasetElement = new DatasetElement(datasetUrn, dataset.modelName, null, workspaceElement);
                 workspaceElement.AddChild(datasetElement);
 
+                var dbRefPath = ssasUrnBuilder.GetDatabaseUrn("Model", datasetUrn);
+                SsasTabularDatabaseElement tDatabaseElement = new SsasTabularDatabaseElement(dbRefPath, "Model", null, datasetElement);
+                datasetElement.AddChild(tDatabaseElement);
+
+                tparser.ExtractTabularModel(dataset, tDatabaseElement);
+
             }
 
-
+            var dbIdMap = sqlDatabaseIndex.GetAllPremappedIds();
+            foreach (var kv in dbIdMap)
+            {
+                if (!premappedIds.ContainsKey(kv.Key))
+                {
+                    premappedIds.Add(kv.Key, kv.Value);
+                }
+            }
 
             sh.SaveModelPart(tenantElement, premappedIds);
 
@@ -86,7 +134,7 @@ namespace CD.DLS.TestConsole
             
             // Z1
             
-            AvailableDatabaseModelIndex sqlDatabaseIndex = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, graphManager);
+            //AvailableDatabaseModelIndex sqlDatabaseIndex = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, graphManager);
 
             var serverName = projectConfig.DatabaseComponents[0].ServerName;
 
@@ -230,7 +278,12 @@ namespace CD.DLS.TestConsole
                 Cultures = new List<TabularCulture>()
             };
 
-            foreach(JObject jTable in jDataset["tables"])
+            foreach (var datasource in datasources.Values)
+            {
+                res.TabularDataSources.Add(datasource);
+            }
+
+            foreach (JObject jTable in jDataset["tables"])
             {
                 TabularTable table = ExtractTable(jTable, datasources);
                 
@@ -261,6 +314,10 @@ namespace CD.DLS.TestConsole
                 {
                     column.Expression = (string)jColumn["expression"];
                 }
+                if (column.ColumnType == TabularTableColumnTypeEnum.Data)
+                {
+                    column.SourceColumn = column.Name;
+                }
                 table.Columns.Add(column);
             }
 
@@ -274,12 +331,32 @@ namespace CD.DLS.TestConsole
                 table.Measures.Add(measure);
             }
 
+            var partitionCount = 0;
             foreach (JObject jPartition in jTable["source"])
             {
+                partitionCount++;
+
+
+                // output = input
+                //.Replace("#(lf)", "\n")
+                //.Replace("#(tab)", "\t");
+                var expression = (string)jPartition["expression"];
+                var expressionDeser = expression.Replace("#(lf)", "\n")
+                    .Replace("#(tab)", "\t")
+                    .Replace("#(cr)", "\r");
+
+
                 TabularTablePartition partition = new TabularTablePartition()
                 {
-                    Expression = (string)jPartition["expression"],
+                    Expression = expression,
+                    PartitionSourceType = TabularPartitionSourceTypeEnum.MLanguagePartitionSource,
+                    Name = $"Partition{partitionCount}"
                 };
+
+                if (string.IsNullOrEmpty(partition.Expression))
+                { 
+                
+                }
                 table.Partitions.Add(partition);
             }
 
