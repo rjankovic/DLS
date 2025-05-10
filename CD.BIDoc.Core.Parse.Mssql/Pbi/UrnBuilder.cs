@@ -26,6 +26,11 @@ namespace CD.DLS.Parse.Mssql.Pbi
             return parent.NamedChild("Workspace", workspaceName);
         }
 
+        public RefPath GetDatasetUrn(string datasetName, RefPath parent)
+        {
+            return parent.NamedChild("Dataset", datasetName);
+        }
+
         public RefPath GetReportUrn(Report report, MssqlModelElement parent)
         {
             return parent.RefPath.NamedChild("PowerBI Report", report.ReportName + "_" + (parent.Children.Count() + 1).ToString());

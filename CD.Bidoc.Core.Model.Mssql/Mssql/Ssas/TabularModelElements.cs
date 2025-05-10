@@ -29,7 +29,7 @@ namespace CD.DLS.Model.Mssql.Tabular
     public class SsasTabularDatabaseElement : SsasDatabaseElement // TabularModelElement
     {
         
-        public SsasTabularDatabaseElement(RefPath refPath, string caption, string definition, ServerElement parent = null) 
+        public SsasTabularDatabaseElement(RefPath refPath, string caption, string definition, MssqlModelElement parent = null) 
             : base(refPath, caption, definition, parent)
         {
             SsasType = Common.Structures.SsasTypeEnum.Tabular;

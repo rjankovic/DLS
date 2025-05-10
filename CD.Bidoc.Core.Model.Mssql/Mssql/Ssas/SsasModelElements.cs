@@ -70,7 +70,7 @@ namespace CD.DLS.Model.Mssql.Ssas
 
     public abstract class SsasDatabaseElement : SsasModelElement
     {
-        public SsasDatabaseElement(RefPath refPath, string caption, string definition, ServerElement parent)
+        public SsasDatabaseElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
                 : base(refPath, caption, definition, parent)
         { }
 

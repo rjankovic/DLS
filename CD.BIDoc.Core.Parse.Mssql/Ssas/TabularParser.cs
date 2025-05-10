@@ -58,34 +58,10 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
         }
 
-        public SsasTabularDatabaseElement ExtractTabularDatabase(int componentID, DLS.Model.Mssql.Ssas.ServerElement serverElement)
+
+        public void ExtractTabularModel(TabularModel model, SsasTabularDatabaseElement tDatabaseElement)
         {
-            //ConfigManager.Log.Important("Tabular parser, Tabular Probe 3");
-
-            ConfigManager.Log.Important("Tabular parser parameters, extractID: " + _extractId + " ComponentID " + componentID);
-            var database = (TabularDB)_stageManager.GetExtractItems(_extractId, componentID, ExtractTypeEnum.TabularDB)[0];
-
-            var model = (TabularModel)_stageManager.GetExtractItems(_extractId, componentID, ExtractTypeEnum.TabularModel)[0];
-
-            //List<Tuple<TabularTableMeasure, SsasTabularMeasureElement>> measureList = new List<Tuple<TabularTableMeasure, SsasTabularMeasureElement>>();
-            //ConfigManager.Log.Important("Tabular parser, Tabular Probe 4");
-
-            TabularDB tdb = (TabularDB)database;
-            ConfigManager.Log.Important("Tabular parser : Parsing database " + database.Name);
-
-            var dbRefPath = _urnBuilder.GetDatabaseUrn(database.Name, serverElement.RefPath);
-            SsasTabularDatabaseElement tDatabaseElement = new SsasTabularDatabaseElement(dbRefPath, tdb.DBName, tdb.Description, serverElement);
-            serverElement.AddChild(tDatabaseElement);
-
-            tDatabaseElement.Collation = tdb.Collation;
-
-            foreach (var annotation in tdb.Annotations)
-            {
-                var annotationRefPath = _urnBuilder.GetUrnAnnotation(annotation.Name, dbRefPath);
-
-                SsasTabularAnnotationElement pAnnotation = new SsasTabularAnnotationElement(annotationRefPath, annotation.Name, annotation.Value, tDatabaseElement);
-                tDatabaseElement.AddChild(pAnnotation);
-            }
+            var dbRefPath = tDatabaseElement.RefPath;
 
             foreach (var annotation in model.Annotations)
             {
@@ -145,15 +121,15 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                 {
                     //ConfigManager.Log.Important("Tabular parser, Tabular Probe 7");
                     var columnRefPath = _urnBuilder.GetUrnColumn(column.Name, tableRefPath);
-                    
-                    SsasTabularTableColumnElement columnElement = new SsasTabularTableColumnElement(columnRefPath, column.Name, string.IsNullOrEmpty(column.Expression) ?  column.DataType : column.Expression, tableElement);
+
+                    SsasTabularTableColumnElement columnElement = new SsasTabularTableColumnElement(columnRefPath, column.Name, string.IsNullOrEmpty(column.Expression) ? column.DataType : column.Expression, tableElement);
                     columnsToElements.Add(column, columnElement);
 
                     if (column.ColumnType == TabularTableColumnTypeEnum.Data)
                     {
                         tableSourceColumnsToColumns.Add(column.SourceColumn, columnElement);
                     }
-                    
+
                     //columnCalculationsIndex.AddLocalColumn(column.Name, columnElement);
 
                     foreach (var annotation in column.Annotations)
@@ -249,7 +225,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
                         var dbIndex = _availableDatabaseModelIndex.GetDatabaseIndex(sqlServerName);
                         _sqlScriptExtractor.ContextServerName = sqlServerName;
-                        
+
                         ConfigManager.Log.Info(string.Format("Parsing SQL partition {0} to table {1}", partitionElement.RefPath.Path, table.Name));
                         var sqlElement = _sqlScriptExtractor.ExtractScriptModel(query, partitionElement, dbIndex, dbIdentifier, out outputColumnsFromNames);
                         partitionElement.AddChild(sqlElement);
@@ -271,7 +247,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                         var mScript = partition.Expression;
                         //Model.SolutionModelElement fakeParent = new Model.SolutionModelElement(new RefPath(), "Root");
                         Dictionary<string, DLS.Model.Mssql.PowerQuery.OperationOutputColumnElement> powerQueryColumnsFromNames;
-                        
+
                         ConfigManager.Log.Info(string.Format("Parsing M partition {0} to table {1}", partitionElement.RefPath.Path, table.Name));
                         var scriptModel = extractor.ExtractPowerQuery(mScript, _availableDatabaseModelIndex, partitionElement, out powerQueryColumnsFromNames);
                         outputColumnsFromNames = powerQueryColumnsFromNames.ToDictionary(x => x.Key, x => (MssqlModelElement)(x.Value));
@@ -363,7 +339,7 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                 relationshipElement.FromColumnCardinality = fromCardinality;
                 relationshipElement.ToColumnCardinality = toCardinality;
                 relationshipElement.IsActive = relationship.IsActive;
-                
+
                 foreach (var annotation in relationship.Annotations)
                 {
                     var annotationRefPath = _urnBuilder.GetUrnAnnotation(annotation.Name, relationshipElement.RefPath);
@@ -460,6 +436,39 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
             //    measureElement.AddChild(scriptModel);
             //    measureElement.Reference = resultColumns.First().Value;
             //}
+
+        }
+
+        public SsasTabularDatabaseElement ExtractTabularDatabase(int componentID, DLS.Model.Mssql.Ssas.ServerElement serverElement)
+        {
+            //ConfigManager.Log.Important("Tabular parser, Tabular Probe 3");
+
+            ConfigManager.Log.Important("Tabular parser parameters, extractID: " + _extractId + " ComponentID " + componentID);
+            var database = (TabularDB)_stageManager.GetExtractItems(_extractId, componentID, ExtractTypeEnum.TabularDB)[0];
+
+            var model = (TabularModel)_stageManager.GetExtractItems(_extractId, componentID, ExtractTypeEnum.TabularModel)[0];
+
+            //List<Tuple<TabularTableMeasure, SsasTabularMeasureElement>> measureList = new List<Tuple<TabularTableMeasure, SsasTabularMeasureElement>>();
+            //ConfigManager.Log.Important("Tabular parser, Tabular Probe 4");
+
+            TabularDB tdb = (TabularDB)database;
+            ConfigManager.Log.Important("Tabular parser : Parsing database " + database.Name);
+
+            var dbRefPath = _urnBuilder.GetDatabaseUrn(database.Name, serverElement.RefPath);
+            SsasTabularDatabaseElement tDatabaseElement = new SsasTabularDatabaseElement(dbRefPath, tdb.DBName, tdb.Description, serverElement);
+            serverElement.AddChild(tDatabaseElement);
+
+            tDatabaseElement.Collation = tdb.Collation;
+
+            foreach (var annotation in tdb.Annotations)
+            {
+                var annotationRefPath = _urnBuilder.GetUrnAnnotation(annotation.Name, dbRefPath);
+
+                SsasTabularAnnotationElement pAnnotation = new SsasTabularAnnotationElement(annotationRefPath, annotation.Name, annotation.Value, tDatabaseElement);
+                tDatabaseElement.AddChild(pAnnotation);
+            }
+
+            ExtractTabularModel(model, tDatabaseElement);
 
             ConfigManager.Log.Important("Tabular parser, DB parsed!");
 

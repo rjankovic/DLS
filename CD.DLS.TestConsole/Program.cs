@@ -64,6 +64,17 @@ namespace CD.DLS.TestConsole
             var workspaceElement = new WorkspaceElement(workspaceUrn, workspaceName, null, tenantElement);
             tenantElement.AddChild(workspaceElement);
 
+            Parse.Mssql.Ssas.UrnBuilder ssasUrnBuilder = new DLS.Parse.Mssql.Ssas.UrnBuilder();
+
+            foreach (var dataset in datasets)
+            { 
+                var datasetUrn = pbiUrnBuilder.GetDatasetUrn(dataset.modelName, workspaceElement.RefPath);
+                var datasetElement = new DatasetElement(datasetUrn, dataset.modelName, null, workspaceElement);
+                workspaceElement.AddChild(datasetElement);
+
+            }
+
+
 
             sh.SaveModelPart(tenantElement, premappedIds);
 
@@ -159,6 +170,15 @@ namespace CD.DLS.TestConsole
                 var datasets = (JArray)workspace["datasets"];
                 foreach (JObject jDataset in datasets)
                 {
+
+                    var modelName = (string)jDataset["name"];
+                    
+                    // TODO remove later!
+                    if(modelName != "Consigned Packets by Clients")
+                    {
+                        continue;
+                    }
+
                     TabularModel datasetModel = ExtractDatasetModel(jDataset, workspaceId, workspaceName, datasources);
                     res.Add(datasetModel);
                 }

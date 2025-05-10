@@ -48,6 +48,16 @@ namespace CD.DLS.Model.Mssql.Pbi
         public string ReportName { get; set; }
     }
 
+    public class DatasetElement : PbiModelElement
+    {
+        public DatasetElement(RefPath refPath, string caption, string definition, MssqlModelElement parent)
+               : base(refPath, caption, definition, parent)
+        { }
+
+        //[DataMember]
+        //public string DatasetName { get; set; }
+    }
+
 
     // RJ: Never created??
     public class PbiColumnElement : PbiModelElement
