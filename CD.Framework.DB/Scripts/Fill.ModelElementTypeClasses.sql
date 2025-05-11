@@ -179,6 +179,10 @@ VALUES
 (N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'F'),
 (N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'F'),
 
+----- NEW ELEMENTS ADDED TO DB
+(N'CD.DLS.Model.Mssql.Pbi.WorkspaceElement', N'F'),
+(N'CD.DLS.Model.Mssql.Pbi.DatasetElement', N'F'),
+
 
 -- DAX general start
 

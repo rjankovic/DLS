@@ -186,6 +186,12 @@ INSERT INTO [BIDoc].[HighLevelTypeDescendants]
 ([ParentType], [DescendantType], [NodeType])
 VALUES
 (N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.ReportElement', N'ReportElement'),
+
+----- NEW ELEMENTS ADDED TO DB
+(N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.WorkspaceElement', N'WorkspaceElement'),
+(N'CD.DLS.Model.Mssql.Pbi.WorkspaceElement', N'CD.DLS.Model.Mssql.Pbi.DatasetElement', N'DatasetElement'),
+(N'CD.DLS.Model.Mssql.Pbi.DatasetElement', N'CD.DLS.Model.Mssql.Tabular.SsasTabularDatabaseElement', N'SsasTabularDatabaseElement'),
+
 (N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement', N'ReportSectionElement'),
 (N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.VisualElement', N'VisualElement'),
 (N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.ProjectionElement', N'ProjectionElement')

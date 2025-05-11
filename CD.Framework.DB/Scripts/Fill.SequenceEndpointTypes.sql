@@ -89,7 +89,10 @@ VALUES
 
 (N'CD.DLS.Model.Mssql.Pbi.ProjectionElement'),
 (N'CD.DLS.Model.Mssql.Pbi.VisualElement'),
-(N'CD.DLS.Model.Mssql.Pbi.ReportElement')
+(N'CD.DLS.Model.Mssql.Pbi.ReportElement'),
+
+----- NEW ELEMENTS ADDED TO DB
+(N'CD.DLS.Model.Mssql.Pbi.DatasetElement')
 
 
 

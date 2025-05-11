@@ -24,6 +24,11 @@ FROM   (VALUES
 	(NULL, N'CD.DLS.Model.Business.Excel.PivotTableTemplateElement'),
 
 	(N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.ReportElement'),
+	
+	----- NEW ELEMENTS ADDED TO DB
+	(N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.WorkspaceElement'),
+	(N'CD.DLS.Model.Mssql.Pbi.WorkspaceElement', N'CD.DLS.Model.Mssql.Pbi.DatasetElement'),
+
 	(N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement'),
 	(N'CD.DLS.Model.Mssql.Pbi.TenantElement', N'CD.DLS.Model.Mssql.Pbi.VisualElement'),
 	

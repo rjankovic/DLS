@@ -159,6 +159,11 @@ VALUES
 (N'CD.DLS.Model.Mssql.Ssas.CubeDimensionHierarchyLevelElement', 1),
 
 (N'CD.DLS.Model.Mssql.Pbi.TenantElement', 3),
+
+----- NEW ELEMENTS ADDED TO DB
+(N'CD.DLS.Model.Mssql.Pbi.WorkspaceElement', 2),
+(N'CD.DLS.Model.Mssql.Pbi.DatasetElement', 2),
+
 (N'CD.DLS.Model.Mssql.Pbi.ReportElement', 2),
 (N'CD.DLS.Model.Mssql.Pbi.ReportSectionElement',1),
 (N'CD.DLS.Model.Mssql.Pbi.VisualElement', 1),
