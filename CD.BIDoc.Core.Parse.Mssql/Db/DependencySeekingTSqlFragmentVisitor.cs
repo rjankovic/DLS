@@ -25,6 +25,7 @@ namespace CD.DLS.Parse.Mssql.Db
         private ScriptSpan QueryFromClauseSpan { get; set; }
         private ScriptSpan TopLevelSourceExclusionSpan { get; set; }
         private ScriptSpan CurrentInsertSpan { get; set; }
+        private ScriptSpan SetVariableSpan { get; set; }
         private InsertSpecification CurrentInsertSpecification { get; set; }
         public Dictionary<ScriptSpan, ScriptSpan> ParentQuerySpans { get; set; }
         public InsertMergeAction CurrentMergeInsertAction { get; set; }
@@ -97,6 +98,7 @@ namespace CD.DLS.Parse.Mssql.Db
             FirstProcedureCall = null;
             FirstProcedureCallResultSet = null;
             TopLevelSourceExclusionSpan = null;
+            SetVariableSpan = null;
             /*
             ScalarUdfsAvailable.Clear();
             StoredProceduresAvailable.Clear();
@@ -417,6 +419,7 @@ namespace CD.DLS.Parse.Mssql.Db
                     if (
                         (BooleanExpressionSpan == null || !BooleanExpressionSpan.Contains(QuerySpan)) 
                         && (DeleteUpdateStatementSpan == null || !DeleteUpdateStatementSpan.Contains(QuerySpan))
+                        && (SetVariableSpan == null || !SetVariableSpan.Contains(QuerySpan))
                         && (nAryStackPeek == null || nAryHeadFirstTokenIndex == querySpecification.FirstTokenIndex)
                         )
                     {
@@ -857,7 +860,7 @@ namespace CD.DLS.Parse.Mssql.Db
 
         public override void Visit(SetVariableStatement setVariableStatement)
         {
-
+            SetVariableSpan = new ScriptSpan(setVariableStatement);
         }
 
         /// <summary>

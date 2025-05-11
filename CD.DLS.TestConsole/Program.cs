@@ -101,8 +101,13 @@ in
             BIDoc.Core.Parse.Mssql.Tabular.TabularParser tparser = new BIDoc.Core.Parse.Mssql.Tabular.TabularParser(sqlDatabaseIndex, projectConfig, Guid.Empty, null);
 
 
+            var dsc = datasets.Count;
+            var i = 0;
             foreach (var dataset in datasets)
-            { 
+            {
+                i++;
+                Console.WriteLine($"{dataset.modelName} ({i}/{dsc})");
+
                 var datasetUrn = pbiUrnBuilder.GetDatasetUrn(dataset.modelName, workspaceElement.RefPath);
                 var datasetElement = new DatasetElement(datasetUrn, dataset.modelName, null, workspaceElement);
                 workspaceElement.AddChild(datasetElement);
@@ -114,6 +119,9 @@ in
                 tparser.ExtractTabularModel(dataset, tDatabaseElement);
 
             }
+
+
+            Console.WriteLine("Saving the model...");
 
             var dbIdMap = sqlDatabaseIndex.GetAllPremappedIds();
             foreach (var kv in dbIdMap)
@@ -220,12 +228,13 @@ in
                 {
 
                     var modelName = (string)jDataset["name"];
-                    
+
                     // TODO remove later!
-                    if(modelName != "Consigned Packets by Clients")
-                    {
-                        continue;
-                    }
+                    //if (modelName != "Consigned Packets by Clients")
+                    //if (modelName != "Management Report")
+                    //{
+                    //    continue;
+                    //}
 
                     TabularModel datasetModel = ExtractDatasetModel(jDataset, workspaceId, workspaceName, datasources);
                     res.Add(datasetModel);

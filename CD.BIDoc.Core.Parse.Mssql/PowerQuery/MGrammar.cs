@@ -94,7 +94,7 @@ namespace CD.DLS.Parse.Mssql.PowerQuery
 
             var number = new NumberLiteral(TERM_NUMBER);
             number.AddPrefix("0x", NumberOptions.Hex);
-            var stringLiteral = new StringLiteral(TERM_STRING, "\"", StringOptions.AllowsDoubledQuote);
+            var stringLiteral = new StringLiteral(TERM_STRING, "\"", StringOptions.AllowsDoubledQuote | StringOptions.AllowsLineBreak);
 
             var identifier = CreateIdentifier();
 

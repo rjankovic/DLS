@@ -90,7 +90,15 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
 
                 return "[" + processed + "]";
             }, RegexOptions.Singleline);
-            return result;
+            
+            
+            var result_json_undone = result.Replace("#(lf)", "\n")
+                    .Replace("#(tab)", "\t")
+                    .Replace("#(cr)", "\r");
+
+            var result_date_undone = result_json_undone.Replace("#date(", "date(").Replace("#duration(", "duration(");
+
+            return result_date_undone;
         }
 
         public void ExtractTabularModel(TabularModel model, SsasTabularDatabaseElement tDatabaseElement)
@@ -411,6 +419,10 @@ namespace CD.BIDoc.Core.Parse.Mssql.Tabular
                     }
 
                     var calculatedColumnExpression = extractColumn.Expression;
+                    if(calculatedColumnExpression == null || calculatedColumnExpression == string.Empty)
+                    {
+                        continue;
+                    }
                     Dictionary<string, SsasModelElement> resultColumns;
                     var scriptModel = daxExtractor.ExtractDaxScript(calculatedColumnExpression, tabularIndex, modelColumn, out resultColumns);
                     if (scriptModel == null)

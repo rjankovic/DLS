@@ -420,14 +420,17 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                     .Replace("#(cr)", "\r");
 
 
-            Dictionary<string, MssqlModelElement> outputColumns;
+            Dictionary<string, MssqlModelElement> outputColumns = new Dictionary<string, MssqlModelElement>();
             ParseSqlQuery(serverNameNormalized, dbName, query, sqlDatabaseOperation, out outputColumns);
             _lastOperationOutputColumns = new List<OperationOutputColumnElement>();
-            foreach (var kv in outputColumns)
+            if (outputColumns != null)
             {
-                var outputColumn = AddOutputColumn(sqlDatabaseOperation, kv.Key);
-                _lastOperationOutputColumns.Add(outputColumn);
-                outputColumn.Reference = kv.Value;
+                foreach (var kv in outputColumns)
+                {
+                    var outputColumn = AddOutputColumn(sqlDatabaseOperation, kv.Key);
+                    _lastOperationOutputColumns.Add(outputColumn);
+                    outputColumn.Reference = kv.Value;
+                }
             }
         }
 
@@ -642,6 +645,10 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
             var item = TrimLiteral(itemItem.ItemValue.Definition);
 
             var dbElement = referencedDb.DatabaseReference;
+            if (dbElement == null)
+            {
+                return;
+            }
             var server = dbElement.Parent as ServerElement;
             var tableRefQuoted = $"[{schema}].[{item}]";
 

@@ -391,8 +391,16 @@ namespace CD.DLS.Parse.Mssql.Ssas
                     var formatted = $"'{split[0]}'[{split[1]}]";
                     return formatted;
                 }
+                else if(trimmed.StartsWith("VAR "))
+                {
+                    var split = trimmed.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    var fst = split[1];
+                    var formatted = $"[{fst}]";
+                    return formatted;
+                }
                 else
                 {
+                    //return null;
                     throw new Exception(string.Format("Could not normalize tabular identifier {0}", input));
                 }
             }
