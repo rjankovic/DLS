@@ -186,7 +186,10 @@ namespace CD.DLS.Parse.Mssql.Db
                     if (schemaTableReference is NamedTableReference)
                     {
                         var tableDirect = _localIndex.FindTableSource(insertSpan, ((NamedTableReference)schemaTableReference).SchemaObject);
-                        targetColumnsDirect = tableDirect.Columns;
+                        if (tableDirect != null)
+                        {
+                            targetColumnsDirect = tableDirect.Columns;
+                        }
                     }
                 }
                 if ((targetColumns == null && targetColumnsDirect == null) || sourceTable == null)
@@ -407,7 +410,7 @@ namespace CD.DLS.Parse.Mssql.Db
                 if (reference.Identifier is SchemaObjectName)
                 {
                     var schemaObjectname = reference.Identifier as SchemaObjectName;
-                    var matchingTable = _localIndex.FindTableByIdentifier(tablesInRange, schemaObjectname, reference.TableCanBeDefinedAfter ? -1 : reference.Position.TokenFrom);
+                    var matchingTable = _localIndex.FindSchemaTableByIdentifier(tablesInRange, schemaObjectname, reference.TableCanBeDefinedAfter ? -1 : reference.Position.TokenFrom);
                     /*
                     if (matchingTable == null)
                     {
@@ -438,7 +441,8 @@ namespace CD.DLS.Parse.Mssql.Db
                                 }
                             }
 
-                            if (tableSourceResolved.Columns == null)
+                            // if there is a match with schema table, this takes priority over local tables of the same name
+                            if (tableSourceResolved.Columns == null || (matchingTable.ModelElement != null && matchingTable.ModelElement is SchemaTableElement))
                             {
                                 tableSourceResolved.Columns = matchingTable.Columns;
                                 tableSourceResolved.PropagateResolvedColumns();

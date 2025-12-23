@@ -194,7 +194,14 @@ namespace CD.DLS.RequestProcessor.ModelUpdate
                     }
 
                     Parse.Mssql.Db.LocalDeepModelParser ldmp = new Parse.Mssql.Db.LocalDeepModelParser(projectConfig, dbComponent.ServerName);
-                    ldmp.ExtractModel(extractObject, dbComponent.ServerName, referrableIndex, modelElement);
+                    // TODO: remove after debug
+                    //if (extractObject.Name == "sp_bulk_delivery_pl")
+                    if (extractObject.Name == "dim_Closed_Period_099_p")
+                    {
+                        ldmp.ExtractModel(extractObject, dbComponent.ServerName, referrableIndex, modelElement);
+                    }
+
+                    //ldmp.ExtractModel(extractObject, dbComponent.ServerName, referrableIndex, modelElement);
                 }
 
                 //Parse.Mssql.Db.AvailableDatabaseModelIndex tadbix = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, GraphManager);

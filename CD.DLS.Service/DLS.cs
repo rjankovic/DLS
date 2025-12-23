@@ -61,6 +61,10 @@ namespace CD.DLS.Service
             while (!quit)
             {
                 var k = Console.ReadKey();
+                if (k.Key == ConsoleKey.R) {
+                    Console.WriteLine("Checking for new messages");
+                    _receiver.CheckNewMessages();
+                }
                 quit = k.Key == ConsoleKey.Escape;
             }
             OnStop();

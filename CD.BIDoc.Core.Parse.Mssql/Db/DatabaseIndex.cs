@@ -36,7 +36,7 @@ namespace CD.DLS.Parse.Mssql.Db
         TableSourceColumnList FindTableType(SchemaObjectName identifier, Identifier dbInUse);
         ReferrableObject FindScalarUdf(MultiPartIdentifier mpi, Identifier dbInUse);
 
-        TableSourceColumnList FindTableByIdentifier(List<TableSourceColumnList> tables, TSqlFragment identifier, Identifier dbInUse, int referencePosition = -1);
+        TableSourceColumnList FindTableByIdentifier(List<TableSourceColumnList> tables, TSqlFragment identifier, Identifier dbInUse, int referencePosition = -1, bool? isSchemaTable = null);
         ReferrableObject FindTableColumnByIdentifier(TableSourceColumnList table, TSqlFragment identifier, Identifier dbInUse);
 
         IModelElement FindNodeByTableObjectName(string openRowset, TSqlParser parser, Identifier dbInUse);
@@ -161,7 +161,7 @@ new TableSourceColumnList()
             return _parentIndex.FindTableType(identifier, dbInUse);
         }
 
-        public TableSourceColumnList FindTableByIdentifier(List<TableSourceColumnList> tables, TSqlFragment identifier, Identifier dbInUse, int referencePosition = -1)
+        public TableSourceColumnList FindTableByIdentifier(List<TableSourceColumnList> tables, TSqlFragment identifier, Identifier dbInUse, int referencePosition = -1, bool? isSchemaTable = null)
         {
             return _parentIndex.FindTableByIdentifier(tables, identifier, dbInUse, referencePosition);
         }
@@ -313,13 +313,19 @@ new TableSourceColumnList()
         /// <param name="tables"></param>
         /// <param name="identifier">Identifier or MultiPartIdentifier</param>
         /// <returns></returns>
-        public TableSourceColumnList FindTableByIdentifier(List<TableSourceColumnList> tables, TSqlFragment identifier, Identifier dbInUse, int referencePosition = -1)
+        public TableSourceColumnList FindTableByIdentifier(List<TableSourceColumnList> tables, TSqlFragment identifier, Identifier dbInUse, int referencePosition = -1, bool? isSchemaTable = null)
         {
             var identifierComparer = new IdentifierComparer(dbInUse);
             var matchingTable = tables.Where(tab => identifierComparer.IdentifiersEqual(tab.Identifier, identifier));
             if (referencePosition == -1)
             {
                 return matchingTable.FirstOrDefault();
+            }
+            if (isSchemaTable.HasValue && isSchemaTable.Value)
+            {
+                var potentialMatches = matchingTable.Where(x => x.ModelElement != null || x.ObjectContent.LastTokenIndex < referencePosition);
+                // preference for global schema tables over local temp tables or tables created as part of the procedure
+                return potentialMatches.OrderBy(x => x.ValidSpan.TokenFrom).FirstOrDefault();
             }
             return matchingTable.FirstOrDefault(x => x.ModelElement != null || x.ObjectContent.LastTokenIndex < referencePosition);
         }

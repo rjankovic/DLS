@@ -54,6 +54,19 @@ namespace CD.DLS.Parse.Mssql.Db
             return false;
         }
 
+        public bool IdentifiersEqualMultipart(Identifier a, Identifier b)
+        {
+            if (a.Value == "")
+            {
+                return StringEqualCI("dbo", b.Value);
+            }
+            if (b.Value == "")
+            {
+                return StringEqualCI("dbo", a.Value);
+            }
+            return StringEqualCI(a.Value, b.Value);
+        }
+
         public bool IdentifiersEqual(Identifier a, Identifier b)
         {
             return StringEqualCI(a.Value, b.Value);
@@ -85,7 +98,7 @@ namespace CD.DLS.Parse.Mssql.Db
         {
             for (int k = 0; k < Math.Min(a.Identifiers.Count, b.Identifiers.Count); k++)
             {
-                if (!IdentifiersEqual(a.Identifiers[a.Identifiers.Count - 1 - k], b.Identifiers[b.Identifiers.Count - 1 - k]))
+                if (!IdentifiersEqualMultipart(a.Identifiers[a.Identifiers.Count - 1 - k], b.Identifiers[b.Identifiers.Count - 1 - k]))
                 {
                     return false;
                 }

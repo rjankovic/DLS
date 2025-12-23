@@ -62,6 +62,8 @@ namespace CD.DLS.DAL.Receiver
         }
         private Dictionary<string, WaitingDependency> _waitingDependencies = new Dictionary<string, WaitingDependency>();
 
+        private static Timer _timer;
+
         public Receiver(Guid id, string name, string subscriptionTopicName = null, string subscriptionName = null, RequestManager requestManager = null, bool senderOnly = false)
         {
             _id = id;
@@ -95,8 +97,19 @@ namespace CD.DLS.DAL.Receiver
             {
                 if (Configuration.ConfigManager.QueueMode == Configuration.QueueModeEnum.ServiceBroker)
                 {
+
                     _messageDependency = _requestManager.GetMessageHandle(_id);
                     _messageDependency.OnChange += BrokerMessagesReceived;
+
+                    //if (ConfigManager.ApplicationClass == ApplicationClassEnum.Service)
+                    //{
+                    //    _timer = new Timer(
+                    //        _ => CheckForNewMessages(),
+                    //        null,
+                    //        TimeSpan.Zero,
+                    //        TimeSpan.FromSeconds(10));
+                    //}
+
                 }
                 else if (Configuration.ConfigManager.QueueMode == Configuration.QueueModeEnum.AzureTopic)
                 {
@@ -129,6 +142,16 @@ namespace CD.DLS.DAL.Receiver
                     //_subscriptionClient = new SubscriptionClient(serviceBusConnectionString, subscriptionTopicName, subscriptionName);
                     RegisterServiceBusOnMessageHandlerAndReceiveMessages();
                 }
+            }
+        }
+
+        public void CheckNewMessages()
+        {
+            //Console.WriteLine("Checking for new messages for " + _id.ToString());
+            List<RequestMessage> newMessages = _requestManager.GetNewMessagesToObject(_id);
+            foreach (var message in newMessages)
+            {
+                MessageReceived?.Invoke(message);
             }
         }
 
@@ -506,6 +529,30 @@ namespace CD.DLS.DAL.Receiver
 
             _messageDependency = _requestManager.GetMessageHandle(_id);
             _messageDependency.OnChange += BrokerMessagesReceived;
+        }
+
+        private void CheckForNewMessages()
+        {
+            //var dependency = sender as SqlDependency;
+            //dependency.OnChange -= BrokerResponseReceived;
+
+            //if (_waitingDependencies.ContainsKey(dependency.Id))
+            //{
+            //    BrokerResponseReceived(sender, e);
+            //}
+
+            Console.WriteLine("Checking for new messages for " + _id.ToString());
+
+            List<RequestMessage> newMessages = _requestManager.GetNewMessagesToObject(_id);
+            _messageDependency = _requestManager.GetMessageHandle(_id);
+            foreach (var message in newMessages)
+            {
+                Console.WriteLine(message.RequestId.ToString() + " received");
+                MessageReceived?.Invoke(message);
+            }
+
+            //_messageDependency = _requestManager.GetMessageHandle(_id);
+            //_messageDependency.OnChange += BrokerMessagesReceived;
         }
 
         public void Dispose()

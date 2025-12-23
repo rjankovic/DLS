@@ -510,13 +510,15 @@ namespace CD.DLS.Parse.Mssql.Db
                             {
                                 columnName = new Identifier() { Value = selectScalarElement.ColumnName.Value };
                             }
-                            //_referenceResolver.AddResolvedReference(new ResolvedReference()
-                            //{
-                            //    FromFragment = selectScalarElement,
-                            //    ToFragment = selectScalarElement.Expression,
-                            //    ReferenceFragment = selectScalarElement,
-                            //    ScriptReferenceType = ScriptReferenceTypeEnum.Column
-                            //});
+
+                            // is this a good idea? 25-12-21
+                            _referenceResolver.AddResolvedReference(new ResolvedReference()
+                            {
+                                FromFragment = selectScalarElement,
+                                ToFragment = selectScalarElement.Expression,
+                                ReferenceFragment = selectScalarElement,
+                                ScriptReferenceType = ScriptReferenceTypeEnum.Column
+                            });
                         }
                         else if (selectScalarElement.Expression is ColumnReferenceExpression)
                         {

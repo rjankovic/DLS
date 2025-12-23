@@ -94,11 +94,19 @@ namespace CD.DLS.Parse.Mssql.Db
             _selectIntoBeingDefined.Add(statement);
         }
 
-        public TableSourceColumnList FindTableByIdentifier(List<TableSourceColumnList> tablesInRange, TSqlFragment tableIdentifier, int referencePosition = -1)
+        public TableSourceColumnList FindTableByIdentifier(List<TableSourceColumnList> tablesInRange, TSqlFragment tableIdentifier, int referencePosition = -1, bool? isSchemaTable = null)
         {
             //TODO: local tables  
             TableSourceColumnList table = _globalIndex.FindTableByIdentifier(tablesInRange, tableIdentifier, _dbInUse, referencePosition);
          
+            return table;
+        }
+
+        public TableSourceColumnList FindSchemaTableByIdentifier(List<TableSourceColumnList> tablesInRange, TSqlFragment tableIdentifier, int referencePosition = -1)
+        {
+            //TODO: local tables  
+            TableSourceColumnList table = _globalIndex.FindTableByIdentifier(tablesInRange, tableIdentifier, _dbInUse, referencePosition, true);
+
             return table;
         }
 
