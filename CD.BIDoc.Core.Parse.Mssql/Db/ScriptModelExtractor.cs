@@ -325,31 +325,31 @@ namespace CD.DLS.Parse.Mssql.Db
                 {
                     if (nodeFrom == null)
                     {
-                        try
-                        {
-                            ConfigManager.Log.Error(string.Format("Could not resolve reference {0} in {1}, {2}", dmlReference.FromFragment.GetText(), script.GetText(), parent.RefPath.Path));
-                        }
-                        catch
-                        {
+                        //try
+                        //{
+                        //    ConfigManager.Log.Error(string.Format("Could not resolve reference {0} in {1}, {2}", dmlReference.FromFragment.GetText(), script.GetText(), parent.RefPath.Path));
+                        //}
+                        //catch
+                        //{
                             if (dmlReference.FromFragment == null)
                             {
                                 ConfigManager.Log.Error("DML reference from fragment is null in " + script.GetText());
                             }
-                        }
+                        //}
                     }
                     else if (nodeTo == null)
                     {
-                        try
-                        {
-                            ConfigManager.Log.Error(string.Format("Could not resolve reference {0} in {1}, {2}", dmlReference.ToFragment.GetText(), script.GetText(), parent.RefPath.Path));
-                        }
-                        catch
-                        {
+                        //try
+                        //{
+                        //    ConfigManager.Log.Error(string.Format("Could not resolve reference {0} in {1}, {2}", dmlReference.ToFragment.GetText(), script.GetText(), parent.RefPath.Path));
+                        //}
+                        //catch
+                        //{
                             if (dmlReference.ToFragment == null)
                             {
                                 ConfigManager.Log.Error("DML reference to fragment is null in " + script.GetText());
                             }
-                        }
+                        //}
                     }
 
                     continue;
