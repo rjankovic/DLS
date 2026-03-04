@@ -17,7 +17,7 @@
     <ModelCollation>1033, CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetLanguage>CS</TargetLanguage>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <SqlServerVerification>False</SqlServerVerification>
@@ -473,6 +473,7 @@
     <Build Include="Adm\Tables\Adm.DatabaseVersions.sql" />
     <Build Include="Adm\Procedures\Adm.sp_CheckAppliedDbVersion.sql" />
     <Build Include="Adm\Procedures\Adm.sp_AddAppliedDbVersion.sql" />
+    <Build Include="Inspect\Procedures\sp_GetDataFlowBetweenGroupsWithSteps.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CDFramework_VD.publish.xml" />

@@ -15,6 +15,7 @@ using Irony.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -778,7 +779,8 @@ namespace CD.DLS.Core.Parse.Mssql.PowerQuery
                     }
                     return res1;
                 }
-                throw new InvalidOperationException("Only table argument columns can be passed through");
+                return new List<OperationOutputColumnElement>();
+                //throw new InvalidOperationException("Only table argument columns can be passed through");
             }
 
             List<OperationOutputColumnElement> res = new List<OperationOutputColumnElement>();

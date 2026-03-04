@@ -256,7 +256,8 @@ namespace CD.DLS.Parse.Mssql.Ssas
                     
                     break;
                 default:
-                    throw new Exception("Unexpected DAX expression type: " + specificNode.Term.Name);
+                    return null;
+                    //throw new Exception("Unexpected DAX expression type: " + specificNode.Term.Name);
             }
 
             // offset & length

@@ -80,6 +80,11 @@ namespace CD.DLS.Parse.Mssql.Ssas
 
             var normalizedIdentifier = NormalizeIdentifier(translatedIdentifier, referenceType);
 
+            if (normalizedIdentifier == null)
+            {
+                return null;
+            }
+
             if (_localReferrablesDictionary.ContainsKey(normalizedIdentifier))
             {
                 return _localReferrablesDictionary[normalizedIdentifier];
@@ -400,8 +405,8 @@ namespace CD.DLS.Parse.Mssql.Ssas
                 }
                 else
                 {
-                    //return null;
-                    throw new Exception(string.Format("Could not normalize tabular identifier {0}", input));
+                    return null;
+                    //throw new Exception(string.Format("Could not normalize tabular identifier {0}", input));
                 }
             }
             else if (referenceType == TabularReferenceType.Table)

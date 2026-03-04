@@ -1238,6 +1238,7 @@ namespace CD.DLS.Model.Mssql.Ssas
             while (idx < lastArgument.Columns.Count && idx < outputColumnList.Count)
             {
                 AddDataFlowLink(lastArgument.Columns[idx].RefereneElement, outputColumnList[idx]);
+                idx++;
             }
         }
     }

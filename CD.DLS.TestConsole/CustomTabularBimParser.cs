@@ -47,6 +47,86 @@ namespace CD.DLS.TestConsole
             JObject summary = JObject.Parse(summaryJson);
             var extracts = ExtractWorkspacesScan(summary);
 
+            ProjectConfigManager projectConfigManager = new ProjectConfigManager();
+
+            // Z1
+            var projectConfig = projectConfigManager.GetProjectConfig(new Guid("BFDCDB34-0ABD-43D5-B6EC-75413CEC9578"));
+            GraphManager graphManager = new GraphManager();
+
+            var pbiUrnBuilder = new Parse.Mssql.Pbi.UrnBuilder();
+            SerializationHelper sh = new SerializationHelper(projectConfig, graphManager);
+
+            var solutionElement = (SolutionModelElement)sh.LoadElementModelToChildrenOfType("", typeof(SolutionModelElement));
+            var premappedIds = sh.CreatePremappedModel(solutionElement);
+
+            var tenantName = "Packeta";
+
+            var tenantUrn = pbiUrnBuilder.GetTenantUrn(tenantName);
+            var tenantElement = new Model.Mssql.Pbi.TenantElement(tenantUrn, tenantName, null, solutionElement);
+            solutionElement.AddChild(tenantElement);
+
+            var workspaceName = "Packeta Reports";
+
+            var datasets = extracts.Where(x => x.WorkspaceName == workspaceName).ToList();
+            var workspaceId = datasets.FirstOrDefault().Id;
+
+
+            var workspaceUrn = pbiUrnBuilder.GetWorkspaceUrn(workspaceName, tenantElement.RefPath);
+            var workspaceElement = new WorkspaceElement(workspaceUrn, workspaceName, null, tenantElement);
+            tenantElement.AddChild(workspaceElement);
+
+            Parse.Mssql.Ssas.UrnBuilder ssasUrnBuilder = new DLS.Parse.Mssql.Ssas.UrnBuilder();
+
+            AvailableDatabaseModelIndex sqlDatabaseIndex = new Parse.Mssql.Db.AvailableDatabaseModelIndex(projectConfig, graphManager);
+            BIDoc.Core.Parse.Mssql.Tabular.TabularParser tparser = new BIDoc.Core.Parse.Mssql.Tabular.TabularParser(sqlDatabaseIndex, projectConfig, Guid.Empty, null);
+
+
+            var dsc = datasets.Count;
+            var i = 0;
+            foreach (var dataset in datasets)
+            {
+                //if (dataset.modelName != "Distribution Quality")
+                //{
+                //    continue;
+                //}
+
+                //if (dataset.modelName == "Distribution Quality")
+                //{
+                //    continue;
+                //}
+
+                i++;
+                Console.WriteLine($"{dataset.modelName} ({i}/{dsc})");
+
+                var datasetUrn = pbiUrnBuilder.GetDatasetUrn(dataset.modelName, workspaceElement.RefPath);
+                var datasetElement = new DatasetElement(datasetUrn, dataset.modelName, null, workspaceElement);
+                workspaceElement.AddChild(datasetElement);
+
+                var dbRefPath = ssasUrnBuilder.GetDatabaseUrn("Model", datasetUrn);
+                SsasTabularDatabaseElement tDatabaseElement = new SsasTabularDatabaseElement(dbRefPath, "Model", null, datasetElement);
+                datasetElement.AddChild(tDatabaseElement);
+
+                tparser.ExtractTabularModel(dataset, tDatabaseElement);
+
+            }
+
+
+            Console.WriteLine("Saving the model...");
+
+            var dbIdMap = sqlDatabaseIndex.GetAllPremappedIds();
+            foreach (var kv in dbIdMap)
+            {
+                if (!premappedIds.ContainsKey(kv.Key))
+                {
+                    premappedIds.Add(kv.Key, kv.Value);
+                }
+            }
+
+            sh.SaveModelPart(tenantElement, premappedIds);
+
+            //graphManager.SaveModelElements()
+            //graphManager.ClearModel()
+
             return;
         }
 
@@ -132,8 +212,8 @@ namespace CD.DLS.TestConsole
         {
             TabularModel res = new TabularModel()
             {
-                Id = (string)jDataset["DatasetId"],
-                modelName = (string)jDataset["DatasetName"],
+                Id = (string)jDataset["id"],
+                modelName = (string)jDataset["name"],
                 WorkspaceName = workspaceName,
                 ContentProviderType = "", //(string)jDataset["contentProviderType"],
                 TabularDataSources = new List<TabularDataSource>(),
